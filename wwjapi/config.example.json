@@ -1,0 +1,6 @@
+{
+  "api": "https://your-api.example.com",
+  "token": "replace-with-your-token",
+  "member_token": "replace-with-your-member-token",
+  "attachment_dir": "/path/to/attachments"
+}

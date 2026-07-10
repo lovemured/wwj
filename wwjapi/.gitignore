@@ -1,0 +1,11 @@
+config.json
+.DS_Store
+.idea/
+.codex_spreadsheets/
+node_modules
+__pycache__/
+*.pyc
+outputs/
+import/outputs/
+import/error-report-import/outputs/
+story-*-error-report-direct-import-testcases.md
