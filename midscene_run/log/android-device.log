@@ -1,0 +1,543 @@
+[2026-06-03T14:28:09.825+08:00] Initializing ADB with device ID: R5CX10CP7XX
+[2026-06-03T14:28:09.826+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=false
+[2026-06-03T14:28:09.826+08:00] adb shell wm,size
+[2026-06-03T14:28:09.932+08:00] adb shell wm,size end
+[2026-06-03T14:28:09.932+08:00] Using Physical size: 1080x2340
+[2026-06-03T14:28:09.932+08:00] getDisplayOrientation: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedOrientation=false
+[2026-06-03T14:28:09.932+08:00] adb shell dumpsys input | grep SurfaceOrientation
+[2026-06-03T14:28:10.073+08:00] ADB error with device R5CX10CP7XX when calling shell: Error: Error executing adbExec. Original error: 'Command 'adb -P 5037 -s R5CX10CP7XX shell 'dumpsys input | grep SurfaceOrientation'' exited with code 1'; Command output: <empty>
+[2026-06-03T14:28:10.073+08:00] Failed to get orientation from input, try display
+[2026-06-03T14:28:10.073+08:00] adb shell dumpsys display | grep mCurrentOrientation
+[2026-06-03T14:28:10.178+08:00] adb shell dumpsys display | grep mCurrentOrientation end
+[2026-06-03T14:28:10.179+08:00] Screen orientation (fallback): 0
+[2026-06-03T14:28:10.179+08:00] ADB initialized successfully 
+DeviceId: R5CX10CP7XX
+ScreenSize:
+  physical size: 1080x2340
+
+[2026-06-03T14:50:41.689+08:00] Initializing ADB with device ID: R5CX10CP7XX
+[2026-06-03T14:50:41.689+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=false
+[2026-06-03T14:50:41.689+08:00] adb shell wm,size
+[2026-06-03T14:50:41.753+08:00] adb shell wm,size end
+[2026-06-03T14:50:41.753+08:00] Using Physical size: 1080x2340
+[2026-06-03T14:50:41.753+08:00] getDisplayOrientation: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedOrientation=false
+[2026-06-03T14:50:41.753+08:00] adb shell dumpsys input | grep SurfaceOrientation
+[2026-06-03T14:50:41.851+08:00] ADB error with device R5CX10CP7XX when calling shell: Error: Error executing adbExec. Original error: 'Command 'adb -P 5037 -s R5CX10CP7XX shell 'dumpsys input | grep SurfaceOrientation'' exited with code 1'; Command output: <empty>
+[2026-06-03T14:50:41.852+08:00] Failed to get orientation from input, try display
+[2026-06-03T14:50:41.852+08:00] adb shell dumpsys display | grep mCurrentOrientation
+[2026-06-03T14:50:41.963+08:00] adb shell dumpsys display | grep mCurrentOrientation end
+[2026-06-03T14:50:41.963+08:00] Screen orientation (fallback): 0
+[2026-06-03T14:50:41.963+08:00] ADB initialized successfully 
+DeviceId: R5CX10CP7XX
+ScreenSize:
+  physical size: 1080x2340
+
+[2026-06-03T14:51:43.916+08:00] Initializing ADB with device ID: R5CX10CP7XX
+[2026-06-03T14:51:43.916+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=false
+[2026-06-03T14:51:43.917+08:00] adb shell wm,size
+[2026-06-03T14:51:44.003+08:00] adb shell wm,size end
+[2026-06-03T14:51:44.003+08:00] Using Physical size: 1080x2340
+[2026-06-03T14:51:44.003+08:00] getDisplayOrientation: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedOrientation=false
+[2026-06-03T14:51:44.003+08:00] adb shell dumpsys input | grep SurfaceOrientation
+[2026-06-03T14:51:44.118+08:00] ADB error with device R5CX10CP7XX when calling shell: Error: Error executing adbExec. Original error: 'Command 'adb -P 5037 -s R5CX10CP7XX shell 'dumpsys input | grep SurfaceOrientation'' exited with code 1'; Command output: <empty>
+[2026-06-03T14:51:44.118+08:00] Failed to get orientation from input, try display
+[2026-06-03T14:51:44.118+08:00] adb shell dumpsys display | grep mCurrentOrientation
+[2026-06-03T14:51:44.244+08:00] adb shell dumpsys display | grep mCurrentOrientation end
+[2026-06-03T14:51:44.244+08:00] Screen orientation (fallback): 0
+[2026-06-03T14:51:44.244+08:00] ADB initialized successfully 
+DeviceId: R5CX10CP7XX
+ScreenSize:
+  physical size: 1080x2340
+
+[2026-06-03T14:53:12.076+08:00] Initializing ADB with device ID: R5CX10CP7XX
+[2026-06-03T14:53:12.076+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=false
+[2026-06-03T14:53:12.076+08:00] adb shell wm,size
+[2026-06-03T14:53:12.153+08:00] adb shell wm,size end
+[2026-06-03T14:53:12.153+08:00] Using Physical size: 1080x2340
+[2026-06-03T14:53:12.153+08:00] getDisplayOrientation: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedOrientation=false
+[2026-06-03T14:53:12.153+08:00] adb shell dumpsys input | grep SurfaceOrientation
+[2026-06-03T14:53:12.253+08:00] ADB error with device R5CX10CP7XX when calling shell: Error: Error executing adbExec. Original error: 'Command 'adb -P 5037 -s R5CX10CP7XX shell 'dumpsys input | grep SurfaceOrientation'' exited with code 1'; Command output: <empty>
+[2026-06-03T14:53:12.253+08:00] Failed to get orientation from input, try display
+[2026-06-03T14:53:12.253+08:00] adb shell dumpsys display | grep mCurrentOrientation
+[2026-06-03T14:53:12.358+08:00] adb shell dumpsys display | grep mCurrentOrientation end
+[2026-06-03T14:53:12.358+08:00] Screen orientation (fallback): 0
+[2026-06-03T14:53:12.358+08:00] ADB initialized successfully 
+DeviceId: R5CX10CP7XX
+ScreenSize:
+  physical size: 1080x2340
+
+[2026-06-03T17:37:00.478+08:00] Initializing ADB with device ID: R5CX10CP7XX
+[2026-06-03T17:37:00.478+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=false
+[2026-06-03T17:37:00.478+08:00] adb shell wm,size
+[2026-06-03T17:37:00.565+08:00] adb shell wm,size end
+[2026-06-03T17:37:00.565+08:00] Using Physical size: 1080x2340
+[2026-06-03T17:37:00.565+08:00] getDisplayOrientation: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedOrientation=false
+[2026-06-03T17:37:00.566+08:00] adb shell dumpsys input | grep SurfaceOrientation
+[2026-06-03T17:37:00.695+08:00] ADB error with device R5CX10CP7XX when calling shell: Error: Error executing adbExec. Original error: 'Command 'adb -P 5037 -s R5CX10CP7XX shell 'dumpsys input | grep SurfaceOrientation'' exited with code 1'; Command output: <empty>
+[2026-06-03T17:37:00.695+08:00] Failed to get orientation from input, try display
+[2026-06-03T17:37:00.695+08:00] adb shell dumpsys display | grep mCurrentOrientation
+[2026-06-03T17:37:00.787+08:00] adb shell dumpsys display | grep mCurrentOrientation end
+[2026-06-03T17:37:00.787+08:00] Screen orientation (fallback): 0
+[2026-06-03T17:37:00.787+08:00] ADB initialized successfully 
+DeviceId: R5CX10CP7XX
+ScreenSize:
+  physical size: 1080x2340
+
+[2026-06-03T17:37:00.820+08:00] adb getScreenDensity 
+[2026-06-03T17:37:00.891+08:00] adb getScreenDensity  end
+[2026-06-03T17:37:00.891+08:00] Initialized device pixel ratio: 2.8125
+[2026-06-03T17:37:00.891+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:00.891+08:00] screenshotBase64 begin
+[2026-06-03T17:37:00.891+08:00] Taking screenshot via adb.takeScreenshot
+[2026-06-03T17:37:00.891+08:00] adb takeScreenshot 
+[2026-06-03T17:37:01.482+08:00] adb takeScreenshot  end
+[2026-06-03T17:37:01.482+08:00] adb.takeScreenshot completed
+[2026-06-03T17:37:01.482+08:00] Invalid screenshot buffer detected: Screenshot buffer has invalid image format
+[2026-06-03T17:37:01.483+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Screenshot buffer has invalid image format
+[2026-06-03T17:37:01.484+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:37:01.484+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvh5nf.png
+[2026-06-03T17:37:02.554+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvh5nf.png end
+[2026-06-03T17:37:02.554+08:00] adb.shell screencap completed
+[2026-06-03T17:37:02.555+08:00] Pulling screenshot file from device
+[2026-06-03T17:37:02.555+08:00] adb pull /data/local/tmp/ms_mpxvh5nf.png /tmp/claude-501/wwj/02db9060-96a7-47de-8996-58aad3cb9496.png
+[2026-06-03T17:37:02.693+08:00] adb pull /data/local/tmp/ms_mpxvh5nf.png /tmp/claude-501/wwj/02db9060-96a7-47de-8996-58aad3cb9496.png end
+[2026-06-03T17:37:02.693+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/02db9060-96a7-47de-8996-58aad3cb9496.png
+[2026-06-03T17:37:02.696+08:00] Fallback screenshot validated successfully: 3693567 bytes
+[2026-06-03T17:37:02.699+08:00] Converting to base64
+[2026-06-03T17:37:02.702+08:00] Deleting local screenshot: /tmp/claude-501/wwj/02db9060-96a7-47de-8996-58aad3cb9496.png
+[2026-06-03T17:37:02.702+08:00] screenshotBase64 end
+[2026-06-03T17:37:03.056+08:00] Launching app: com.lixiaoyun.aike
+[2026-06-03T17:37:03.056+08:00] adb activateApp com.lixiaoyun.aike
+[2026-06-03T17:37:03.283+08:00] adb activateApp com.lixiaoyun.aike end
+[2026-06-03T17:37:03.283+08:00] Successfully launched: com.lixiaoyun.aike
+[2026-06-03T17:37:03.585+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:03.585+08:00] screenshotBase64 begin
+[2026-06-03T17:37:03.585+08:00] Taking screenshot via adb.takeScreenshot
+[2026-06-03T17:37:03.585+08:00] adb takeScreenshot 
+[2026-06-03T17:37:03.753+08:00] adb takeScreenshot  end
+[2026-06-03T17:37:03.753+08:00] adb.takeScreenshot completed
+[2026-06-03T17:37:03.753+08:00] Invalid screenshot buffer detected: Screenshot buffer has invalid image format
+[2026-06-03T17:37:03.753+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Screenshot buffer has invalid image format
+[2026-06-03T17:37:03.754+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:37:03.754+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvh7q9.png
+[2026-06-03T17:37:04.332+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvh7q9.png end
+[2026-06-03T17:37:04.332+08:00] adb.shell screencap completed
+[2026-06-03T17:37:04.332+08:00] Pulling screenshot file from device
+[2026-06-03T17:37:04.332+08:00] adb pull /data/local/tmp/ms_mpxvh7q9.png /tmp/claude-501/wwj/b6c2c72f-ad40-4c55-869c-697798440a16.png
+[2026-06-03T17:37:04.379+08:00] adb pull /data/local/tmp/ms_mpxvh7q9.png /tmp/claude-501/wwj/b6c2c72f-ad40-4c55-869c-697798440a16.png end
+[2026-06-03T17:37:04.379+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/b6c2c72f-ad40-4c55-869c-697798440a16.png
+[2026-06-03T17:37:04.380+08:00] Fallback screenshot validated successfully: 80582 bytes
+[2026-06-03T17:37:04.381+08:00] Converting to base64
+[2026-06-03T17:37:04.381+08:00] Deleting local screenshot: /tmp/claude-501/wwj/b6c2c72f-ad40-4c55-869c-697798440a16.png
+[2026-06-03T17:37:04.381+08:00] screenshotBase64 end
+[2026-06-03T17:37:07.462+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:07.462+08:00] screenshotBase64 begin
+[2026-06-03T17:37:07.462+08:00] Taking screenshot via adb.takeScreenshot
+[2026-06-03T17:37:07.462+08:00] adb takeScreenshot 
+[2026-06-03T17:37:07.578+08:00] adb takeScreenshot  end
+[2026-06-03T17:37:07.578+08:00] adb.takeScreenshot completed
+[2026-06-03T17:37:07.578+08:00] Invalid screenshot buffer detected: Screenshot buffer has invalid image format
+[2026-06-03T17:37:07.578+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Screenshot buffer has invalid image format
+[2026-06-03T17:37:07.578+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:37:07.579+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvhapy.png
+[2026-06-03T17:37:08.144+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvhapy.png end
+[2026-06-03T17:37:08.145+08:00] adb.shell screencap completed
+[2026-06-03T17:37:08.145+08:00] Pulling screenshot file from device
+[2026-06-03T17:37:08.145+08:00] adb pull /data/local/tmp/ms_mpxvhapy.png /tmp/claude-501/wwj/4760677d-4128-46b1-a394-e831fff556ad.png
+[2026-06-03T17:37:08.228+08:00] adb pull /data/local/tmp/ms_mpxvhapy.png /tmp/claude-501/wwj/4760677d-4128-46b1-a394-e831fff556ad.png end
+[2026-06-03T17:37:08.228+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/4760677d-4128-46b1-a394-e831fff556ad.png
+[2026-06-03T17:37:08.228+08:00] Fallback screenshot validated successfully: 1084750 bytes
+[2026-06-03T17:37:08.230+08:00] Converting to base64
+[2026-06-03T17:37:08.231+08:00] Deleting local screenshot: /tmp/claude-501/wwj/4760677d-4128-46b1-a394-e831fff556ad.png
+[2026-06-03T17:37:08.231+08:00] screenshotBase64 end
+[2026-06-03T17:37:19.795+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:19.795+08:00] screenshotBase64 begin
+[2026-06-03T17:37:19.795+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:37:19.795+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:37:19.796+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:37:19.796+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvhk8j.png
+[2026-06-03T17:37:20.268+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvhk8j.png end
+[2026-06-03T17:37:20.268+08:00] adb.shell screencap completed
+[2026-06-03T17:37:20.269+08:00] Pulling screenshot file from device
+[2026-06-03T17:37:20.269+08:00] adb pull /data/local/tmp/ms_mpxvhk8j.png /tmp/claude-501/wwj/9e3246f0-0c77-4514-bc79-d534f156b354.png
+[2026-06-03T17:37:20.315+08:00] adb pull /data/local/tmp/ms_mpxvhk8j.png /tmp/claude-501/wwj/9e3246f0-0c77-4514-bc79-d534f156b354.png end
+[2026-06-03T17:37:20.315+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/9e3246f0-0c77-4514-bc79-d534f156b354.png
+[2026-06-03T17:37:20.315+08:00] Fallback screenshot validated successfully: 420050 bytes
+[2026-06-03T17:37:20.317+08:00] Converting to base64
+[2026-06-03T17:37:20.317+08:00] Deleting local screenshot: /tmp/claude-501/wwj/9e3246f0-0c77-4514-bc79-d534f156b354.png
+[2026-06-03T17:37:20.317+08:00] screenshotBase64 end
+[2026-06-03T17:37:22.896+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:22.896+08:00] screenshotBase64 begin
+[2026-06-03T17:37:22.896+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:37:22.897+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:37:22.897+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:37:22.897+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvhmmo.png
+[2026-06-03T17:37:23.261+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvhmmo.png end
+[2026-06-03T17:37:23.261+08:00] adb.shell screencap completed
+[2026-06-03T17:37:23.261+08:00] Pulling screenshot file from device
+[2026-06-03T17:37:23.261+08:00] adb pull /data/local/tmp/ms_mpxvhmmo.png /tmp/claude-501/wwj/fdd7f3d0-17e4-423a-bafe-c1fd223239e3.png
+[2026-06-03T17:37:23.304+08:00] adb pull /data/local/tmp/ms_mpxvhmmo.png /tmp/claude-501/wwj/fdd7f3d0-17e4-423a-bafe-c1fd223239e3.png end
+[2026-06-03T17:37:23.304+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/fdd7f3d0-17e4-423a-bafe-c1fd223239e3.png
+[2026-06-03T17:37:23.305+08:00] Fallback screenshot validated successfully: 420050 bytes
+[2026-06-03T17:37:23.306+08:00] Converting to base64
+[2026-06-03T17:37:23.307+08:00] Deleting local screenshot: /tmp/claude-501/wwj/fdd7f3d0-17e4-423a-bafe-c1fd223239e3.png
+[2026-06-03T17:37:23.307+08:00] screenshotBase64 end
+[2026-06-03T17:37:45.691+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:45.692+08:00] screenshotBase64 begin
+[2026-06-03T17:37:45.692+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:37:45.692+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:37:45.692+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:37:45.692+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvi47w.png
+[2026-06-03T17:37:46.077+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvi47w.png end
+[2026-06-03T17:37:46.077+08:00] adb.shell screencap completed
+[2026-06-03T17:37:46.077+08:00] Pulling screenshot file from device
+[2026-06-03T17:37:46.077+08:00] adb pull /data/local/tmp/ms_mpxvi47w.png /tmp/claude-501/wwj/a0f59598-1fff-4198-b305-9075b98885bc.png
+[2026-06-03T17:37:46.129+08:00] adb pull /data/local/tmp/ms_mpxvi47w.png /tmp/claude-501/wwj/a0f59598-1fff-4198-b305-9075b98885bc.png end
+[2026-06-03T17:37:46.129+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/a0f59598-1fff-4198-b305-9075b98885bc.png
+[2026-06-03T17:37:46.129+08:00] Fallback screenshot validated successfully: 420050 bytes
+[2026-06-03T17:37:46.131+08:00] Converting to base64
+[2026-06-03T17:37:46.132+08:00] Deleting local screenshot: /tmp/claude-501/wwj/a0f59598-1fff-4198-b305-9075b98885bc.png
+[2026-06-03T17:37:46.132+08:00] screenshotBase64 end
+[2026-06-03T17:37:46.409+08:00] getAdjustScale: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedScale=false
+[2026-06-03T17:37:46.409+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:46.410+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:46.410+08:00] adb shell input swipe 990 2258 990 2258 150
+[2026-06-03T17:37:46.670+08:00] adb shell input swipe 990 2258 990 2258 150 end
+[2026-06-03T17:37:46.973+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:37:46.973+08:00] screenshotBase64 begin
+[2026-06-03T17:37:46.973+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:37:46.973+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:37:46.973+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:37:46.973+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvi57h.png
+[2026-06-03T17:37:47.323+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvi57h.png end
+[2026-06-03T17:37:47.324+08:00] adb.shell screencap completed
+[2026-06-03T17:37:47.324+08:00] Pulling screenshot file from device
+[2026-06-03T17:37:47.324+08:00] adb pull /data/local/tmp/ms_mpxvi57h.png /tmp/claude-501/wwj/84dce6ab-fb43-4030-baae-8ffeb38046b1.png
+[2026-06-03T17:37:47.368+08:00] adb pull /data/local/tmp/ms_mpxvi57h.png /tmp/claude-501/wwj/84dce6ab-fb43-4030-baae-8ffeb38046b1.png end
+[2026-06-03T17:37:47.368+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/84dce6ab-fb43-4030-baae-8ffeb38046b1.png
+[2026-06-03T17:37:47.369+08:00] Fallback screenshot validated successfully: 480400 bytes
+[2026-06-03T17:37:47.370+08:00] Converting to base64
+[2026-06-03T17:37:47.371+08:00] Deleting local screenshot: /tmp/claude-501/wwj/84dce6ab-fb43-4030-baae-8ffeb38046b1.png
+[2026-06-03T17:37:47.371+08:00] screenshotBase64 end
+[2026-06-03T17:38:30.112+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:38:30.113+08:00] screenshotBase64 begin
+[2026-06-03T17:38:30.113+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:38:30.113+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:38:30.113+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:38:30.113+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvj2ht.png
+[2026-06-03T17:38:30.685+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvj2ht.png end
+[2026-06-03T17:38:30.685+08:00] adb.shell screencap completed
+[2026-06-03T17:38:30.686+08:00] Pulling screenshot file from device
+[2026-06-03T17:38:30.686+08:00] adb pull /data/local/tmp/ms_mpxvj2ht.png /tmp/claude-501/wwj/a0166dac-5ef2-42b9-ab63-be9b3d5c8270.png
+[2026-06-03T17:38:30.748+08:00] adb pull /data/local/tmp/ms_mpxvj2ht.png /tmp/claude-501/wwj/a0166dac-5ef2-42b9-ab63-be9b3d5c8270.png end
+[2026-06-03T17:38:30.748+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/a0166dac-5ef2-42b9-ab63-be9b3d5c8270.png
+[2026-06-03T17:38:30.749+08:00] Fallback screenshot validated successfully: 418207 bytes
+[2026-06-03T17:38:30.750+08:00] Converting to base64
+[2026-06-03T17:38:30.751+08:00] Deleting local screenshot: /tmp/claude-501/wwj/a0166dac-5ef2-42b9-ab63-be9b3d5c8270.png
+[2026-06-03T17:38:30.751+08:00] screenshotBase64 end
+[2026-06-03T17:38:31.026+08:00] getAdjustScale: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedScale=true
+[2026-06-03T17:38:31.026+08:00] adb shell input swipe 973 2270 973 2270 150
+[2026-06-03T17:38:31.256+08:00] adb shell input swipe 973 2270 973 2270 150 end
+[2026-06-03T17:38:31.557+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:38:31.557+08:00] screenshotBase64 begin
+[2026-06-03T17:38:31.557+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:38:31.557+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:38:31.557+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:38:31.557+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvj3lx.png
+[2026-06-03T17:38:31.916+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvj3lx.png end
+[2026-06-03T17:38:31.916+08:00] adb.shell screencap completed
+[2026-06-03T17:38:31.916+08:00] Pulling screenshot file from device
+[2026-06-03T17:38:31.916+08:00] adb pull /data/local/tmp/ms_mpxvj3lx.png /tmp/claude-501/wwj/1699ade9-0b96-4178-91d2-c6016c757b25.png
+[2026-06-03T17:38:31.962+08:00] adb pull /data/local/tmp/ms_mpxvj3lx.png /tmp/claude-501/wwj/1699ade9-0b96-4178-91d2-c6016c757b25.png end
+[2026-06-03T17:38:31.962+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/1699ade9-0b96-4178-91d2-c6016c757b25.png
+[2026-06-03T17:38:31.962+08:00] Fallback screenshot validated successfully: 273326 bytes
+[2026-06-03T17:38:31.964+08:00] Converting to base64
+[2026-06-03T17:38:31.964+08:00] Deleting local screenshot: /tmp/claude-501/wwj/1699ade9-0b96-4178-91d2-c6016c757b25.png
+[2026-06-03T17:38:31.964+08:00] screenshotBase64 end
+[2026-06-03T17:39:51.344+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:39:51.344+08:00] screenshotBase64 begin
+[2026-06-03T17:39:51.344+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:39:51.344+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:39:51.345+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:39:51.345+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvkt68.png
+[2026-06-03T17:39:51.832+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvkt68.png end
+[2026-06-03T17:39:51.833+08:00] adb.shell screencap completed
+[2026-06-03T17:39:51.833+08:00] Pulling screenshot file from device
+[2026-06-03T17:39:51.833+08:00] adb pull /data/local/tmp/ms_mpxvkt68.png /tmp/claude-501/wwj/bb08b496-ecd8-41c7-9056-568e373d506a.png
+[2026-06-03T17:39:51.887+08:00] adb pull /data/local/tmp/ms_mpxvkt68.png /tmp/claude-501/wwj/bb08b496-ecd8-41c7-9056-568e373d506a.png end
+[2026-06-03T17:39:51.887+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/bb08b496-ecd8-41c7-9056-568e373d506a.png
+[2026-06-03T17:39:51.888+08:00] Fallback screenshot validated successfully: 568578 bytes
+[2026-06-03T17:39:51.890+08:00] Converting to base64
+[2026-06-03T17:39:51.890+08:00] Deleting local screenshot: /tmp/claude-501/wwj/bb08b496-ecd8-41c7-9056-568e373d506a.png
+[2026-06-03T17:39:51.890+08:00] screenshotBase64 end
+[2026-06-03T17:39:52.171+08:00] getAdjustScale: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedScale=true
+[2026-06-03T17:39:52.171+08:00] adb shell input swipe 188 1598 188 1598 150
+[2026-06-03T17:39:52.423+08:00] adb shell input swipe 188 1598 188 1598 150 end
+[2026-06-03T17:39:52.725+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:39:52.726+08:00] screenshotBase64 begin
+[2026-06-03T17:39:52.726+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:39:52.726+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:39:52.726+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:39:52.726+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvku8m.png
+[2026-06-03T17:39:53.065+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvku8m.png end
+[2026-06-03T17:39:53.066+08:00] adb.shell screencap completed
+[2026-06-03T17:39:53.066+08:00] Pulling screenshot file from device
+[2026-06-03T17:39:53.066+08:00] adb pull /data/local/tmp/ms_mpxvku8m.png /tmp/claude-501/wwj/2705cb44-dd59-484e-911d-44a7a8091b32.png
+[2026-06-03T17:39:53.108+08:00] adb pull /data/local/tmp/ms_mpxvku8m.png /tmp/claude-501/wwj/2705cb44-dd59-484e-911d-44a7a8091b32.png end
+[2026-06-03T17:39:53.108+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/2705cb44-dd59-484e-911d-44a7a8091b32.png
+[2026-06-03T17:39:53.109+08:00] Fallback screenshot validated successfully: 187966 bytes
+[2026-06-03T17:39:53.111+08:00] Converting to base64
+[2026-06-03T17:39:53.112+08:00] Deleting local screenshot: /tmp/claude-501/wwj/2705cb44-dd59-484e-911d-44a7a8091b32.png
+[2026-06-03T17:39:53.112+08:00] screenshotBase64 end
+[2026-06-03T17:40:07.523+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:40:07.523+08:00] screenshotBase64 begin
+[2026-06-03T17:40:07.523+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:40:07.523+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:40:07.523+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:40:07.523+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvl5nn.png
+[2026-06-03T17:40:07.909+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvl5nn.png end
+[2026-06-03T17:40:07.909+08:00] adb.shell screencap completed
+[2026-06-03T17:40:07.909+08:00] Pulling screenshot file from device
+[2026-06-03T17:40:07.909+08:00] adb pull /data/local/tmp/ms_mpxvl5nn.png /tmp/claude-501/wwj/a880ed57-a546-46e2-9f14-8c689a858d8b.png
+[2026-06-03T17:40:07.959+08:00] adb pull /data/local/tmp/ms_mpxvl5nn.png /tmp/claude-501/wwj/a880ed57-a546-46e2-9f14-8c689a858d8b.png end
+[2026-06-03T17:40:07.959+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/a880ed57-a546-46e2-9f14-8c689a858d8b.png
+[2026-06-03T17:40:07.959+08:00] Fallback screenshot validated successfully: 551975 bytes
+[2026-06-03T17:40:07.961+08:00] Converting to base64
+[2026-06-03T17:40:07.961+08:00] Deleting local screenshot: /tmp/claude-501/wwj/a880ed57-a546-46e2-9f14-8c689a858d8b.png
+[2026-06-03T17:40:07.961+08:00] screenshotBase64 end
+[2026-06-03T17:40:08.231+08:00] adb shell am force-stop com.lixiaoyun.aike
+[2026-06-03T17:40:08.368+08:00] adb shell am force-stop com.lixiaoyun.aike end
+[2026-06-03T17:40:08.669+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:40:08.669+08:00] screenshotBase64 begin
+[2026-06-03T17:40:08.670+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:40:08.670+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:40:08.670+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:40:08.670+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvl6jh.png
+[2026-06-03T17:40:09.471+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:40:09.471+08:00] screenshotBase64 begin
+[2026-06-03T17:40:09.471+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:40:09.471+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:40:09.471+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:40:09.471+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvl75r.png
+[2026-06-03T17:40:09.959+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvl6jh.png end
+[2026-06-03T17:40:09.959+08:00] adb.shell screencap completed
+[2026-06-03T17:40:09.959+08:00] Pulling screenshot file from device
+[2026-06-03T17:40:09.959+08:00] adb pull /data/local/tmp/ms_mpxvl6jh.png /tmp/claude-501/wwj/cd38c138-11f5-482a-882d-3cf3a764ef64.png
+[2026-06-03T17:40:10.083+08:00] adb pull /data/local/tmp/ms_mpxvl6jh.png /tmp/claude-501/wwj/cd38c138-11f5-482a-882d-3cf3a764ef64.png end
+[2026-06-03T17:40:10.083+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/cd38c138-11f5-482a-882d-3cf3a764ef64.png
+[2026-06-03T17:40:10.084+08:00] Fallback screenshot validated successfully: 3525398 bytes
+[2026-06-03T17:40:10.086+08:00] Converting to base64
+[2026-06-03T17:40:10.087+08:00] Deleting local screenshot: /tmp/claude-501/wwj/cd38c138-11f5-482a-882d-3cf3a764ef64.png
+[2026-06-03T17:40:10.087+08:00] screenshotBase64 end
+[2026-06-03T17:41:38.680+08:00] Initializing ADB with device ID: R5CX10CP7XX
+[2026-06-03T17:41:38.681+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=false
+[2026-06-03T17:41:38.681+08:00] adb shell wm,size
+[2026-06-03T17:41:38.765+08:00] adb shell wm,size end
+[2026-06-03T17:41:38.765+08:00] Using Physical size: 1080x2340
+[2026-06-03T17:41:38.765+08:00] getDisplayOrientation: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedOrientation=false
+[2026-06-03T17:41:38.765+08:00] adb shell dumpsys input | grep SurfaceOrientation
+[2026-06-03T17:41:38.859+08:00] ADB error with device R5CX10CP7XX when calling shell: Error: Error executing adbExec. Original error: 'Command 'adb -P 5037 -s R5CX10CP7XX shell 'dumpsys input | grep SurfaceOrientation'' exited with code 1'; Command output: <empty>
+[2026-06-03T17:41:38.859+08:00] Failed to get orientation from input, try display
+[2026-06-03T17:41:38.859+08:00] adb shell dumpsys display | grep mCurrentOrientation
+[2026-06-03T17:41:38.984+08:00] adb shell dumpsys display | grep mCurrentOrientation end
+[2026-06-03T17:41:38.984+08:00] Screen orientation (fallback): 0
+[2026-06-03T17:41:38.984+08:00] ADB initialized successfully 
+DeviceId: R5CX10CP7XX
+ScreenSize:
+  physical size: 1080x2340
+
+[2026-06-03T17:41:39.014+08:00] adb getScreenDensity 
+[2026-06-03T17:41:39.089+08:00] adb getScreenDensity  end
+[2026-06-03T17:41:39.089+08:00] Initialized device pixel ratio: 2.8125
+[2026-06-03T17:41:39.089+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:41:39.089+08:00] screenshotBase64 begin
+[2026-06-03T17:41:39.089+08:00] Taking screenshot via adb.takeScreenshot
+[2026-06-03T17:41:39.089+08:00] adb takeScreenshot 
+[2026-06-03T17:41:39.229+08:00] adb takeScreenshot  end
+[2026-06-03T17:41:39.229+08:00] adb.takeScreenshot completed
+[2026-06-03T17:41:39.229+08:00] Invalid screenshot buffer detected: Screenshot buffer has invalid image format
+[2026-06-03T17:41:39.229+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Screenshot buffer has invalid image format
+[2026-06-03T17:41:39.230+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:41:39.230+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvn4b5.png
+[2026-06-03T17:41:40.274+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvn4b5.png end
+[2026-06-03T17:41:40.274+08:00] adb.shell screencap completed
+[2026-06-03T17:41:40.274+08:00] Pulling screenshot file from device
+[2026-06-03T17:41:40.274+08:00] adb pull /data/local/tmp/ms_mpxvn4b5.png /tmp/claude-501/wwj/f75937ba-1288-4d7e-befd-520727420c20.png
+[2026-06-03T17:41:40.423+08:00] adb pull /data/local/tmp/ms_mpxvn4b5.png /tmp/claude-501/wwj/f75937ba-1288-4d7e-befd-520727420c20.png end
+[2026-06-03T17:41:40.423+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/f75937ba-1288-4d7e-befd-520727420c20.png
+[2026-06-03T17:41:40.425+08:00] Fallback screenshot validated successfully: 3692586 bytes
+[2026-06-03T17:41:40.430+08:00] Converting to base64
+[2026-06-03T17:41:40.432+08:00] Deleting local screenshot: /tmp/claude-501/wwj/f75937ba-1288-4d7e-befd-520727420c20.png
+[2026-06-03T17:41:40.432+08:00] screenshotBase64 end
+[2026-06-03T17:41:40.778+08:00] Launching app: com.lixiaoyun.aike
+[2026-06-03T17:41:40.778+08:00] adb activateApp com.lixiaoyun.aike
+[2026-06-03T17:41:41.058+08:00] adb activateApp com.lixiaoyun.aike end
+[2026-06-03T17:41:41.058+08:00] Successfully launched: com.lixiaoyun.aike
+[2026-06-03T17:41:41.360+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:41:41.361+08:00] screenshotBase64 begin
+[2026-06-03T17:41:41.362+08:00] Taking screenshot via adb.takeScreenshot
+[2026-06-03T17:41:41.362+08:00] adb takeScreenshot 
+[2026-06-03T17:41:41.580+08:00] adb takeScreenshot  end
+[2026-06-03T17:41:41.580+08:00] adb.takeScreenshot completed
+[2026-06-03T17:41:41.580+08:00] Invalid screenshot buffer detected: Screenshot buffer has invalid image format
+[2026-06-03T17:41:41.580+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Screenshot buffer has invalid image format
+[2026-06-03T17:41:41.581+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:41:41.581+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvn62a.png
+[2026-06-03T17:41:42.479+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvn62a.png end
+[2026-06-03T17:41:42.479+08:00] adb.shell screencap completed
+[2026-06-03T17:41:42.479+08:00] Pulling screenshot file from device
+[2026-06-03T17:41:42.479+08:00] adb pull /data/local/tmp/ms_mpxvn62a.png /tmp/claude-501/wwj/196f060a-aa6e-4304-bc47-0d2733d65f4f.png
+[2026-06-03T17:41:42.544+08:00] adb pull /data/local/tmp/ms_mpxvn62a.png /tmp/claude-501/wwj/196f060a-aa6e-4304-bc47-0d2733d65f4f.png end
+[2026-06-03T17:41:42.544+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/196f060a-aa6e-4304-bc47-0d2733d65f4f.png
+[2026-06-03T17:41:42.545+08:00] Fallback screenshot validated successfully: 1080728 bytes
+[2026-06-03T17:41:42.547+08:00] Converting to base64
+[2026-06-03T17:41:42.547+08:00] Deleting local screenshot: /tmp/claude-501/wwj/196f060a-aa6e-4304-bc47-0d2733d65f4f.png
+[2026-06-03T17:41:42.547+08:00] screenshotBase64 end
+[2026-06-03T17:41:45.662+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:41:45.662+08:00] screenshotBase64 begin
+[2026-06-03T17:41:45.662+08:00] Taking screenshot via adb.takeScreenshot
+[2026-06-03T17:41:45.662+08:00] adb takeScreenshot 
+[2026-06-03T17:41:45.807+08:00] adb takeScreenshot  end
+[2026-06-03T17:41:45.807+08:00] adb.takeScreenshot completed
+[2026-06-03T17:41:45.808+08:00] Invalid screenshot buffer detected: Screenshot buffer has invalid image format
+[2026-06-03T17:41:45.808+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Screenshot buffer has invalid image format
+[2026-06-03T17:41:45.808+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:41:45.808+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvn9dq.png
+[2026-06-03T17:41:46.445+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvn9dq.png end
+[2026-06-03T17:41:46.445+08:00] adb.shell screencap completed
+[2026-06-03T17:41:46.445+08:00] Pulling screenshot file from device
+[2026-06-03T17:41:46.445+08:00] adb pull /data/local/tmp/ms_mpxvn9dq.png /tmp/claude-501/wwj/1333a27b-feb0-4b8b-a272-4d756d898eac.png
+[2026-06-03T17:41:46.512+08:00] adb pull /data/local/tmp/ms_mpxvn9dq.png /tmp/claude-501/wwj/1333a27b-feb0-4b8b-a272-4d756d898eac.png end
+[2026-06-03T17:41:46.513+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/1333a27b-feb0-4b8b-a272-4d756d898eac.png
+[2026-06-03T17:41:46.513+08:00] Fallback screenshot validated successfully: 1094898 bytes
+[2026-06-03T17:41:46.515+08:00] Converting to base64
+[2026-06-03T17:41:46.516+08:00] Deleting local screenshot: /tmp/claude-501/wwj/1333a27b-feb0-4b8b-a272-4d756d898eac.png
+[2026-06-03T17:41:46.516+08:00] screenshotBase64 end
+[2026-06-03T17:41:57.842+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:41:57.842+08:00] screenshotBase64 begin
+[2026-06-03T17:41:57.842+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:41:57.842+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:41:57.842+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:41:57.842+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvnis2.png
+[2026-06-03T17:41:58.219+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvnis2.png end
+[2026-06-03T17:41:58.219+08:00] adb.shell screencap completed
+[2026-06-03T17:41:58.219+08:00] Pulling screenshot file from device
+[2026-06-03T17:41:58.219+08:00] adb pull /data/local/tmp/ms_mpxvnis2.png /tmp/claude-501/wwj/508dde10-4178-48f0-8c1f-93c4a5df8257.png
+[2026-06-03T17:41:58.258+08:00] adb pull /data/local/tmp/ms_mpxvnis2.png /tmp/claude-501/wwj/508dde10-4178-48f0-8c1f-93c4a5df8257.png end
+[2026-06-03T17:41:58.258+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/508dde10-4178-48f0-8c1f-93c4a5df8257.png
+[2026-06-03T17:41:58.259+08:00] Fallback screenshot validated successfully: 419987 bytes
+[2026-06-03T17:41:58.260+08:00] Converting to base64
+[2026-06-03T17:41:58.260+08:00] Deleting local screenshot: /tmp/claude-501/wwj/508dde10-4178-48f0-8c1f-93c4a5df8257.png
+[2026-06-03T17:41:58.260+08:00] screenshotBase64 end
+[2026-06-03T17:42:00.836+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:00.837+08:00] screenshotBase64 begin
+[2026-06-03T17:42:00.837+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:42:00.837+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:42:00.837+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:42:00.837+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvnl39.png
+[2026-06-03T17:42:01.174+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvnl39.png end
+[2026-06-03T17:42:01.174+08:00] adb.shell screencap completed
+[2026-06-03T17:42:01.174+08:00] Pulling screenshot file from device
+[2026-06-03T17:42:01.174+08:00] adb pull /data/local/tmp/ms_mpxvnl39.png /tmp/claude-501/wwj/977e4fea-b31b-4deb-a0e7-b4194b6c300a.png
+[2026-06-03T17:42:01.216+08:00] adb pull /data/local/tmp/ms_mpxvnl39.png /tmp/claude-501/wwj/977e4fea-b31b-4deb-a0e7-b4194b6c300a.png end
+[2026-06-03T17:42:01.216+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/977e4fea-b31b-4deb-a0e7-b4194b6c300a.png
+[2026-06-03T17:42:01.216+08:00] Fallback screenshot validated successfully: 416757 bytes
+[2026-06-03T17:42:01.218+08:00] Converting to base64
+[2026-06-03T17:42:01.218+08:00] Deleting local screenshot: /tmp/claude-501/wwj/977e4fea-b31b-4deb-a0e7-b4194b6c300a.png
+[2026-06-03T17:42:01.218+08:00] screenshotBase64 end
+[2026-06-03T17:42:20.983+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:20.983+08:00] screenshotBase64 begin
+[2026-06-03T17:42:20.983+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:42:20.983+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:42:20.983+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:42:20.983+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvo0mv.png
+[2026-06-03T17:42:21.366+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvo0mv.png end
+[2026-06-03T17:42:21.366+08:00] adb.shell screencap completed
+[2026-06-03T17:42:21.366+08:00] Pulling screenshot file from device
+[2026-06-03T17:42:21.366+08:00] adb pull /data/local/tmp/ms_mpxvo0mv.png /tmp/claude-501/wwj/f5b8374f-4147-4047-a92f-8e74df36f6b9.png
+[2026-06-03T17:42:21.421+08:00] adb pull /data/local/tmp/ms_mpxvo0mv.png /tmp/claude-501/wwj/f5b8374f-4147-4047-a92f-8e74df36f6b9.png end
+[2026-06-03T17:42:21.421+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/f5b8374f-4147-4047-a92f-8e74df36f6b9.png
+[2026-06-03T17:42:21.421+08:00] Fallback screenshot validated successfully: 416757 bytes
+[2026-06-03T17:42:21.422+08:00] Converting to base64
+[2026-06-03T17:42:21.423+08:00] Deleting local screenshot: /tmp/claude-501/wwj/f5b8374f-4147-4047-a92f-8e74df36f6b9.png
+[2026-06-03T17:42:21.423+08:00] screenshotBase64 end
+[2026-06-03T17:42:21.688+08:00] getAdjustScale: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedScale=false
+[2026-06-03T17:42:21.688+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:21.688+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:21.688+08:00] adb shell input swipe 993 2270 993 2270 150
+[2026-06-03T17:42:21.915+08:00] adb shell input swipe 993 2270 993 2270 150 end
+[2026-06-03T17:42:22.217+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:22.217+08:00] screenshotBase64 begin
+[2026-06-03T17:42:22.217+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:42:22.217+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:42:22.217+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:42:22.217+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvo1l5.png
+[2026-06-03T17:42:22.565+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvo1l5.png end
+[2026-06-03T17:42:22.565+08:00] adb.shell screencap completed
+[2026-06-03T17:42:22.565+08:00] Pulling screenshot file from device
+[2026-06-03T17:42:22.565+08:00] adb pull /data/local/tmp/ms_mpxvo1l5.png /tmp/claude-501/wwj/d638ab5a-9605-45ce-bee1-8fe295bfef8b.png
+[2026-06-03T17:42:22.608+08:00] adb pull /data/local/tmp/ms_mpxvo1l5.png /tmp/claude-501/wwj/d638ab5a-9605-45ce-bee1-8fe295bfef8b.png end
+[2026-06-03T17:42:22.608+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/d638ab5a-9605-45ce-bee1-8fe295bfef8b.png
+[2026-06-03T17:42:22.609+08:00] Fallback screenshot validated successfully: 476869 bytes
+[2026-06-03T17:42:22.610+08:00] Converting to base64
+[2026-06-03T17:42:22.611+08:00] Deleting local screenshot: /tmp/claude-501/wwj/d638ab5a-9605-45ce-bee1-8fe295bfef8b.png
+[2026-06-03T17:42:22.611+08:00] screenshotBase64 end
+[2026-06-03T17:42:34.566+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:34.566+08:00] screenshotBase64 begin
+[2026-06-03T17:42:34.566+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:42:34.566+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:42:34.566+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:42:34.566+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvob46.png
+[2026-06-03T17:42:34.937+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvob46.png end
+[2026-06-03T17:42:34.937+08:00] adb.shell screencap completed
+[2026-06-03T17:42:34.937+08:00] Pulling screenshot file from device
+[2026-06-03T17:42:34.937+08:00] adb pull /data/local/tmp/ms_mpxvob46.png /tmp/claude-501/wwj/f4dce892-6751-4263-bcff-32041c5709ba.png
+[2026-06-03T17:42:34.981+08:00] adb pull /data/local/tmp/ms_mpxvob46.png /tmp/claude-501/wwj/f4dce892-6751-4263-bcff-32041c5709ba.png end
+[2026-06-03T17:42:34.981+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/f4dce892-6751-4263-bcff-32041c5709ba.png
+[2026-06-03T17:42:34.982+08:00] Fallback screenshot validated successfully: 476865 bytes
+[2026-06-03T17:42:34.984+08:00] Converting to base64
+[2026-06-03T17:42:34.985+08:00] Deleting local screenshot: /tmp/claude-501/wwj/f4dce892-6751-4263-bcff-32041c5709ba.png
+[2026-06-03T17:42:34.985+08:00] screenshotBase64 end
+[2026-06-03T17:42:35.258+08:00] getAdjustScale: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedScale=true
+[2026-06-03T17:42:35.258+08:00] adb shell input swipe 951 2281 951 2281 150
+[2026-06-03T17:42:35.498+08:00] adb shell input swipe 951 2281 951 2281 150 end
+[2026-06-03T17:42:35.800+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:35.800+08:00] screenshotBase64 begin
+[2026-06-03T17:42:35.800+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:42:35.800+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:42:35.801+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:42:35.801+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvoc2g.png
+[2026-06-03T17:42:36.140+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvoc2g.png end
+[2026-06-03T17:42:36.140+08:00] adb.shell screencap completed
+[2026-06-03T17:42:36.140+08:00] Pulling screenshot file from device
+[2026-06-03T17:42:36.140+08:00] adb pull /data/local/tmp/ms_mpxvoc2g.png /tmp/claude-501/wwj/a04948bb-f318-4d23-8d9b-b89d78cdd0d3.png
+[2026-06-03T17:42:36.183+08:00] adb pull /data/local/tmp/ms_mpxvoc2g.png /tmp/claude-501/wwj/a04948bb-f318-4d23-8d9b-b89d78cdd0d3.png end
+[2026-06-03T17:42:36.183+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/a04948bb-f318-4d23-8d9b-b89d78cdd0d3.png
+[2026-06-03T17:42:36.184+08:00] Fallback screenshot validated successfully: 416760 bytes
+[2026-06-03T17:42:36.185+08:00] Converting to base64
+[2026-06-03T17:42:36.186+08:00] Deleting local screenshot: /tmp/claude-501/wwj/a04948bb-f318-4d23-8d9b-b89d78cdd0d3.png
+[2026-06-03T17:42:36.186+08:00] screenshotBase64 end
+[2026-06-03T17:42:42.671+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:42.671+08:00] screenshotBase64 begin
+[2026-06-03T17:42:42.671+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:42:42.671+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:42:42.671+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:42:42.671+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvohdb.png
+[2026-06-03T17:42:43.031+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvohdb.png end
+[2026-06-03T17:42:43.031+08:00] adb.shell screencap completed
+[2026-06-03T17:42:43.031+08:00] Pulling screenshot file from device
+[2026-06-03T17:42:43.031+08:00] adb pull /data/local/tmp/ms_mpxvohdb.png /tmp/claude-501/wwj/92b2b0ef-b8ae-4195-b8df-387786fdadb7.png
+[2026-06-03T17:42:43.061+08:00] adb pull /data/local/tmp/ms_mpxvohdb.png /tmp/claude-501/wwj/92b2b0ef-b8ae-4195-b8df-387786fdadb7.png end
+[2026-06-03T17:42:43.061+08:00] adb.pull completed, local path: /tmp/claude-501/wwj/92b2b0ef-b8ae-4195-b8df-387786fdadb7.png
+[2026-06-03T17:42:43.061+08:00] Fallback screenshot validated successfully: 416760 bytes
+[2026-06-03T17:42:43.062+08:00] Converting to base64
+[2026-06-03T17:42:43.062+08:00] Deleting local screenshot: /tmp/claude-501/wwj/92b2b0ef-b8ae-4195-b8df-387786fdadb7.png
+[2026-06-03T17:42:43.062+08:00] screenshotBase64 end
+[2026-06-03T17:42:43.323+08:00] adb shell am force-stop com.lixiaoyun.aike
+[2026-06-03T17:42:43.486+08:00] adb shell am force-stop com.lixiaoyun.aike end
+[2026-06-03T17:42:43.786+08:00] getScreenSize: alwaysRefreshScreenInfo=undefined, shouldCache=true, hasCachedSize=true
+[2026-06-03T17:42:43.786+08:00] screenshotBase64 begin
+[2026-06-03T17:42:43.787+08:00] Skipping takeScreenshot (failed 3 consecutive times), using shell screencap directly
+[2026-06-03T17:42:43.787+08:00] Taking screenshot via adb.takeScreenshot failed or was skipped: Error: Using shell screencap directly
+[2026-06-03T17:42:43.787+08:00] Fallback: taking screenshot via shell screencap
+[2026-06-03T17:42:43.787+08:00] adb shell screencap -p  /data/local/tmp/ms_mpxvoi8b.png

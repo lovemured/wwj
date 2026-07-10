@@ -1,0 +1,32 @@
+{
+  "dependencies": {
+    "@midscene/android": "^1.8.8",
+    "@midscene/core": "^1.8.8",
+    "@playwright/test": "^1.60.0",
+    "dotenv": "^17.4.2",
+    "playwright": "^1.60.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1"
+  },
+  "name": "wwj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:pc": "playwright test --project=pc-chromium",
+    "test:pc:headed": "playwright test --project=pc-chromium --headed",
+    "test:webview": "playwright test --project=webview-cdp",
+    "test:webview:connect": "playwright test --project=webview-cdp playwright/tests/webview/webview-connect.spec.ts",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

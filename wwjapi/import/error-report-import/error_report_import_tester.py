@@ -126,6 +126,8 @@ MODULE_ALIASES = {
 BUSINESS_TYPE_MODULES = {"customer", "opportunity", "quotation", "contract"}
 ASSOCIATION_CONTEXT_MODULES = {
     "lead",
+    "lead-pool",
+    "customer",
     "contact",
     "opportunity",
     "quotation",
@@ -905,6 +907,30 @@ def market_activity_options(args, limit=20):
     return cache or []
 
 
+def parent_customer_options(args, limit=20):
+    cache = getattr(args, "_parent_customer_cache", None)
+    if cache is None:
+        try:
+            status, data = request_json(
+                "GET",
+                f"{pc_url(args.api)}/api/pc/customers/selector",
+                token=args.token,
+                params={"page": 1, "per_page": limit, "without_count": "true"},
+                timeout=30,
+            )
+            items = (data.get("data") or {}).get("list") or [] if status == 200 else []
+            cache = [
+                item
+                for item in items
+                if item.get("name")
+                and len([part for part in str(item.get("path") or "").split("/") if part]) <= 3
+            ]
+        except requests.RequestException:
+            cache = []
+        args._parent_customer_cache = cache
+    return cache or []
+
+
 def random_data_relation_value(args):
     form_id = (
         getattr(args, "data_relation_custom_form_id", None)
@@ -988,12 +1014,16 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
     name = clean_header(header)
     lower_name = name.lower()
     context = context or {}
-    if name == "上级客户":
-        return None
+    if "上级客户" in name:
+        if "ID" in name:
+            return None
+        return (context.get("parent_customer") or {}).get("name")
     if module_key == "contract" and "合同标题" in name:
         return f"自动化合同{suffix}-{index}-{random_token(4)}"
     if name == "新增小数-0.1~99.":
         return 44.1
+    if name == "测试删除字段提醒":
+        return f"{datetime.now().strftime('%H%M%S')}{index:03d}{random.randint(100, 999)}"
     if name == "数字（单行+多行）":
         return index
     if name == "新增数字" or ("数字" in name and "公式" not in name and "计算" not in name and "单行+多行" not in name):
@@ -1015,6 +1045,11 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
     if name == "百分比小数默认0%":
         return 0.0
     if "对应市场活动" in name or "市场活动" in name:
+        if module_key in ("lead", "lead-pool"):
+            market_activity = context.get("market_activity") or {}
+            if "ID" in name:
+                return None
+            return market_activity.get("name")
         return None
     if "店铺员工" in name:
         return None
@@ -1752,6 +1787,7 @@ def first_item(args, module_key):
 def first_item_with_value(args, module_key, field_name):
     config = MODULE_CONFIGS[module_key]
     path = config["api_path"]
+    candidates = []
     for page in range(1, 6):
         status, data = request_json(
             "GET",
@@ -1765,8 +1801,8 @@ def first_item_with_value(args, module_key, field_name):
         for item in items:
             value = item.get(field_name)
             if value not in (None, ""):
-                return related_item_context(item)
-    return {}
+                candidates.append(related_item_context(item))
+    return random.choice(candidates) if candidates else {}
 
 
 def first_item_for_customer(args, module_key, customer_id, fallback=True):
@@ -1959,9 +1995,19 @@ def build_association_context(args):
             print(f"{module_key} 关联数据查询失败，继续使用空值: {exc}")
             return {}
 
-    if args.module_key == "lead":
-        context = {"market_activity": (market_activity_options(args, limit=1) or [{}])[0]}
+    if args.module_key in ("lead", "lead-pool"):
+        activities = market_activity_options(args, limit=100)
+        context = {"market_activity": random.choice(activities) if activities else {}}
         print_json("association_context", context)
+        return context
+
+    if args.module_key == "customer":
+        parents = parent_customer_options(args)
+        context = {"parent_customer": random.choice(parents) if parents else {}}
+        print_json(
+            "association_context",
+            {"parent_customer": {key: context["parent_customer"].get(key) for key in ("id", "name", "path")}},
+        )
         return context
 
     if args.module_key == "contact":

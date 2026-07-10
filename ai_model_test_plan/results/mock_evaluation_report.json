@@ -1,0 +1,284 @@
+{
+  "summary": {
+    "evaluation_time": "2026-05-28 11:05:30",
+    "total_models": 4,
+    "total_tests": 12,
+    "total_passed": 11,
+    "total_failed": 1,
+    "overall_pass_rate": 0.9166666666666666,
+    "duration_seconds": 1.25
+  },
+  "model_analysis": {
+    "gpt-4": {
+      "total_tests": 3,
+      "passed": 2,
+      "failed": 1,
+      "pass_rate": 0.6666666666666666,
+      "avg_score": 1.0,
+      "avg_latency": 1.7871978608324757,
+      "avg_cost": 0.000590680160702635
+    },
+    "gpt-3.5": {
+      "total_tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_score": 1.0,
+      "avg_latency": 1.193435909481609,
+      "avg_cost": 0.0003226043696132633
+    },
+    "chatglm": {
+      "total_tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_score": 1.0,
+      "avg_latency": 1.3432510556894819,
+      "avg_cost": 0.000622521912525094
+    },
+    "deepseek": {
+      "total_tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "avg_score": 1.0,
+      "avg_latency": 1.2262217575594645,
+      "avg_cost": 0.0004347091846734704
+    }
+  },
+  "detailed_results": [
+    {
+      "model": "gpt-4",
+      "test_id": "TC-001",
+      "test_description": "地理知识测试",
+      "question": "中国的首都是哪里？",
+      "response": "北京。",
+      "latency": 1.822810097309092,
+      "cost": 0.0007961728342364588,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "contains",
+          "value": "北京",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "gpt-4",
+      "test_id": "TC-002",
+      "test_description": "数学计算测试",
+      "question": "5乘以3等于多少？",
+      "response": "5乘以3等于15。",
+      "latency": 1.8697400333345762,
+      "cost": 0.00010323762288504738,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "contains",
+          "value": "15",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "gpt-4",
+      "test_id": "TC-003",
+      "test_description": "科学知识测试",
+      "question": "水的化学式是什么？",
+      "response": "H₂O",
+      "latency": 1.6690434518537591,
+      "cost": 0.0008726300249863988,
+      "passed": false,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "similar",
+          "value": "H2O",
+          "passed": false,
+          "score": 0
+        }
+      ]
+    },
+    {
+      "model": "gpt-3.5",
+      "test_id": "TC-001",
+      "test_description": "地理知识测试",
+      "question": "中国的首都是哪里？",
+      "response": "中国的首都是北京。",
+      "latency": 1.540558277595802,
+      "cost": 0.00045761151378516927,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "contains",
+          "value": "北京",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "gpt-3.5",
+      "test_id": "TC-002",
+      "test_description": "数学计算测试",
+      "question": "5乘以3等于多少？",
+      "response": "结果是15。",
+      "latency": 1.444746124283542,
+      "cost": 0.0003479727775780195,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "contains",
+          "value": "15",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "gpt-3.5",
+      "test_id": "TC-003",
+      "test_description": "科学知识测试",
+      "question": "水的化学式是什么？",
+      "response": "水的化学式是H2O。",
+      "latency": 0.5950033265654823,
+      "cost": 0.0001622288174766011,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "similar",
+          "value": "H2O",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "chatglm",
+      "test_id": "TC-001",
+      "test_description": "地理知识测试",
+      "question": "中国的首都是哪里？",
+      "response": "北京是中国的首都。",
+      "latency": 1.9655678959995413,
+      "cost": 0.0009709281268489485,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "contains",
+          "value": "北京",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "chatglm",
+      "test_id": "TC-002",
+      "test_description": "数学计算测试",
+      "question": "5乘以3等于多少？",
+      "response": "15。",
+      "latency": 1.5623909621084926,
+      "cost": 0.00012963927620081485,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "contains",
+          "value": "15",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "chatglm",
+      "test_id": "TC-003",
+      "test_description": "科学知识测试",
+      "question": "水的化学式是什么？",
+      "response": "H2O（水分子由两个氢原子和一个氧原子组成）",
+      "latency": 0.5017943089604122,
+      "cost": 0.0007669983345255186,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "similar",
+          "value": "H2O",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "deepseek",
+      "test_id": "TC-001",
+      "test_description": "地理知识测试",
+      "question": "中国的首都是哪里？",
+      "response": "北京。",
+      "latency": 0.5867985079817621,
+      "cost": 0.0001484478617221301,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "contains",
+          "value": "北京",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "deepseek",
+      "test_id": "TC-002",
+      "test_description": "数学计算测试",
+      "question": "5乘以3等于多少？",
+      "response": "5 × 3 = 15",
+      "latency": 1.1433322404509998,
+      "cost": 0.00047113500376609775,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "contains",
+          "value": "15",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "model": "deepseek",
+      "test_id": "TC-003",
+      "test_description": "科学知识测试",
+      "question": "水的化学式是什么？",
+      "response": "H2O",
+      "latency": 1.9485345242456313,
+      "cost": 0.0006845446885321831,
+      "passed": true,
+      "score": 1.0,
+      "assertion_results": [
+        {
+          "type": "similar",
+          "value": "H2O",
+          "passed": true,
+          "score": 1.0
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    "推荐使用模型: gpt-4 (平均得分: 1.00)",
+    "性价比最高: gpt-3.5 (成本/得分: 0.0003)",
+    "响应最快: gpt-3.5 (平均延迟: 1.19秒)"
+  ]
+}

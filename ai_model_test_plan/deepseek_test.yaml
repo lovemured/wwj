@@ -1,0 +1,49 @@
+# DeepSeek快速测试配置
+
+description: "DeepSeek模型快速评测"
+
+prompts:
+  - "请简洁回答：{{question}}"
+
+providers:
+  - id: 'http'
+    label: 'DeepSeek-Chat'
+    config:
+      url: 'https://api.deepseek.com/v1/chat/completions'
+      method: 'POST'
+      headers:
+        Content-Type: 'application/json'
+        Authorization: 'Bearer ${DEEPSEEK_API_KEY}'
+      body:
+        model: 'deepseek-chat'
+        messages:
+          - role: 'user'
+            content: '{{prompt}}'
+        temperature: 0.3
+        max_tokens: 100
+      responseParser: 'json.choices[0].message.content'
+
+tests:
+  - description: '地理测试'
+    vars:
+      question: '中国的首都是哪里？'
+    assert:
+      - type: contains
+        value: '北京'
+
+  - description: '数学测试'
+    vars:
+      question: '5乘以3等于多少？'
+    assert:
+      - type: contains
+        value: '15'
+
+  - description: '科学测试'
+    vars:
+      question: '水的化学式是什么？'
+    assert:
+      - type: similar
+        value: 'H2O'
+        threshold: 0.8
+
+outputPath: './results/deepseek_quick_test.json'

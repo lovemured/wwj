@@ -1,0 +1,331 @@
+{
+  "evalId": "eval-dLs-2026-05-28T03:13:18",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-05-28T03:13:18.300Z",
+    "prompts": [
+      {
+        "id": "43bf0efb8855db9e1d7baa9b3cb6690ecc46d08710c07bd07020491832e569a5",
+        "raw": "请简洁回答：{{question}}",
+        "label": "请简洁回答：{{question}}",
+        "provider": "DeepSeek-Chat",
+        "metrics": {
+          "score": 0,
+          "testPassCount": 0,
+          "testFailCount": 0,
+          "testErrorCount": 3,
+          "assertPassCount": 0,
+          "assertFailCount": 0,
+          "totalLatencyMs": 0,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "error": "Error: Failed to transform response: Error: Transform failed: Cannot read properties of undefined (reading '0') : {\"error\":{\"message\":\"Authentication Fails, Your api key: ****KEY} is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}} : {\"error\":{\"message\":\"Authentication Fails, Your api key: ****KEY} is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}} : {\"response\":{\"data\":\"{\\\"error\\\":{\\\"message\\\":\\\"Authentication Fails, Your api key: ****KEY} is invalid\\\",\\\"type\\\":\\\"authentication_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"invalid_request_error\\\"}}\",\"status\":401,\"statusText\":\"Authorization Required\",\"headers\":{\"access-control-allow-credentials\":\"true\",\"age\":\"0\",\"connection\":\"keep-alive\",\"content-length\":\"153\",\"content-type\":\"application/json\",\"date\":\"Thu, 28 May 2026 03:13:18 GMT\",\"eo-cache-status\":\"MISS\",\"eo-log-uuid\":\"12826595525349677918\",\"server\":\"openresty\",\"strict-transport-security\":\"max-age=31536000; includeSubDomains; preload\",\"vary\":\"origin, access-control-request-method, access-control-request-headers\",\"x-content-type-options\":\"nosniff\",\"x-ds-trace-id\":\"a5cabef11736b20755cee7988a1a979b\"},\"cached\":false,\"latencyMs\":263}}\n    at file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/providers-BFhtX2I6.js:12743:10\n    at HttpProvider.callApiInternal (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/providers-BFhtX2I6.js:14141:54)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async spanCallback (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/util-BSij5k9B.js:168:18)\n    at async ProviderRateLimitState.executeWithRetry (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/shared-DNCcjmXw.js:555:20)\n    at async RateLimitRegistry.execute (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/shared-DNCcjmXw.js:784:19)\n    at async callActiveProvider (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6042:39)\n    at async callProviderForRunEval (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6006:6)\n    at async runEvalInternal (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6279:24)\n    at async Evaluator.runEvalStepAfterBeforeEach (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:7277:16)",
+        "gradingResult": null,
+        "id": "f8a026ee-dd2f-4d32-a467-baa11e3bcaec",
+        "latencyMs": 0,
+        "namedScores": {},
+        "prompt": {
+          "raw": "请简洁回答：中国的首都是哪里？",
+          "label": "请简洁回答：{{question}}",
+          "config": {}
+        },
+        "promptId": "43bf0efb8855db9e1d7baa9b3cb6690ecc46d08710c07bd07020491832e569a5",
+        "promptIdx": 0,
+        "provider": {
+          "id": "https://api.deepseek.com/v1/chat/completions",
+          "label": "DeepSeek-Chat"
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "地理测试",
+          "vars": {
+            "question": "中国的首都是哪里？"
+          },
+          "assert": [
+            {
+              "type": "contains",
+              "value": "北京"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "vars": {
+          "question": "中国的首都是哪里？"
+        },
+        "metadata": {
+          "errorContext": {
+            "providerId": "https://api.deepseek.com/v1/chat/completions",
+            "providerLabel": "DeepSeek-Chat"
+          }
+        },
+        "failureReason": 2
+      },
+      {
+        "cost": 0,
+        "error": "Error: Failed to transform response: Error: Transform failed: Cannot read properties of undefined (reading '0') : {\"error\":{\"message\":\"Authentication Fails, Your api key: ****KEY} is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}} : {\"error\":{\"message\":\"Authentication Fails, Your api key: ****KEY} is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}} : {\"response\":{\"data\":\"{\\\"error\\\":{\\\"message\\\":\\\"Authentication Fails, Your api key: ****KEY} is invalid\\\",\\\"type\\\":\\\"authentication_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"invalid_request_error\\\"}}\",\"status\":401,\"statusText\":\"Authorization Required\",\"headers\":{\"access-control-allow-credentials\":\"true\",\"age\":\"0\",\"connection\":\"keep-alive\",\"content-length\":\"153\",\"content-type\":\"application/json\",\"date\":\"Thu, 28 May 2026 03:13:18 GMT\",\"eo-cache-status\":\"MISS\",\"eo-log-uuid\":\"9204577154239955777\",\"server\":\"openresty\",\"strict-transport-security\":\"max-age=31536000; includeSubDomains; preload\",\"vary\":\"origin, access-control-request-method, access-control-request-headers\",\"x-content-type-options\":\"nosniff\",\"x-ds-trace-id\":\"10137e38a080029350b716d8348c8c83\"},\"cached\":false,\"latencyMs\":95}}\n    at file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/providers-BFhtX2I6.js:12743:10\n    at HttpProvider.callApiInternal (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/providers-BFhtX2I6.js:14141:54)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async spanCallback (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/util-BSij5k9B.js:168:18)\n    at async ProviderRateLimitState.executeWithRetry (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/shared-DNCcjmXw.js:555:20)\n    at async RateLimitRegistry.execute (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/shared-DNCcjmXw.js:784:19)\n    at async callActiveProvider (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6042:39)\n    at async callProviderForRunEval (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6006:6)\n    at async runEvalInternal (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6279:24)\n    at async Evaluator.runEvalStepAfterBeforeEach (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:7277:16)",
+        "gradingResult": null,
+        "id": "e3b06634-374f-4a9e-a201-a34c250cc34f",
+        "latencyMs": 0,
+        "namedScores": {},
+        "prompt": {
+          "raw": "请简洁回答：5乘以3等于多少？",
+          "label": "请简洁回答：{{question}}",
+          "config": {}
+        },
+        "promptId": "43bf0efb8855db9e1d7baa9b3cb6690ecc46d08710c07bd07020491832e569a5",
+        "promptIdx": 0,
+        "provider": {
+          "id": "https://api.deepseek.com/v1/chat/completions",
+          "label": "DeepSeek-Chat"
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "数学测试",
+          "vars": {
+            "question": "5乘以3等于多少？"
+          },
+          "assert": [
+            {
+              "type": "contains",
+              "value": "15"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "vars": {
+          "question": "5乘以3等于多少？"
+        },
+        "metadata": {
+          "errorContext": {
+            "providerId": "https://api.deepseek.com/v1/chat/completions",
+            "providerLabel": "DeepSeek-Chat"
+          }
+        },
+        "failureReason": 2
+      },
+      {
+        "cost": 0,
+        "error": "Error: Failed to transform response: Error: Transform failed: Cannot read properties of undefined (reading '0') : {\"error\":{\"message\":\"Authentication Fails, Your api key: ****KEY} is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}} : {\"error\":{\"message\":\"Authentication Fails, Your api key: ****KEY} is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}} : {\"response\":{\"data\":\"{\\\"error\\\":{\\\"message\\\":\\\"Authentication Fails, Your api key: ****KEY} is invalid\\\",\\\"type\\\":\\\"authentication_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"invalid_request_error\\\"}}\",\"status\":401,\"statusText\":\"Authorization Required\",\"headers\":{\"access-control-allow-credentials\":\"true\",\"age\":\"0\",\"connection\":\"keep-alive\",\"content-length\":\"153\",\"content-type\":\"application/json\",\"date\":\"Thu, 28 May 2026 03:14:19 GMT\",\"eo-cache-status\":\"MISS\",\"eo-log-uuid\":\"11501481640239693288\",\"server\":\"openresty\",\"strict-transport-security\":\"max-age=31536000; includeSubDomains; preload\",\"vary\":\"origin, access-control-request-method, access-control-request-headers\",\"x-content-type-options\":\"nosniff\",\"x-ds-trace-id\":\"b1daf9b62d67bd1d18593f1fdd4b17f1\"},\"cached\":false,\"latencyMs\":120}}\n    at file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/providers-BFhtX2I6.js:12743:10\n    at HttpProvider.callApiInternal (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/providers-BFhtX2I6.js:14141:54)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async spanCallback (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/util-BSij5k9B.js:168:18)\n    at async ProviderRateLimitState.executeWithRetry (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/shared-DNCcjmXw.js:555:20)\n    at async RateLimitRegistry.execute (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/shared-DNCcjmXw.js:784:19)\n    at async callActiveProvider (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6042:39)\n    at async callProviderForRunEval (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6006:6)\n    at async runEvalInternal (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:6279:24)\n    at async Evaluator.runEvalStepAfterBeforeEach (file:///Users/mured/.npm/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-JaJwSPcl.js:7277:16)",
+        "gradingResult": null,
+        "id": "df8eedd2-e382-4e24-b895-ef67db82100c",
+        "latencyMs": 0,
+        "namedScores": {},
+        "prompt": {
+          "raw": "请简洁回答：水的化学式是什么？",
+          "label": "请简洁回答：{{question}}",
+          "config": {}
+        },
+        "promptId": "43bf0efb8855db9e1d7baa9b3cb6690ecc46d08710c07bd07020491832e569a5",
+        "promptIdx": 0,
+        "provider": {
+          "id": "https://api.deepseek.com/v1/chat/completions",
+          "label": "DeepSeek-Chat"
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "科学测试",
+          "vars": {
+            "question": "水的化学式是什么？"
+          },
+          "assert": [
+            {
+              "type": "similar",
+              "value": "H2O",
+              "threshold": 0.8
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 2,
+        "vars": {
+          "question": "水的化学式是什么？"
+        },
+        "metadata": {
+          "errorContext": {
+            "providerId": "https://api.deepseek.com/v1/chat/completions",
+            "providerLabel": "DeepSeek-Chat"
+          }
+        },
+        "failureReason": 2
+      }
+    ],
+    "stats": {
+      "successes": 0,
+      "failures": 0,
+      "errors": 3,
+      "tokenUsage": {
+        "prompt": 0,
+        "completion": 0,
+        "cached": 0,
+        "total": 0,
+        "numRequests": 0,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "durationMs": 60716,
+      "evaluationDurationMs": 60716
+    }
+  },
+  "config": {
+    "tags": {},
+    "description": "DeepSeek模型快速评测",
+    "prompts": [
+      "请简洁回答：{{question}}"
+    ],
+    "providers": [
+      {
+        "id": "http",
+        "label": "DeepSeek-Chat",
+        "config": {
+          "url": "https://api.deepseek.com/v1/chat/completions",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "[REDACTED]"
+          },
+          "body": {
+            "model": "deepseek-chat",
+            "messages": [
+              {
+                "role": "user",
+                "content": "{{prompt}}"
+              }
+            ],
+            "temperature": 0.3,
+            "max_tokens": 100
+          },
+          "responseParser": "json.choices[0].message.content"
+        }
+      }
+    ],
+    "tests": [
+      {
+        "description": "地理测试",
+        "vars": {
+          "question": "中国的首都是哪里？"
+        },
+        "assert": [
+          {
+            "type": "contains",
+            "value": "北京"
+          }
+        ]
+      },
+      {
+        "description": "数学测试",
+        "vars": {
+          "question": "5乘以3等于多少？"
+        },
+        "assert": [
+          {
+            "type": "contains",
+            "value": "15"
+          }
+        ]
+      },
+      {
+        "description": "科学测试",
+        "vars": {
+          "question": "水的化学式是什么？"
+        },
+        "assert": [
+          {
+            "type": "similar",
+            "value": "H2O",
+            "threshold": 0.8
+          }
+        ]
+      }
+    ],
+    "scenarios": [],
+    "env": {},
+    "outputPath": [
+      "./results/deepseek_quick_test.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {}
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.121.12",
+    "nodeVersion": "v24.15.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "exportedAt": "2026-05-28T03:14:19.105Z",
+    "evaluationCreatedAt": "2026-05-28T03:13:18.300Z"
+  },
+  "vars": [
+    "question"
+  ],
+  "runtimeOptions": {
+    "eventSource": "cli",
+    "showProgressBar": true,
+    "repeat": 1,
+    "maxConcurrency": 1,
+    "cache": true
+  }
+}

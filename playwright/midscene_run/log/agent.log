@@ -1,0 +1,296 @@
+[2026-06-03T14:29:35.811+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.xxx.crm' }
+[2026-06-03T14:29:35.811+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:29:35.835+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.xxx.crm' }
+[2026-06-03T14:29:35.835+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:56:19.971+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.xxx.crm' }
+[2026-06-03T14:56:19.971+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:56:19.990+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.xxx.crm' }
+[2026-06-03T14:56:19.990+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:58:15.488+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.xxx.crm' }
+[2026-06-03T14:58:15.488+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:58:15.536+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.xxx.crm' }
+[2026-06-03T14:58:15.536+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:58:54.568+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.xxx.crm' }
+[2026-06-03T14:58:54.568+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:58:56.795+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.xxx.crm' }
+[2026-06-03T14:58:56.795+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T15:00:57.097+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.lixiaoyun.aike' }
+[2026-06-03T15:00:57.097+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:01:01.401+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:01:01.401+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:01:03.906+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:01:09.270+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:01:09.270+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:14:40.286+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.lixiaoyun.aike' }
+[2026-06-03T15:14:40.287+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:14:44.481+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:14:44.481+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:14:47.118+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:14:50.970+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:14:50.970+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:15:30.265+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.lixiaoyun.aike' }
+[2026-06-03T15:15:30.265+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:15:33.914+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:15:33.914+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:15:36.696+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:16:06.720+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:16:06.720+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:16:59.232+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.lixiaoyun.aike' }
+[2026-06-03T15:16:59.232+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:17:02.958+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:17:02.958+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:17:05.656+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:18:05.683+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:18:05.684+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:21:20.096+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:21:20.096+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:21:25.721+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:22:05.243+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:22:25.745+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:22:25.745+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:24:46.470+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:24:46.470+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:24:52.935+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:26:22.961+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:26:22.961+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:31:26.957+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:31:26.957+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:31:33.595+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:33:03.617+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:33:03.617+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:34:00.696+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:34:00.696+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:34:07.132+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:34:16.938+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:34:16.938+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:36:12.308+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:36:12.308+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:36:18.752+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:37:48.775+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:37:48.775+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:39:27.576+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:39:27.576+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:39:33.988+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:40:45.094+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:41:04.020+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:41:04.020+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:43:30.679+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:43:30.680+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:43:37.142+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:44:52.824+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:45:07.171+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:45:07.171+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T15:46:27.683+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T15:46:27.683+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T15:46:34.221+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T15:48:04.253+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T15:48:04.253+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T16:11:37.725+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T16:11:37.725+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T16:11:44.933+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:12:06.704+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:12:24.865+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:12:39.704+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:14:06.730+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T16:14:06.730+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T16:16:40.375+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T16:16:40.375+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T16:16:46.960+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:18:16.970+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T16:18:16.970+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T16:18:20.858+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T16:18:20.858+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T16:18:26.957+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:19:12.796+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:19:48.845+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:21:27.013+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T16:21:27.013+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T16:26:33.250+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T16:26:33.250+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T16:26:39.888+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:27:00.975+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:27:20.586+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:28:05.922+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:30:00.992+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T16:30:00.992+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T16:44:45.631+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T16:44:45.631+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T16:44:52.583+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:46:22.617+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T16:46:22.617+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T16:46:26.299+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T16:46:26.299+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T16:46:32.735+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:47:21.531+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:47:48.944+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T16:49:32.775+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T16:49:32.776+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T17:03:02.729+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T17:03:02.729+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T17:03:09.526+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:04:39.553+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T17:04:39.553+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T17:04:43.269+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T17:04:43.269+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T17:04:49.670+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:05:25.655+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:05:45.295+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:07:49.716+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T17:07:49.716+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T17:08:42.024+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T17:08:42.024+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T17:08:48.402+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:10:18.435+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T17:10:18.435+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T17:10:21.962+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T17:10:21.962+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T17:10:28.245+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:11:18.793+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:11:55.847+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:13:28.280+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T17:13:28.280+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T17:22:37.818+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T17:22:37.818+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T17:22:44.104+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:25:44.133+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T17:25:44.133+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}

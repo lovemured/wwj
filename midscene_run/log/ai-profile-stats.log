@@ -1,0 +1,8 @@
+[2026-06-03T17:37:19.791+08:00] model, qwen3.6-plus, mode, qwen3.6, ui-tars-version, undefined, prompt-tokens, 9957, completion-tokens, 186, total-tokens, 10143, cost-ms, 11473, requestId, , temperature, 0
+[2026-06-03T17:37:45.689+08:00] model, qwen3.6-plus, mode, qwen3.6, ui-tars-version, undefined, prompt-tokens, 10166, completion-tokens, 998, total-tokens, 11164, cost-ms, 22303, requestId, , temperature, 0
+[2026-06-03T17:38:30.110+08:00] model, qwen3.6-plus, mode, qwen3.6, ui-tars-version, undefined, prompt-tokens, 10474, completion-tokens, 2009, total-tokens, 12483, cost-ms, 42661, requestId, , temperature, 0
+[2026-06-03T17:39:51.339+08:00] model, qwen3.6-plus, mode, qwen3.6, ui-tars-version, undefined, prompt-tokens, 10802, completion-tokens, 560, total-tokens, 11362, cost-ms, 79290, requestId, , temperature, 0
+[2026-06-03T17:40:09.468+08:00] model, qwen3.6-plus, mode, qwen3.6, ui-tars-version, undefined, prompt-tokens, 11148, completion-tokens, 150, total-tokens, 11298, cost-ms, 16278, requestId, , temperature, 0
+[2026-06-03T17:41:57.839+08:00] model, qwen3.6-plus, mode, qwen3.6, ui-tars-version, undefined, prompt-tokens, 9930, completion-tokens, 176, total-tokens, 10106, cost-ms, 11237, requestId, , temperature, 0
+[2026-06-03T17:42:20.981+08:00] model, qwen3.6-plus, mode, qwen3.6, ui-tars-version, undefined, prompt-tokens, 10135, completion-tokens, 853, total-tokens, 10988, cost-ms, 19690, requestId, , temperature, 0
+[2026-06-03T17:42:34.564+08:00] model, qwen3.6-plus, mode, qwen3.6, ui-tars-version, undefined, prompt-tokens, 10425, completion-tokens, 390, total-tokens, 10815, cost-ms, 11876, requestId, , temperature, 0

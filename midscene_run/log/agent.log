@@ -1,0 +1,66 @@
+[2026-06-03T14:28:10.187+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.xxx.crm' }
+[2026-06-03T14:28:10.187+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:28:10.210+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.xxx.crm' }
+[2026-06-03T14:28:10.210+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:50:41.969+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.xxx.crm' }
+[2026-06-03T14:50:41.969+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:50:41.990+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.xxx.crm' }
+[2026-06-03T14:50:41.990+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:51:44.248+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.xxx.crm' }
+[2026-06-03T14:51:44.248+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:51:44.268+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.xxx.crm' }
+[2026-06-03T14:51:44.268+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:53:12.363+08:00] callActionInActionSpace RunAdbShell , { command: 'pm clear com.xxx.crm' }
+[2026-06-03T14:53:12.363+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'pm clear com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T14:53:12.383+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.xxx.crm' }
+[2026-06-03T14:53:12.383+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.xxx.crm' },
+  thought: ''
+}
+[2026-06-03T17:37:00.793+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T17:37:00.794+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T17:37:07.459+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:40:07.501+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T17:40:07.502+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
+[2026-06-03T17:41:38.989+08:00] callActionInActionSpace Launch , { uri: 'com.lixiaoyun.aike' }
+[2026-06-03T17:41:38.989+08:00] actionPlan { type: 'Launch', param: { uri: 'com.lixiaoyun.aike' }, thought: '' }
+[2026-06-03T17:41:45.660+08:00] setting includeBboxInPlanning to true { deepThink: false, noIndividualLocateModel: true }
+[2026-06-03T17:42:42.666+08:00] callActionInActionSpace RunAdbShell , { command: 'am force-stop com.lixiaoyun.aike' }
+[2026-06-03T17:42:42.666+08:00] actionPlan {
+  type: 'RunAdbShell',
+  param: { command: 'am force-stop com.lixiaoyun.aike' },
+  thought: ''
+}
