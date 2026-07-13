@@ -244,8 +244,17 @@ def local_browser_template(args, api_template=None):
     exact_candidates = [directory / name for directory in dirs]
     api_signature = template_signature(api_template) if api_template else None
     if api_signature:
+        existing_exact_candidates = [item for item in exact_candidates if item.exists()]
+        for item in existing_exact_candidates:
+            if template_signature(item) == api_signature:
+                return item
+
+        # A same-name template belongs to this module. If its headers differ
+        # from the current API template, it is stale and must not be reused.
+        if existing_exact_candidates:
+            return None
+
         candidates = []
-        candidates.extend(item for item in exact_candidates if item.exists())
         for directory in dirs:
             candidates.extend(directory.glob("CRM_*_导入模板.xlsx"))
         matched = [item for item in candidates if template_signature(item) == api_signature]
@@ -1311,6 +1320,9 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
     if "单行" in name or "文本" in name:
         return f"自动化文本{suffix}-{index}-{random_token(4)}"
 
+    example_cell = ws.cell(8, col).value
+    if isinstance(example_cell, (int, float)) and not isinstance(example_cell, bool):
+        return index
     example = template_example_value(ws, col)
     return example if example is not None else f"自动化字段{suffix}-{index}"
 
@@ -1784,11 +1796,11 @@ def first_item(args, module_key):
     return related_item_context(item)
 
 
-def first_item_with_value(args, module_key, field_name):
+def first_item_with_value(args, module_key, field_name, pages=5):
     config = MODULE_CONFIGS[module_key]
     path = config["api_path"]
     candidates = []
-    for page in range(1, 6):
+    for page in range(1, pages + 1):
         status, data = request_json(
             "GET",
             f"{args.api.rstrip('/')}/api/v2/{path}",
@@ -1834,12 +1846,12 @@ def first_item_for_customer(args, module_key, customer_id, fallback=True):
     return {}
 
 
-def strict_first_item_for_customer(args, module_key, customer_id):
+def strict_first_item_for_customer(args, module_key, customer_id, pages=5):
     if not customer_id:
         return {}
     config = MODULE_CONFIGS[module_key]
     path = config["api_path"]
-    for page in range(1, 6):
+    for page in range(1, pages + 1):
         try:
             status, data = request_json(
                 "GET",
@@ -1916,7 +1928,7 @@ def visible_customer_ids(args):
         return args._visible_customer_ids
     ids = {
         str(item.get("id"))
-        for item in list_related_items(args, "customer", pages=8)
+        for item in list_related_items(args, "customer", pages=1, per_page=100)
         if item.get("id") not in (None, "")
     }
     args._visible_customer_ids = ids
@@ -1924,20 +1936,18 @@ def visible_customer_ids(args):
 
 
 def find_customer_chain(args, prefer_module=None):
-    opportunities = list_related_items(args, "opportunity")
+    opportunities = list_related_items(args, "opportunity", pages=1, per_page=100)
     random.shuffle(opportunities)
     avoid_customer_ids = getattr(args, "avoid_customer_ids", None)
     preferred = [item for item in opportunities if str(item.get("customer_id")) not in {str(i) for i in (avoid_customer_ids or [])}]
     visible_ids = visible_customer_ids(args)
     for opportunity in preferred + [item for item in opportunities if item not in preferred]:
         customer_id = opportunity.get("customer_id")
-        if not customer_id:
+        if not customer_id or (visible_ids and str(customer_id) not in visible_ids):
             continue
-        if visible_ids and str(customer_id) not in visible_ids:
-            continue
-        contact = strict_first_item_for_customer(args, "contact", customer_id)
-        quotation = strict_first_item_for_customer(args, "quotation", customer_id)
-        contract = strict_first_item_for_customer(args, "contract", customer_id)
+        contact = strict_first_item_for_customer(args, "contact", customer_id, pages=1)
+        quotation = strict_first_item_for_customer(args, "quotation", customer_id, pages=1)
+        contract = strict_first_item_for_customer(args, "contract", customer_id, pages=1)
         if prefer_module == "quotation" and not quotation:
             continue
         return {
@@ -1956,7 +1966,7 @@ def find_customer_chain(args, prefer_module=None):
 def find_contract_chain(args):
     visible_ids = visible_customer_ids(args)
     contracts = [
-        item for item in list_related_items(args, "contract")
+        item for item in list_related_items(args, "contract", pages=1, per_page=100)
         if not visible_ids or str(item.get("customer_id")) in visible_ids
     ]
     contract = choose_customer_anchor(
@@ -1969,9 +1979,9 @@ def find_contract_chain(args):
         return {}
     return {
         "customer": customer,
-        "contact": strict_first_item_for_customer(args, "contact", customer_id),
-        "opportunity": strict_first_item_for_customer(args, "opportunity", customer_id),
-        "quotation": strict_first_item_for_customer(args, "quotation", customer_id),
+        "contact": strict_first_item_for_customer(args, "contact", customer_id, pages=1),
+        "opportunity": strict_first_item_for_customer(args, "opportunity", customer_id, pages=1),
+        "quotation": strict_first_item_for_customer(args, "quotation", customer_id, pages=1),
         "contract": contract,
     }
 
@@ -2014,7 +2024,7 @@ def build_association_context(args):
         customer = safe_first_item("customer")
         context = {
             "customer": customer,
-            "product": first_item_with_value(args, "product", "product_no") or safe_first_item("product"),
+            "product": first_item_with_value(args, "product", "product_no", pages=1) or safe_first_item("product"),
         }
         print_json(
             "association_context",
@@ -2033,7 +2043,7 @@ def build_association_context(args):
             "opportunity": chained.get("opportunity", {}),
             "quotation": chained.get("quotation", {}),
             "contract": contract,
-            "product": first_item_with_value(args, "product", "product_no") or safe_first_item("product"),
+            "product": first_item_with_value(args, "product", "product_no", pages=1) or safe_first_item("product"),
         }
         print_json(
             "association_context",
@@ -2049,7 +2059,7 @@ def build_association_context(args):
             "opportunity": chained["opportunity"],
             "quotation": chained["quotation"],
             "contract": chained["contract"],
-            "product": first_item_with_value(args, "product", "product_no") or safe_first_item("product"),
+            "product": first_item_with_value(args, "product", "product_no", pages=1) or safe_first_item("product"),
         }
         print_json(
             "association_context",
@@ -2070,7 +2080,7 @@ def build_association_context(args):
         "opportunity": opportunity or (first_item_for_customer(args, "opportunity", customer_id, fallback=False) if customer_id else safe_first_item("opportunity")),
         "quotation": first_item_for_customer(args, "quotation", customer_id, fallback=False) if customer_id else safe_first_item("quotation"),
         "contract": first_item_for_customer(args, "contract", customer_id, fallback=False) if customer_id else safe_first_item("contract"),
-        "product": first_item_with_value(args, "product", "product_no") or safe_first_item("product"),
+        "product": first_item_with_value(args, "product", "product_no", pages=1) or safe_first_item("product"),
     }
     if args.module_key in ("payment-plan", "received-payment", "invoiced-payment"):
         contract = context.get("contract") or {}
@@ -2227,16 +2237,30 @@ def patch_xlsx_first_sheet_cells(path, updates):
             zout.writestr(name, content)
 
 
-def first_required_data_cell(path):
+def invalid_field_value(header):
+    name = clean_header(header)
+    if not name or "ID" in name or "唯一性ID" in name:
+        return None
+    return "自动化错误字段"
+
+
+def invalidate_all_input_fields(path):
     wb = load_workbook(path, read_only=True, data_only=False)
     ws = wb.active
     header_row, data_start = find_template_rows(ws)
+    updates = {}
+    columns = []
     for col in range(1, ws.max_column + 1):
         header = str(ws.cell(header_row, col).value or "")
-        name = clean_header(header)
-        if "必填" in header and "ID" not in name and "唯一性ID" not in name:
-            return header_row, data_start, col, header
-    raise RuntimeError("未找到可用于构造错误数据的必填字段")
+        value = invalid_field_value(header)
+        if value not in (None, ""):
+            columns.append(col)
+
+    for row in range(data_start, ws.max_row + 1):
+        if any(ws.cell(row, col).value not in (None, "") for col in range(1, ws.max_column + 1)):
+            updates[row] = {col: "自动化错误字段" for col in columns}
+    patch_xlsx_first_sheet_cells(path, updates)
+    return data_start, ws.max_row, len(columns)
 
 
 def download_error_report(error_file, output_path):
@@ -2251,51 +2275,39 @@ def download_error_report(error_file, output_path):
     return output
 
 
-def repair_error_template(args, error_template, repaired_output):
+def repair_error_template_from_baseline(error_template, valid_source, repaired_output):
     src = Path(error_template)
     out = Path(repaired_output)
     if src != out:
         shutil.copyfile(src, out)
 
-    wb = load_workbook(out, read_only=True, data_only=False)
-    ws = wb.active
-    header_row, data_start = find_template_rows(ws)
-    suffix = datetime.now().strftime("%H%M%S") + uuid.uuid4().hex[:6]
+    error_wb = load_workbook(out, read_only=True, data_only=False)
+    error_ws = error_wb.active
+    error_header_row, error_data_start = find_template_rows(error_ws)
+    baseline_wb = load_workbook(valid_source, read_only=True, data_only=False)
+    baseline_ws = baseline_wb.active
+    baseline_header_row, baseline_data_start = find_template_rows(baseline_ws)
+    baseline_columns = {
+        clean_header(baseline_ws.cell(baseline_header_row, col).value): col
+        for col in range(1, baseline_ws.max_column + 1)
+        if clean_header(baseline_ws.cell(baseline_header_row, col).value)
+    }
+
     updates = {}
-    for row in range(data_start, ws.max_row + 1):
+    for error_row in range(error_data_start, error_ws.max_row + 1):
+        baseline_row = baseline_data_start + error_row - error_data_start
+        if baseline_row > baseline_ws.max_row:
+            break
         row_updates = {}
-        has_data = False
-        error_text = str(ws.cell(row, 1).value or "")
-        for col in range(1, ws.max_column + 1):
-            header = str(ws.cell(header_row, col).value or "")
-            if not header or "错误" in header or "失败" in header:
-                continue
-            current_value = ws.cell(row, col).value
-            field_name = clean_header(header)
-            field_in_error = bool(field_name and field_name in error_text)
-            if current_value not in (None, ""):
-                has_data = True
-                if not field_in_error:
-                    continue
-            if "必填" not in header and not field_in_error:
-                continue
-            value = full_field_value(
-                wb,
-                ws,
-                header,
-                col,
-                suffix,
-                row - data_start + 1,
-                getattr(args, "association_context", {}),
-                args.module_key,
-                args,
-            )
-            if value not in (None, "") or field_in_error:
-                row_updates[col] = value
-        if has_data or row == data_start:
-            updates[row] = row_updates
+        for error_col in range(1, error_ws.max_column + 1):
+            header = clean_header(error_ws.cell(error_header_row, error_col).value)
+            baseline_col = baseline_columns.get(header)
+            if baseline_col:
+                row_updates[error_col] = baseline_ws.cell(baseline_row, baseline_col).value
+        if row_updates:
+            updates[error_row] = row_updates
     patch_xlsx_first_sheet_cells(out, updates)
-    print(f"错误模板已修复: {out}")
+    print(f"错误模板已按基准数据全字段修复: {out}")
     return out
 
 
@@ -2305,6 +2317,7 @@ def error_template_flow(args):
     out_dir.mkdir(parents=True, exist_ok=True)
     module_name = args.module_key
     template = out_dir / f"{module_name}-error-template-base.xlsx"
+    valid_source = out_dir / f"{module_name}-error-source-valid.xlsx"
     invalid_source = out_dir / f"{module_name}-error-source-invalid.xlsx"
     error_template = out_dir / f"{module_name}-error-report.xlsx"
     repaired_source = out_dir / f"{module_name}-error-source-repaired.xlsx"
@@ -2318,7 +2331,7 @@ def error_template_flow(args):
         args.upload_name = browser_template.name
 
     args.template = str(template)
-    args.output = str(invalid_source)
+    args.output = str(valid_source)
     args.association_context = (
         build_association_context(args)
         if args.fill_mode == "all" and args.module_key in ASSOCIATION_CONTEXT_MODULES
@@ -2326,13 +2339,12 @@ def error_template_flow(args):
     )
     generate_source_preserving_package(args)
 
-    _, data_start, required_col, required_header = first_required_data_cell(invalid_source)
-    invalid_updates = {
-        row: {required_col: None}
-        for row in range(data_start, data_start + args.rows)
-    }
-    patch_xlsx_first_sheet_cells(invalid_source, invalid_updates)
-    print(f"已构造错误数据: 第 {data_start}-{data_start + args.rows - 1} 行字段 {required_header} 置空")
+    shutil.copyfile(valid_source, invalid_source)
+    data_start, max_row, invalid_columns = invalidate_all_input_fields(invalid_source)
+    print(
+        f"已构造全字段错误数据: 第 {data_start}-{max_row} 行，"
+        f"覆盖 {invalid_columns} 个可写字段"
+    )
 
     original_upload_name = getattr(args, "upload_name", None)
     args.file = str(invalid_source)
@@ -2341,7 +2353,7 @@ def error_template_flow(args):
         raise RuntimeError(f"预期首次导入失败并产生错误模板，但结果为: {first_result}")
 
     download_error_report(first_result["error_file"], error_template)
-    repair_error_template(args, error_template, repaired_source)
+    repair_error_template_from_baseline(error_template, valid_source, repaired_source)
 
     args.file = str(repaired_source)
     args.upload_name = original_upload_name
@@ -2350,6 +2362,7 @@ def error_template_flow(args):
         raise RuntimeError(f"错误模板修复后再次导入未成功: {second_result}")
 
     summary = {
+        "valid_source": str(valid_source),
         "first_import": first_result,
         "error_template": str(error_template),
         "repaired_template": str(repaired_source),
