@@ -440,6 +440,7 @@ def run_customer_pool(args):
 def main():
     parser = argparse.ArgumentParser(description="线索池 + 客户公海冒烟流程")
     parser.add_argument("--api")
+    parser.add_argument("--env", choices=["test", "staging", "production"])
     parser.add_argument("--token", help="兼容参数，等价于 --admin-token")
     parser.add_argument("--admin-token", help="线索池/客户公海管理员token，用于创建、转入、查询配置")
     parser.add_argument("--member-token", help="线索池/客户公海成员token，用于抢回")
@@ -454,16 +455,16 @@ def main():
     parser.add_argument("--take-mode", choices=["single", "batch"], default="single", help="single=行内抢，batch=顶部批量抢")
     parser.add_argument("--only", choices=["all", "lead", "customer"], default="all")
     args = parser.parse_args()
-    cfg = load_config()
+    cfg = load_config(args.env)
     args.api = args.api or cfg.get("api", "")
     args.token = args.token or cfg.get("token", "")
     if not args.api:
-        parser.error("请在config.json中配置api，或通过--api传入")
+        parser.error(f"请在config.{args.env}.json中配置api，或通过--api传入" if args.env else "请在config.json中配置api，或通过--api传入")
     args.api = args.api.rstrip("/")
     args.admin_token = args.admin_token or args.token
     args.member_token = args.member_token or cfg.get("member_token") or args.admin_token
     if not args.admin_token:
-        parser.error("请在config.json中配置token，或通过--token/--admin-token传入管理员token")
+        parser.error(f"请在config.{args.env}.json中配置token，或通过--token/--admin-token传入管理员token" if args.env else "请在config.json中配置token，或通过--token/--admin-token传入管理员token")
     if not args.member_token:
         parser.error("请通过--member-token传入成员token，或使用--token兼容单账号环境")
 

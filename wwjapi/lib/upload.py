@@ -15,7 +15,7 @@ API_PATH = {
 }
 
 def pc_url(api):
-    return api.replace("//lxcrm-staging.","//lxcrm-api-staging.").replace("//lxcrm-test.","//lxcrm-api-test.")
+    return api.replace("//lxcrm-staging.","//lxcrm-api-staging.").replace("//lxcrm-test.","//lxcrm-api-test.").replace("//lxcrm.","//lxcrm-api.")
 
 def current_user(api,token):
     key=(api.rstrip('/'),token)

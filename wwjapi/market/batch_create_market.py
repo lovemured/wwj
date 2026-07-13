@@ -315,6 +315,7 @@ def verify_uploaded_files(detail, uploaded_ids):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--api"); p.add_argument("--token")
+    p.add_argument("--env", choices=["test", "staging", "production"])
     p.add_argument("count",nargs="?",type=int,default=1); p.add_argument("--delay",type=float,default=0.3)
     p.add_argument("--attachment-dir",help="本地附件目录，图片字段随机传3张图，文件/附件随机传2个文件")
     p.add_argument("--verify",action="store_true",help="创建后回查详情并校验字段")

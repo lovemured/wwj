@@ -10,7 +10,11 @@ from lib.upload import process_file_fields, pc_url
 def fetch(api,path,token,pc=False):
     base=api.rstrip("/")+("/api/pc" if pc else "/api/v2")
     r=requests.get(f"{base}/{path.lstrip('/')}",headers={"Authorization":f"Token token={token}"},timeout=15)
-    return r.json()
+    try: data=r.json()
+    except ValueError: raise RuntimeError(f"{path} 请求失败: HTTP {r.status_code}")
+    if r.status_code >= 400 or ("code" in data and data.get("code") != 0):
+        raise RuntimeError(f"{path} 请求失败: {data.get('message') or f'HTTP {r.status_code}'}")
+    return data
 
 def discover(api,token):
     info={"fm":{},"fields":{"sel":[],"ms":[],"cas":[],"mcas":[],"txt":[],"num":[],"eml":[],"mob":[],"url":[],"dt":[],"usr":[],"m_usr":[],"dept":[],"m_dept":[],"rel":[],"file":[]},"opts":{}}
@@ -115,10 +119,11 @@ def build(info):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--api"); p.add_argument("--token")
+    p.add_argument("--env",choices=["test","staging","production"],help="读取对应的config.<env>.json")
     p.add_argument("count",nargs="?",type=int,default=1); p.add_argument("--delay",type=float,default=0.3)
     p.add_argument("--attachment-dir",help="本地附件目录,随机取图片上传")
     a=apply_config_defaults(p.parse_args(), p)
-    print(f"\n{'='*60}\nAPI: {a.api}\n数量: {a.count}")
+    print(f"\n{'='*60}\n环境: {a.env or '默认配置'}\nAPI: {a.api}\n数量: {a.count}")
     if a.attachment_dir: print(f"附件目录: {a.attachment_dir}")
     print(f"{'='*60}")
     print("\n[1/2] 自动发现字段...")
@@ -129,7 +134,7 @@ def main():
     print(f"  文件:{len(info['fields']['file'])} 用户:{len(info['users'])} 部门:{len(info['depts'])} 标签:{len(info['labels'])}")
     print(f"\n[2/2] 创建 {a.count} 条...")
     # PC API地址(文件字段只能用PC API)
-    pc=a.api.replace("//lxcrm-staging.","//lxcrm-api-staging.").replace("//lxcrm-test.","//lxcrm-api-test.")
+    pc=a.api.replace("//lxcrm-staging.","//lxcrm-api-staging.").replace("//lxcrm-test.","//lxcrm-api-test.").replace("//lxcrm.","//lxcrm-api.")
     ok=fail=0
     for i in range(1,a.count+1):
         try:

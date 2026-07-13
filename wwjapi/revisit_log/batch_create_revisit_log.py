@@ -15,7 +15,7 @@ def fetch(api,path,token,pc=False):
     return r.json()
 
 def pcurl(api,token,path):
-    pc=api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.')
+    pc=api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.').replace('//lxcrm.','//lxcrm-api.')
     r=requests.get(f"{pc}/api/pc/{path.lstrip('/')}",headers={'Authorization':f'Token token={token}'},timeout=15)
     return r.json()
 
@@ -92,6 +92,7 @@ def gen_custom_value(field,info):
 def main():
     p=argparse.ArgumentParser(description='批量创建跟进记录(含自定义字段)')
     p.add_argument('--api'); p.add_argument('--token')
+    p.add_argument('--env', choices=['test','staging','production'])
     p.add_argument('cnt',nargs='?',type=int,default=1)
     p.add_argument('entity_type',nargs='?',default='customer',help='customer/lead/opportunity/contract')
     p.add_argument('--attachment-dir',help='本地附件目录,随机取图片上传到文件字段')

@@ -20,7 +20,7 @@ def v2curl(api,token,path,method='GET',data=None):
     except: return {}
 
 def pcurl(api,token,path):
-    pc=api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.')
+    pc=api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.').replace('//lxcrm.','//lxcrm-api.')
     raw=subprocess.run(['curl','-s','-k','-H','Authorization: Token token='+token,pc+'/api/pc/'+path.lstrip('/')],capture_output=True,timeout=15).stdout
     if not raw: return {}
     try: return json.loads(raw)
@@ -100,6 +100,7 @@ def fill_fields(c,i):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--api'); p.add_argument('--token')
+    p.add_argument('--env', choices=['test','staging','production'])
     p.add_argument('cnt',nargs='?',type=int,default=1); p.add_argument('--delay',type=float,default=0.3)
     p.add_argument("--attachment-dir",help="本地图片目录,上传到文件字段")
     a=apply_config_defaults(p.parse_args(), p); api=a.api.rstrip('/')

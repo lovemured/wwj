@@ -53,7 +53,7 @@ IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".heic")
 
 def api_base(api):
     api = api.rstrip("/")
-    return api.replace("//lxcrm-staging.", "//lxcrm-api-staging.").replace("//lxcrm-test.", "//lxcrm-api-test.")
+    return api.replace("//lxcrm-staging.", "//lxcrm-api-staging.").replace("//lxcrm-test.", "//lxcrm-api-test.").replace("//lxcrm.", "//lxcrm-api.")
 
 
 def h5_origin(api):
@@ -62,6 +62,8 @@ def h5_origin(api):
         return "https://crmh5-staging.weiwenjia.com"
     if "//lxcrm-api-test." in api or "//lxcrm-test." in api:
         return "https://crmh5-test.weiwenjia.com"
+    if "//lxcrm-api.weiwenjia.com" in api or "//lxcrm.weiwenjia.com" in api:
+        return "https://crmh5.weiwenjia.com"
     return api.replace("lxcrm-api-", "crmh5-").replace("lxcrm-", "crmh5-")
 
 
@@ -228,6 +230,7 @@ def main():
     parser = argparse.ArgumentParser(description="批量创建工作报告")
     parser.add_argument("--api")
     parser.add_argument("--token")
+    parser.add_argument("--env", choices=["test", "staging", "production"])
     parser.add_argument("count", nargs="?", type=int, default=1)
     parser.add_argument("--cycle", choices=["daily", "weekly", "monthly"], default="daily")
     parser.add_argument("--summary")

@@ -35,7 +35,7 @@ CHECKIN_API = ""
 
 def api_base(api):
     api = api.rstrip("/")
-    return api.replace("//lxcrm-staging.", "//lxcrm-api-staging.").replace("//lxcrm-test.", "//lxcrm-api-test.")
+    return api.replace("//lxcrm-staging.", "//lxcrm-api-staging.").replace("//lxcrm-test.", "//lxcrm-api-test.").replace("//lxcrm.", "//lxcrm-api.")
 
 
 def checkin_api_base(api):
@@ -51,7 +51,7 @@ def mobile_headers():
         "accept": "*/*",
         "authorization": f'Token token="{TOKEN}",device="lxcrm_duli",version_code="4.0.1"',
         "content-type": "application/json; chartset=utf-8",
-        "origin": API.rstrip("/").replace("lxcrm-", "crmh5-"),
+        "origin": API.rstrip("/").replace("://lxcrm.", "://crmh5.").replace("lxcrm-", "crmh5-"),
         "x-requested-with": "com.lixiaoyun.aike",
         "x-lx-gid": "wwjOILf2wJkAF7CiLHlI",
     }
@@ -1397,6 +1397,7 @@ def main():
     parser = argparse.ArgumentParser(description="移动端CRM创建全流程")
     parser.add_argument("--api")
     parser.add_argument("--token")
+    parser.add_argument("--env", choices=["test", "staging", "production"])
     parser.add_argument("--cnt", type=int, default=1)
     parser.add_argument("--market-template-id", type=int, default=844)
     parser.add_argument("--lead-template-id", type=int, default=805)

@@ -3,6 +3,11 @@
 CRM Excel import helper for Lead/error-report import testing.
 
 常用用法:
+  环境配置:
+     --env test 读取 config.test.json
+     --env staging 读取 config.staging.json
+     token 失效时可追加 --token '<新token>' 临时覆盖配置
+
   1. 下载模板
      python3 error_report_import_tester.py download-template --module lead --output lead-template.xlsx
 
@@ -15,12 +20,10 @@ CRM Excel import helper for Lead/error-report import testing.
        --template lead-template.xlsx --output lead-source.xlsx --rows-random 1 10
 
   4. 全流程执行
-     python3 error_report_import_tester.py full-flow --module lead --rows 2
      python3 /Users/mured/wwj/wwjapi/import/error-report-import/error_report_import_tester.py full-flow \
        --env test \
        --module contract \
-       --rows 10 \
-       --token bef3c698829a1a6e830662fd3e8ff731
+       --rows 10
 
      测试环境页面下载的系统模板可放在以下目录，脚本会优先按表头自动匹配:
        /Users/mured/wwj/wwjapi/import/test/
@@ -36,22 +39,19 @@ CRM Excel import helper for Lead/error-report import testing.
      python3 /Users/mured/wwj/wwjapi/import/error-report-import/error_report_import_tester.py error-template-flow \
        --env test \
        --module lead \
-       --rows 1 \
-       --token bef3c698829a1a6e830662fd3e8ff731
+       --rows 1
 
      python3 /Users/mured/wwj/wwjapi/import/error-report-import/error_report_import_tester.py error-template-flow \
        --env test \
        --module lead-pool \
        --common-id 5980 \
-       --rows 5 \
-       --token bef3c698829a1a6e830662fd3e8ff731
+       --rows 5
 
      python3 /Users/mured/wwj/wwjapi/import/error-report-import/error_report_import_tester.py error-template-flow \
        --env test \
        --module customer-pool \
        --common-id 11033 \
-       --rows 5 \
-       --token bef3c698829a1a6e830662fd3e8ff731
+       --rows 5
 """
 
 import argparse
@@ -63,6 +63,7 @@ import random
 import re
 import shutil
 import subprocess
+import sys
 import threading
 import time
 import uuid
@@ -76,6 +77,10 @@ import requests
 from openpyxl import load_workbook
 from openpyxl.utils import column_index_from_string, get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation, DataValidationList
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
+from lib.config import load_config
 
 
 DEFAULT_OUT_DIR = Path("outputs/error-report-import")
@@ -153,13 +158,21 @@ ENV_CONFIGS = {
         "entity_loader_history_prefix": "/api/pc/entity_loaders",
         "qiniu_token_path": "/api/qiniu/auth/oss_upload_token.json",
     },
+    "production": {
+        "api": "https://lxcrm.weiwenjia.com",
+        "faye_url": DEFAULT_FAYE_URL,
+        "entity_loader_prefix": "/api/entity_loaders",
+        "entity_loader_new_prefix": "/api/pc/entity_loaders",
+        "entity_loader_history_prefix": "/api/pc/entity_loaders",
+        "qiniu_token_path": "/api/qiniu/auth/oss_upload_token.json",
+    },
 }
 
 
 def pc_url(api):
     return api.rstrip("/").replace("//lxcrm-test.", "//lxcrm-api-test.").replace(
         "//lxcrm-staging.", "//lxcrm-api-staging."
-    )
+    ).replace("//lxcrm.", "//lxcrm-api.")
 
 
 def auth_headers(token):
@@ -598,6 +611,9 @@ def request_json(method, url, *, token, **kwargs):
     elif "lxcrm-api-staging.weiwenjia.com" in url or "lxcrm-staging.weiwenjia.com" in url:
         merged.setdefault("Origin", "https://lxcrm-staging.weiwenjia.com")
         merged.setdefault("Referer", "https://lxcrm-staging.weiwenjia.com/")
+    elif "lxcrm-api.weiwenjia.com" in url or "lxcrm.weiwenjia.com" in url:
+        merged.setdefault("Origin", "https://lxcrm.weiwenjia.com")
+        merged.setdefault("Referer", "https://lxcrm.weiwenjia.com/")
     merged.setdefault("Accept-Language", "zh-CN,zh;q=0.9")
     merged.setdefault("x-lx-gid", "")
     merged.update(headers)
@@ -2104,13 +2120,19 @@ def resolve_config(args):
         raise SystemExit(f"未知环境: {env_name}，可选: {', '.join(ENV_CONFIGS)}")
 
     config = ENV_CONFIGS[env_name]
+    profile = load_config(env_name)
     args.env = env_name
     args.module_key = normalize_module(getattr(args, "module", None))
     args.module_config = MODULE_CONFIGS[args.module_key]
     if hasattr(args, "loader_name") and not args.loader_name:
         args.loader_name = args.module_config["loader_name"]
-    args.api = getattr(args, "api", None) or os.environ.get("WWJ_IMPORT_API") or config["api"]
-    args.token = getattr(args, "token", None) or os.environ.get("WWJ_USER_TOKEN")
+    args.api = (
+        getattr(args, "api", None)
+        or os.environ.get("WWJ_IMPORT_API")
+        or profile.get("api")
+        or config["api"]
+    )
+    args.token = getattr(args, "token", None) or os.environ.get("WWJ_USER_TOKEN") or profile.get("token")
     if args.token and args.token.startswith("user_token="):
         args.token = args.token.split("=", 1)[1]
     if hasattr(args, "entity_loader_prefix"):
@@ -2149,7 +2171,10 @@ def resolve_config(args):
         args.common_id = args.common_id or os.environ.get("WWJ_COMMON_ID")
 
     if args.command != "generate-source-from-template" and not args.token:
-        raise SystemExit("缺少 token：请传 --token，或设置环境变量 WWJ_USER_TOKEN")
+        raise SystemExit(
+            f"缺少 token：请在config.{env_name}.json中配置，或传 --token，"
+            "或设置环境变量 WWJ_USER_TOKEN"
+        )
 
     if args.command != "generate-source-from-template":
         print(f"使用环境: {args.env}, api={args.api}")

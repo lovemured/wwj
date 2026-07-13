@@ -19,7 +19,7 @@ def curl(api,token,method,path,data=None):
     except: return {}
 
 def pcurl(api,token,path):
-    pc=api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.')
+    pc=api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.').replace('//lxcrm.','//lxcrm-api.')
     raw=subprocess.run(['curl','-s','-k','-H','Authorization: Token token='+token,pc+'/api/pc/'+path.lstrip('/')],capture_output=True,timeout=15).stdout
     if not raw: return {}
     try: return json.loads(raw)
@@ -153,6 +153,7 @@ def build(i,api,token):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--api'); p.add_argument('--token')
+    p.add_argument('--env', choices=['test','staging','production'])
     p.add_argument('cnt',nargs='?',type=int,default=1); p.add_argument('--delay',type=float,default=0.5)
     p.add_argument("--attachment-dir",help="本地图片目录,上传到文件字段")
     a=apply_config_defaults(p.parse_args(), p)
@@ -177,7 +178,7 @@ def main():
                     ok+=1; print(f"  ✓ [{n}/{a.cnt}] ID:{qid} 客户:{d.get('customer_id')} 文件:{nfiles} 附件:{nattach}")
                 else: fail+=1; print(f"  ✗ [{n}/{a.cnt}] {res.get('message','?')[:60]}")
             else:
-                pc_api=a.api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.')
+                pc_api=a.api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.').replace('//lxcrm.','//lxcrm-api.')
                 pc_args=['curl','-s','-k','-X','POST','-H','Content-Type: application/json',
                     '-H',f'Authorization: Token token={a.token}',
                     '-d',json.dumps({'contract':d}),pc_api+'/api/pc/contracts']

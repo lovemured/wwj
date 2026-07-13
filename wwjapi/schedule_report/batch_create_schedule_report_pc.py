@@ -41,7 +41,7 @@ def api(api_base, token, path, method="GET", data=None):
 
 
 def pc_api(api_base, token, path, method="GET", data=None):
-    pc = api_base.replace("//lxcrm-staging.", "//lxcrm-api-staging.").replace("//lxcrm-test.", "//lxcrm-api-test.")
+    pc = api_base.replace("//lxcrm-staging.", "//lxcrm-api-staging.").replace("//lxcrm-test.", "//lxcrm-api-test.").replace("//lxcrm.", "//lxcrm-api.")
     return request_json(method, f"{pc.rstrip('/')}/api/pc/{path.lstrip('/')}", token, data)
 
 
@@ -158,6 +158,7 @@ def main():
     parser = argparse.ArgumentParser(description="批量创建PC/通用版工作报告")
     parser.add_argument("--api")
     parser.add_argument("--token")
+    parser.add_argument("--env", choices=["test", "staging", "production"])
     parser.add_argument("count", nargs="?", type=int, default=1)
     parser.add_argument("--cycle", choices=["daily", "weekly", "monthly"], default="daily")
     parser.add_argument("--summary")

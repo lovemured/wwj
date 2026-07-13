@@ -12,7 +12,7 @@ from lib.upload import create_entity
 import requests
 
 def pcurl(api,token,path,method='GET',data=None):
-    pc=api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.')
+    pc=api.replace('//lxcrm-staging.','//lxcrm-api-staging.').replace('//lxcrm-test.','//lxcrm-api-test.').replace('//lxcrm.','//lxcrm-api.')
     c=['curl','-s','-k','-X',method,'-H','Content-Type: application/json','-H','Authorization: Token token='+token]
     if data: c+=['-d',json.dumps(data)]
     c+=[pc+'/api/pc/'+path.lstrip('/')]
@@ -116,6 +116,7 @@ def fill_fields(c,i,fd,pfx):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--api'); p.add_argument('--token')
+    p.add_argument('--env', choices=['test','staging','production'])
     p.add_argument('cnt',nargs='?',type=int,default=1); p.add_argument('--delay',type=float,default=0.5)
     p.add_argument('--type',choices=['expense','expense_account'],default='expense')
     p.add_argument("--attachment-dir",help="本地图片目录,上传到文件字段")

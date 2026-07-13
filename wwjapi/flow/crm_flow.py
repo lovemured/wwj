@@ -14,7 +14,7 @@ PC=None; TOKEN=None
 REPO_ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def crm_url():
-    return PC.replace('//lxcrm-api-staging.','//lxcrm-staging.').replace('//lxcrm-api-test.','//lxcrm-test.')
+    return PC.replace('//lxcrm-api-staging.','//lxcrm-staging.').replace('//lxcrm-api-test.','//lxcrm-test.').replace('//lxcrm-api.','//lxcrm.')
 
 def request_json(method,url,data=None,timeout=60):
     try:
@@ -585,6 +585,7 @@ def run(n, attachment_dir=None):
 def main():
     p=argparse.ArgumentParser(description='完整CRM流程(含全部字段)')
     p.add_argument('--api'); p.add_argument('--token')
+    p.add_argument('--env', choices=['test','staging','production'])
     p.add_argument('cnt',nargs='?',type=int,default=1)
     p.add_argument('--attachment-dir',help='本地附件目录,随机取图片上传到文件字段')
     a=apply_config_defaults(p.parse_args(), p)

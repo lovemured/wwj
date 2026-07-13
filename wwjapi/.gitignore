@@ -1,4 +1,7 @@
 config.json
+config.test.json
+config.staging.json
+config.production.json
 .DS_Store
 .idea/
 .codex_spreadsheets/
