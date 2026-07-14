@@ -314,6 +314,7 @@ def relation_value(field):
 def field_map_values(model_klass):
     model_name = {
         "MarketActivity": "market_activity",
+        "ReceivedPayment": "received_payment",
         "InvoicedPayment": "invoiced_payment",
     }.get(model_klass, model_klass.lower())
     data = request_json("GET", f"field_maps/{model_name}")
@@ -323,7 +324,6 @@ def field_map_values(model_klass):
             item["id"] for item in field.get("field_values") or [] if item.get("status") == "enable"
         ]
     return values
-
 
 
 def build_contact_assetships(contact_id):
@@ -1095,8 +1095,8 @@ def create_received_payment(user, customer_id, contract_id, plan_id, amount, arg
             "custom_relation_asset_1498b3": relation_277[0] if relation_277 else None,
             "custom_relation_asset_44eee1": relation_335[0] if relation_335 else None,
             "subform_asset_17cb9c": [],
-            "payment_type": 2103292,
-            "received_types": 2103298,
+            "payment_type": random.choice(collection_options("ReceivedPayment", "payment_type") or [2103292]),
+            "received_types": random.choice(collection_options("ReceivedPayment", "received_types") or [2103298]),
             "receive_user_id": user["id"],
             "note": f"{title} 备注",
             "user_id": user["id"],

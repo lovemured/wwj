@@ -77,7 +77,7 @@ from xml.etree import ElementTree as ET
 
 import requests
 from openpyxl import load_workbook
-from openpyxl.utils import column_index_from_string, get_column_letter
+from openpyxl.utils import column_index_from_string, get_column_letter, range_boundaries
 from openpyxl.worksheet.datavalidation import DataValidation, DataValidationList
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -850,6 +850,39 @@ def first_option_from_sheet(wb, header):
     return values[0] if values else None
 
 
+def option_values_from_validation(wb, ws, col, data_row, limit=2):
+    """Return dropdown values bound to the current data cell, if any."""
+    cell = ws.cell(data_row, col)
+    for validation in ws.data_validations.dataValidation:
+        if cell.coordinate not in validation.cells or not validation.formula1:
+            continue
+        match = re.fullmatch(r"'?([^']+)'?!\$(\w+)\$(\d+):\$(\w+)\$(\d+)", validation.formula1)
+        if not match:
+            continue
+        sheet_name, start_col, start_row, end_col, end_row = match.groups()
+        if sheet_name not in wb.sheetnames:
+            continue
+        min_col, min_row, max_col, max_row = range_boundaries(
+            f"{start_col}{start_row}:{end_col}{end_row}"
+        )
+        values = []
+        option_sheet = wb[sheet_name]
+        for row in option_sheet.iter_rows(
+            min_row=min_row,
+            max_row=max_row,
+            min_col=min_col,
+            max_col=max_col,
+            values_only=True,
+        ):
+            value = row[0]
+            if value not in (None, ""):
+                values.append(value)
+            if len(values) >= limit:
+                break
+        return values
+    return []
+
+
 def option_values_from_sheet(wb, header, limit=2, example=None):
     name = clean_header(header)
     stripped_name = re.sub(r"[\[\]（）()]", "", name).strip()
@@ -1093,6 +1126,9 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
     name = clean_header(header)
     lower_name = name.lower()
     context = context or {}
+    if name.isdigit():
+        options = option_values_from_validation(wb, ws, col, find_template_rows(ws)[1], limit=2)
+        return options[0] if options else None
     if name.startswith("CRM_期初应收款余额"):
         return None
     if name == "单行成本":
@@ -2108,7 +2144,7 @@ def build_association_context(args):
         customer = safe_first_item("customer")
         context = {
             "customer": customer,
-            "product": first_item_with_value(args, "product", "product_no", pages=1) or safe_first_item("product"),
+            "product": first_item_with_value(args, "product", "name", pages=1) or safe_first_item("product"),
         }
         print_json(
             "association_context",
@@ -2127,7 +2163,7 @@ def build_association_context(args):
             "opportunity": chained.get("opportunity", {}),
             "quotation": chained.get("quotation", {}),
             "contract": contract,
-            "product": first_item_with_value(args, "product", "product_no", pages=1) or safe_first_item("product"),
+            "product": first_item_with_value(args, "product", "name", pages=1) or safe_first_item("product"),
         }
         print_json(
             "association_context",
@@ -2143,7 +2179,7 @@ def build_association_context(args):
             "opportunity": chained["opportunity"],
             "quotation": chained["quotation"],
             "contract": chained["contract"],
-            "product": first_item_with_value(args, "product", "product_no", pages=1) or safe_first_item("product"),
+            "product": first_item_with_value(args, "product", "name", pages=1) or safe_first_item("product"),
         }
         print_json(
             "association_context",
@@ -2164,7 +2200,7 @@ def build_association_context(args):
         "opportunity": opportunity or (first_item_for_customer(args, "opportunity", customer_id, fallback=False) if customer_id else safe_first_item("opportunity")),
         "quotation": first_item_for_customer(args, "quotation", customer_id, fallback=False) if customer_id else safe_first_item("quotation"),
         "contract": first_item_for_customer(args, "contract", customer_id, fallback=False) if customer_id else safe_first_item("contract"),
-        "product": first_item_with_value(args, "product", "product_no", pages=1) or safe_first_item("product"),
+        "product": first_item_with_value(args, "product", "name", pages=1) or safe_first_item("product"),
     }
     if args.module_key in ("payment-plan", "received-payment", "invoiced-payment"):
         contract = context.get("contract") or {}

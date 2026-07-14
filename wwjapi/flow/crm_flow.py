@@ -75,6 +75,18 @@ def enabled_field_values(model, field_name):
             return [str(item['id']) for item in field.get('field_values',[]) if item.get('status')=='enable']
     return []
 
+def field_map_option_values(model_klass, field_name):
+    groups=pcurl('custom_fields?model_klass='+model_klass).get('data',{}).get('custom_field_groups',[])
+    for group in groups:
+        for field in group.get('custom_fields',[]):
+            if field.get('name') != field_name or not field.get('field_id'):
+                continue
+            detail=pcurl('custom_fields/'+str(field['field_id'])).get('data',{})
+            options=detail.get('input_field_options',{}).get('collection_options',[])
+            return [str(item['value']) for item in options
+                    if isinstance(item,dict) and item.get('value') not in (None,'')]
+    return []
+
 def pick_apaas_value(values):
     return random.choice(values) if values else None
 
@@ -528,9 +540,9 @@ def run(n, attachment_dir=None):
         # ====== 9. 回款记录 ======
         data8={'received_payment':{
             'amount':ga(),'receive_date':gd(),
-            'received_types':random.choice(info['fm'].get('received_payment',{}).get('received_types',['2103298'])),
+            'received_types':random.choice(field_map_option_values('ReceivedPayment','received_types') or ['2103298']),
             'customer_id':cid,'contract_id':ctid,'received_payment_plan_id':pid,
-            'payment_type':random.choice(info['fm'].get('payment_type',['2103290'])),
+            'payment_type':random.choice(field_map_option_values('ReceivedPayment','payment_type') or ['2103290']),
             'receive_user_id':primary_user_id,'note':f'CRM回款-{ts}',
         }}
         fill(data8['received_payment'],info['rp'],'rp')
