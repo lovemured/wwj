@@ -31,6 +31,8 @@ TOKEN = ""
 API = ""
 API_BASE = ""
 CHECKIN_API = ""
+CUSTOM_FIELD_CACHE = {}
+CUSTOM_FIELD_DETAIL_CACHE = {}
 
 
 def api_base(api):
@@ -159,6 +161,20 @@ def get_products(limit=2):
     return products[:limit]
 
 
+def get_shop_id():
+    try:
+        resp = requests.get(
+            f"{API_BASE}/api/pc/shops",
+            headers={"Authorization": f"Token token={TOKEN}"},
+            params={"page": 1, "per_page": 50},
+            timeout=30,
+        )
+        shops = (resp.json().get("data") or {}).get("list") or []
+    except (requests.RequestException, ValueError):
+        shops = []
+    return random.choice(shops).get("id") if shops else None
+
+
 def get_product_category_id():
     data = request_json("GET", "product_categories")
     products = (data.get("data") or {}).get("products") or []
@@ -197,6 +213,183 @@ def get_pc_user_ids(limit=50):
     users = (data.get("data") or {}).get("users") or (data.get("data") or {}).get("list") or []
     ids = [item.get("id") or item.get("uid") for item in users if item.get("id") or item.get("uid")]
     return [int(item) for item in ids if str(item).isdigit()]
+
+
+def usable_template_id(model_klass):
+    try:
+        resp = requests.get(
+            f"{API_BASE}/api/pc/custom_field_templates",
+            headers={"Authorization": f"Token token={TOKEN}"},
+            params={"model_klass": model_klass},
+            timeout=30,
+        )
+        data = resp.json()
+    except (requests.RequestException, ValueError):
+        return None
+    templates = (data.get("data") or {}).get("list") or []
+    enabled = [item for item in templates if item.get("status") == "enable" and item.get("is_usable", True)]
+    return max(enabled, key=lambda item: int(item.get("id") or 0)).get("id") if enabled else None
+
+
+def resolve_template_ids(args):
+    for attr, model_klass in (
+        ("market_template_id", "market_activity"),
+        ("lead_template_id", "lead"),
+        ("customer_template_id", "customer"),
+        ("opportunity_template_id", "opportunity"),
+        ("quotation_template_id", "quotation"),
+        ("contract_template_id", "contract"),
+    ):
+        if getattr(args, attr) is None:
+            setattr(args, attr, usable_template_id(model_klass))
+
+
+def apply_template_id(payload, template_id):
+    if template_id:
+        payload["custom_field_template_id"] = template_id
+    else:
+        payload.pop("custom_field_template_id", None)
+
+
+def custom_fields(model_klass):
+    if model_klass not in CUSTOM_FIELD_CACHE:
+        try:
+            resp = requests.get(
+                f"{API_BASE}/api/pc/custom_fields",
+                headers={"Authorization": f"Token token={TOKEN}"},
+                params={"model_klass": model_klass},
+                timeout=30,
+            )
+            groups = (resp.json().get("data") or {}).get("custom_field_groups") or []
+        except (requests.RequestException, ValueError):
+            groups = []
+        CUSTOM_FIELD_CACHE[model_klass] = [
+            field for group in groups for field in group.get("custom_fields") or []
+            if field.get("name") and field.get("field_id")
+        ]
+    return CUSTOM_FIELD_CACHE[model_klass]
+
+
+def custom_field_detail(field_id):
+    if field_id not in CUSTOM_FIELD_DETAIL_CACHE:
+        try:
+            resp = requests.get(
+                f"{API_BASE}/api/pc/custom_fields/{field_id}",
+                headers={"Authorization": f"Token token={TOKEN}"},
+                timeout=30,
+            )
+            CUSTOM_FIELD_DETAIL_CACHE[field_id] = resp.json().get("data") or {}
+        except (requests.RequestException, ValueError):
+            CUSTOM_FIELD_DETAIL_CACHE[field_id] = {}
+    return CUSTOM_FIELD_DETAIL_CACHE[field_id]
+
+
+def select_options(field):
+    options = (custom_field_detail(field["field_id"]).get("options") or {}).get("select_options") or []
+    values = []
+    for option in options:
+        if isinstance(option, list) and len(option) > 1:
+            values.append(option[1])
+        elif isinstance(option, dict) and option.get("value") not in (None, ""):
+            values.append(option["value"])
+    return values
+
+
+
+def collection_options(model_klass, field_name):
+    for field in custom_fields(model_klass):
+        if field["name"] == field_name:
+            options = (custom_field_detail(field["field_id"]).get("input_field_options") or {}).get("collection_options") or []
+            return [option["value"] for option in options if option.get("value") not in (None, "")]
+    return []
+
+
+def relation_value(field):
+    detail = custom_field_detail(field["field_id"])
+    source = ((detail.get("options") or {}).get("relation_options") or {}).get("relation_source") or {}
+    values = fetch_apaas_values(source["id"]) if source.get("id") else []
+    return random.choice(values) if values else None
+
+
+def field_map_values(model_klass):
+    model_name = {
+        "MarketActivity": "market_activity",
+        "InvoicedPayment": "invoiced_payment",
+    }.get(model_klass, model_klass.lower())
+    data = request_json("GET", f"field_maps/{model_name}")
+    values = {}
+    for field in (data.get("data") or {}).get(model_name) or []:
+        values[field.get("field_name")] = [
+            item["id"] for item in field.get("field_values") or [] if item.get("status") == "enable"
+        ]
+    return values
+
+
+
+def build_contact_assetships(contact_id):
+    if not contact_id:
+        return []
+    categories = field_map_values("Contact").get("category") or [2103263]
+    return [{"category": random.choice(categories), "contact_id": contact_id, "_destroy": -1}]
+
+
+def fill_custom_fields(model_klass, payload, user, file_id=None, image_id=None, source=None):
+    source = source or {}
+    source_by_label = {field.get("label"): source.get(field.get("name")) for field in custom_fields("Lead")}
+    ignored = {
+        "name", "title", "company_name", "customer", "customer_id", "contact", "contact_id", "opportunity",
+        "opportunity_id", "quotation", "quotation_id", "contract", "contract_id", "product_assets", "status",
+        "source", "stage", "kind", "category", "payment_type", "user", "user_id", "owned_department",
+        "owned_department_id", "creator", "creator_id", "attachments", "note", "address", "labels",
+        "contact_assetships", "contacts_attributes", "contacts", "expect_amount", "expect_sign_date", "get_time",
+        "revisit_remind_at", "total_amount", "product_total_amount", "whole_discount", "additional_discount_amount",
+        "sign_date", "start_at", "end_at", "customer_signer", "our_signer", "quotation_no", "quotation_date",
+    }
+    for field in custom_fields(model_klass):
+        name, field_type = field["name"], field.get("field_type")
+        if name in ignored or name.startswith("subform_") or field_type in {"stat_field", "ref_field", "select2_field", "attachments_field", "field_map_field"}:
+            continue
+        mapped = source.get(name)
+        if mapped in (None, ""):
+            mapped = source_by_label.get(field.get("label"))
+        if mapped not in (None, ""):
+            payload[name] = mapped
+            continue
+        if field_type in {"text_field", "auto_number_field"}:
+            payload[name] = f"自动化{field.get('label') or name}-{rid('') }"
+        elif field_type == "text_area":
+            payload[name] = f"自动化{field.get('label') or name}多行文本"
+        elif field_type == "email_field":
+            payload[name] = f"{rid('mail').lower()}@example.com"
+        elif field_type == "mobile_field":
+            payload[name] = "13" + str(random.randint(0, 9)) + "".join(random.choices(string.digits, k=9))
+        elif field_type == "url_field":
+            payload[name] = f"https://example.com/{rid('field')}"
+        elif field_type in {"number_field", "currency_field"}:
+            payload[name] = 10
+        elif field_type in {"datetime_field", "date_field"}:
+            payload[name] = date_after(1, field_type == "datetime_field")
+        elif field_type in {"select", "nested_select_field"}:
+            values = select_options(field)
+            if values:
+                payload[name] = random.choice(values)
+        elif field_type in {"multi_select", "multi_nested_select_field"}:
+            values = select_options(field)
+            if values:
+                payload[name] = random.sample(values, min(2, len(values)))
+        elif field_type == "user_field":
+            payload[name] = [user["id"]]
+        elif field_type == "multi_user_field":
+            payload[name] = [user["id"]]
+        elif field_type in {"department_field", "multi_department_field"} and user.get("department_id"):
+            payload[name] = [user["department_id"]]
+        elif field_type == "custom_relation_field":
+            value = relation_value(field)
+            if value is not None:
+                payload[name] = value
+        elif field_type == "file_field":
+            attachment_id = image_id if field.get("field_type_i18n") == "图片" else file_id
+            payload[name] = {"attachment_ids": [attachment_id] if attachment_id else []}
 
 
 def fetch_apaas_values(custom_form_id, limit=5):
@@ -284,6 +477,7 @@ def create_product(user, args, index):
     product_image_id = upload_first(images)
     user_ids = get_simple_users(5)
     assist_user_ids = [uid for uid in user_ids if uid != user["id"]][:2]
+    channels = collection_options("Product", "channel")
     product = {
         "name": name,
         "product_no": "MPROD" + str(int(time.time()))[-6:] + str(index),
@@ -293,6 +487,8 @@ def create_product(user, args, index):
         "unit_cost": money(),
         "introduction": f"{name} 介绍",
         "spec": f"{name} 规格",
+        "channel": random.choice(channels) if channels else None,
+        "shop_id": get_shop_id(),
         "file_asset_dfad4f": {"attachment_ids": [file_id] if file_id else []},
         "file_asset_16e1c7": {"attachment_ids": [custom_image_id] if custom_image_id else []},
         "text_asset_4f5c49_other": "",
@@ -306,6 +502,7 @@ def create_product(user, args, index):
     category_id = get_product_category_id()
     if category_id:
         product["product_category_id"] = category_id
+    fill_custom_fields("Product", product, user, file_id, custom_image_id)
     data = {"product": product, "attachment_ids": [product_image_id] if product_image_id else []}
     return request_json("POST", "products", data=data), name
 
@@ -328,18 +525,19 @@ def create_market_activity(user, args):
     name = rid("移动市场活动-")
     file_id, image_id, attachment_ids = upload_market_files(args)
     assist_user_ids = [uid for uid in get_simple_users(5) if uid != user["id"]][:3]
+    field_values = field_map_values("MarketActivity")
     data = {
         "market_activity": {
             "custom_field_template_id": args.market_template_id,
             "name": name,
-            "category": 2103386,
+            "category": random.choice(field_values.get("category") or [2103386]),
             "start_date": date_after(1),
             "end_date": date_after(90),
             "estimated_cost": money(),
             "actual_cost": money(),
             "estimated_income": money() * 2,
             "actual_income": money() * 2,
-            "status": 2103391,
+            "status": random.choice(field_values.get("status") or [2103391]),
             "address_attributes": {
                 "country_id": 4,
                 "province_id": 28,
@@ -385,6 +583,8 @@ def create_market_activity(user, args):
         },
         "attachment_ids": attachment_ids,
     }
+    fill_custom_fields("MarketActivity", data["market_activity"], user, file_id, image_id)
+    apply_template_id(data["market_activity"], args.market_template_id)
     return request_json("POST", "market_activities", data=data), name
 
 
@@ -455,14 +655,19 @@ def create_lead(user, market_activity_id, args):
             "approve_status": "approved",
         }
     }
+    fill_custom_fields("Lead", data["lead"], user)
+    apply_template_id(data["lead"], args.lead_template_id)
     return request_json("POST", "leads", data=data), name
 
 
 def init_turn_to_customer(lead_id, args):
+    params = {"is_check": "false"}
+    if args.customer_template_id:
+        params["custom_field_template_id"] = args.customer_template_id
     return request_json(
         "GET",
         f"leads/{lead_id}/turn_to_customer",
-        params={"is_check": "false", "custom_field_template_id": args.customer_template_id},
+        params=params,
     )
 
 
@@ -577,6 +782,9 @@ def create_customer_from_lead(user, lead_id, lead_detail, args):
         },
         "refer_lead_id": lead_id,
     }
+    fill_custom_fields("Customer", data["customer"], user, file_id, image_id, lead_detail)
+    fill_custom_fields("Contact", data["customer"]["contacts_attributes"][0], user, file_id, image_id, lead_detail)
+    apply_template_id(data["customer"], args.customer_template_id)
     return request_json("POST", "customers", data=data), customer_name, contact_name
 
 
@@ -621,9 +829,8 @@ def create_opportunity(user, customer_id, contact_id, products, args):
     user_ids = get_simple_users(5)
     assist_user_ids = [uid for uid in user_ids if uid != user["id"]][:3]
     relation_335 = fetch_apaas_values(335)
-    contact_assetships = []
-    if contact_id:
-        contact_assetships.append({"category": "2103263", "contact_id": contact_id, "_destroy": -1})
+    field_values = field_map_values("Opportunity")
+    contact_assetships = build_contact_assetships(contact_id)
     data = {
         "opportunity": {
             "custom_field_template_id": args.opportunity_template_id,
@@ -636,9 +843,9 @@ def create_opportunity(user, customer_id, contact_id, products, args):
             "get_time": date_after(0),
             "note": f"{title} 备注",
             "text_asset_c1553e": str(total),
-            "stage": 2103276,
-            "source": 2103268,
-            "kind": 2103282,
+            "stage": random.choice(field_values.get("stage") or [2103276]),
+            "source": random.choice(field_values.get("source") or [2103268]),
+            "kind": random.choice(field_values.get("kind") or [2103282]),
             "revisit_remind_at": date_after(7, True)[:-3],
             "text_asset_638666": f"{title} 单行文本",
             "text_asset_dfe927": f"{rid('oppmail').lower()}@example.com",
@@ -671,6 +878,8 @@ def create_opportunity(user, customer_id, contact_id, products, args):
         },
         "attachment_ids": [attachment_id] if attachment_id else [],
     }
+    fill_custom_fields("Opportunity", data["opportunity"], user, file_id, image_id)
+    apply_template_id(data["opportunity"], args.opportunity_template_id)
     return request_json("POST", "opportunities", data=data), title, total, assets
 
 
@@ -738,14 +947,14 @@ def create_quotation(user, customer_id, contact_id, opportunity_id, total, produ
         },
         "attachment_ids": [attachment_id] if attachment_id else [],
     }
+    fill_custom_fields("Quotation", data["quotation"], user, file_id, image_id)
+    apply_template_id(data["quotation"], args.quotation_template_id)
     return request_json("POST", "quotations", data=data), name
 
 
 def create_contract(user, customer_id, opportunity_id, quotation_id, contact_id, total, product_assets_for_contract, args):
     title = rid("移动合同-")
-    contact_assetships = []
-    if contact_id:
-        contact_assetships.append({"category": "2103263", "contact_id": contact_id, "_destroy": -1})
+    contact_assetships = build_contact_assetships(contact_id)
     file_id, image_id = upload_pair_files(args)
     attachment_id = upload_to_oss(API, TOKEN, None)
     user_ids = get_simple_users(5)
@@ -753,6 +962,7 @@ def create_contract(user, customer_id, opportunity_id, quotation_id, contact_id,
     relation_207 = fetch_apaas_values(207)
     relation_281 = fetch_apaas_values(281)
     relation_335 = fetch_apaas_values(335)
+    field_values = field_map_values("Contract")
     data = {
         "contract": {
             "custom_field_template_id": args.contract_template_id,
@@ -793,9 +1003,9 @@ def create_contract(user, customer_id, opportunity_id, quotation_id, contact_id,
             "custom_relation_asset_a8b04b": relation_335[0] if relation_335 else None,
             "custom_relation_asset_a1469c": relation_207[0] if relation_207 else None,
             "subform_asset_33dcf3": [],
-            "status": 2103294,
-            "category": 2103285,
-            "payment_type": 2103292,
+            "status": random.choice(field_values.get("status") or [2103294]),
+            "category": random.choice(field_values.get("category") or [2103285]),
+            "payment_type": random.choice(field_values.get("payment_type") or [2103292]),
             "attachment_ids": [attachment_id] if attachment_id else [],
             "received_payment_plans_attributes": [],
             "revisit_remind_at": date_after(7, True)[:-3],
@@ -807,6 +1017,8 @@ def create_contract(user, customer_id, opportunity_id, quotation_id, contact_id,
         },
         "attachment_ids": [attachment_id] if attachment_id else [],
     }
+    fill_custom_fields("Contract", data["contract"], user, file_id, image_id)
+    apply_template_id(data["contract"], args.contract_template_id)
     return request_json("POST", "contracts", data=data), title
 
 
@@ -900,6 +1112,7 @@ def create_invoiced_payment(user, customer_id, contract_id, amount, args):
     user_ids = get_simple_users(5)
     assist_user_ids = [uid for uid in user_ids if uid != user["id"]][:2]
     relation_335 = fetch_apaas_values(335)
+    field_values = field_map_values("InvoicedPayment")
     data = {
         "invoiced_payment": {
             "sn": "MIP" + str(int(time.time()))[-6:],
@@ -932,7 +1145,7 @@ def create_invoiced_payment(user, customer_id, contract_id, amount, args):
             "custom_relation_asset_2fcfad": relation_335[0] if relation_335 else None,
             "subform_asset_7b3eb9": [],
             "content": f"{title} 票据内容",
-            "invoice_types": 2103303,
+            "invoice_types": random.choice(field_values.get("invoice_types") or [2103303]),
             "invoice_no": "MINV" + str(int(time.time()))[-6:],
             "note": f"{title} 备注",
             "user_id": user["id"],
@@ -1134,10 +1347,16 @@ def create_expense(user, customer_id, contact_id, contract_id, revisit_log_id, c
     assist_user_ids = [uid for uid in user_ids if uid != user["id"]][:2]
     relation_281 = fetch_apaas_values(281)
     relation_335 = fetch_apaas_values(335)
+    field_values = field_map_values("Expense")
+    products = get_products(1)
+    product_id = products[0].get("id") if products else None
+    shop_id = get_shop_id()
+    categories = field_values.get("category") or collection_options("Expense", "category")
+    channels = field_values.get("channel") or collection_options("Expense", "channel")
     data = {
         "expense": {
             "sn": "MEX" + str(int(time.time()))[-6:],
-            "category": 2103338,
+            "category": random.choice(categories or [2103338]),
             "description": f"{title} 描述",
             "amount": amount,
             "incurred_at": date_after(0),
@@ -1147,6 +1366,12 @@ def create_expense(user, customer_id, contact_id, contract_id, revisit_log_id, c
             "related_item_id": contract_id,
             "revisit_log_id": revisit_log_id,
             "checkin_id": checkin_id,
+            "revisit_log": revisit_log_id,
+            "checkin": checkin_id,
+            "related_item": contract_id,
+            "product_id": product_id,
+            "shop_id": shop_id,
+            "channel": random.choice(channels) if channels else None,
             "text_asset_68377c": f"{title} 单行文本",
             "text_asset_679989": f"{rid('expensemail').lower()}@example.com",
             "text_asset_9f6032": "138" + "".join(random.choices(string.digits, k=8)),
@@ -1178,6 +1403,7 @@ def create_expense(user, customer_id, contact_id, contract_id, revisit_log_id, c
         },
         "attachment_ids": [attachment_id] if attachment_id else [],
     }
+    fill_custom_fields("Expense", data["expense"], user, file_id, image_id)
     return request_json("POST", "expenses", data=data), title
 
 
@@ -1249,7 +1475,12 @@ def create_schedule_report(user, args):
             "text_area_asset_121d37": f"{title} 自定义多行文本",
         },
     }
-    return request_json("POST", "schedule_reports", data=data), title
+    for offset in range(8):
+        data["schedule_report"]["due_at"] = date_after(offset)
+        response = request_json("POST", "schedule_reports", data=data)
+        if response.get("code") != 100406 or args.schedule_report_cycle != "daily":
+            return response, title
+    return response, title
 
 
 def require_id(step, resp):
@@ -1400,13 +1631,13 @@ def main():
     parser.add_argument("--env", choices=["test", "staging", "production"])
     parser.add_argument("--profile", choices=["gray", "standard"])
     parser.add_argument("--cnt", type=int, default=1)
-    parser.add_argument("--market-template-id", type=int, default=844)
-    parser.add_argument("--lead-template-id", type=int, default=805)
-    parser.add_argument("--customer-template-id", type=int, default=846)
-    parser.add_argument("--opportunity-template-id", type=int, default=812)
-    parser.add_argument("--quotation-template-id", type=int, default=797)
+    parser.add_argument("--market-template-id", type=int)
+    parser.add_argument("--lead-template-id", type=int)
+    parser.add_argument("--customer-template-id", type=int)
+    parser.add_argument("--opportunity-template-id", type=int)
+    parser.add_argument("--quotation-template-id", type=int)
     parser.add_argument("--quotation-subsidiary-id", type=int, default=23)
-    parser.add_argument("--contract-template-id", type=int, default=795)
+    parser.add_argument("--contract-template-id", type=int)
     parser.add_argument("--lead-status", type=int, default=2162424)
     parser.add_argument("--product-count", type=int, default=2)
     parser.add_argument("--schedule-report-cycle", choices=["daily", "weekly", "monthly"], default="daily")
@@ -1419,6 +1650,7 @@ def main():
     API_BASE = api_base(API)
     CHECKIN_API = checkin_api_base(API)
     TOKEN = args.token
+    resolve_template_ids(args)
 
     print(f"{'=' * 60}\n移动端CRM创建全流程\nAPI: {API}\n轮数: {args.cnt}\n{'=' * 60}")
     if args.attachment_dir:

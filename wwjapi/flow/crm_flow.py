@@ -45,6 +45,13 @@ def pcurl(path):
 def v2curl(path):
     return request_json('GET',crm_url().rstrip()+'/api/v2/'+path.lstrip('/'),timeout=15)
 
+def usable_template_id(module_key):
+    templates=pcurl('custom_field_templates?model_klass='+{
+        'ea':'expense_account',
+    }.get(module_key,module_key)).get('data',{}).get('list',[])
+    enabled=[item for item in templates if item.get('status')=='enable' and item.get('is_usable',True)]
+    return max(enabled,key=lambda item:int(item.get('id') or 0)).get('id') if enabled else None
+
 def load_local_module(name, relative_path):
     path=os.path.join(REPO_ROOT,relative_path)
     spec=importlib.util.spec_from_file_location(name,path)
@@ -60,6 +67,13 @@ def fetch_apaas_values(custom_form_id, per_page=20):
         for item in data.get('models',[])
         if item.get('value') or item.get('id')
     ]
+
+def enabled_field_values(model, field_name):
+    fields=v2curl('field_maps/'+model).get('data',{}).get(model,[])
+    for field in fields:
+        if field.get('field_name')==field_name:
+            return [str(item['id']) for item in field.get('field_values',[]) if item.get('status')=='enable']
+    return []
 
 def pick_apaas_value(values):
     return random.choice(values) if values else None
@@ -105,7 +119,7 @@ def upload_expense_attachment_ids(api_base, attachment_dir, count=1):
 # ========== 字段发现 ==========
 def discover():
     info={'fm':{},'op':{},'pc_users':[],'dp':[],'cs':[],'contracts':[],'products':[],'subsidiaries':[],'template_ids':{},
-          'expense_categories':[],'current_user':{},'apaas_207':[],'apaas_277':[],'apaas_281':[],
+          'expense_categories':[],'current_user':{},'apaas_207':[],'apaas_277':[],'apaas_281':[],'relation_values':{},
           'lead':{},'customer':{},'contact':{},'opportunity':{},'quotation':{},'contract':{},'rp':{},'ip':{},'expense':{},'ea':{},
           'lead_file':[],'customer_file':[],'contact_file':[],'opportunity_file':[],'quotation_file':[],'contract_file':[],'rp_file':[],'ip_file':[],'expense_file':[],'ea_file':[],
           'lead_attach':[],'opportunity_attach':[],'quotation_attach':[],'contract_attach':[]}
@@ -193,21 +207,22 @@ def discover():
                     attach_fd.append({'name':n,'label':f.get('label','')}); continue
                 st=tm.get(t,'tx')
                 fd[st]=fd.get(st,[])+[{'name':n,'fid':fid,'label':f.get('label','')}]
+        relation_values={}
+        for relation in fd.get('rl',[]):
+            detail=pcurl('custom_fields/'+str(relation['fid'])).get('data',{})
+            source=((detail.get('options') or {}).get('relation_options') or {}).get('relation_source') or {}
+            if source.get('id'):
+                values=fetch_apaas_values(source['id'])
+                if values:
+                    relation_values[relation['name']]=values
+        info['relation_values'][key]=relation_values
         info[key]=fd
         info[key+'_file']=file_fd
         info[key+'_attach']=attach_fd
 
-        # 业务模板
+        # 仅使用当前用户可见且启用的业务类型，不能从字段详情中猜测。
         if key in template_keys:
-            tid=None
-            for st in ['sel','ms']:
-                for f in fd.get(st,[]):
-                    if f['fid']:
-                        d=pcurl('custom_fields/'+str(f['fid']))
-                        for t in d.get('data',{}).get('custom_field_templates',[]):
-                            if t.get('status')=='enable': tid=t['id']; break
-                    if tid: break
-            info['template_ids'][key]=tid
+            info['template_ids'][key]=usable_template_id(key)
 
     info['apaas_207']=fetch_apaas_values(207)
     info['apaas_277']=fetch_apaas_values(277)
@@ -249,7 +264,7 @@ EXPENSE_CATEGORIES=[
     ('2103344','其他'),
 ]
 
-def fill(c,fd):
+def fill(c,fd,module_key):
     for kf in ['tx','em','mb','ur']:
         fn={'tx':gt,'em':ge,'mb':gv,'ur':gu}
         for f in fd.get(kf,[]): c[f['name']]=fn[kf]()
@@ -271,7 +286,9 @@ def fill(c,fd):
     if info['dp']:
         for f in fd.get('dp',[]): c[f['name']]=random.sample(info['dp'],1)
         for f in fd.get('md',[]): c[f['name']]=random.sample(info['dp'],min(2,len(info['dp'])))
-    for f in fd.get('rl',[]): c[f['name']]=str(random.choice(['7','13']))
+    for f in fd.get('rl',[]):
+        values=info.get('relation_values',{}).get(module_key,{}).get(f['name'],[])
+        c[f['name']]=random.choice(values) if values else str(random.choice(['7','13']))
     return c
 
 def prod_attrs(n=3):
@@ -332,7 +349,7 @@ def run(n, attachment_dir=None):
                 'zip':f'518{random.randint(10,99)}','province_id':random.choice([1,10,13,21]),
                 'detail_address':f'{random.choice(R)}{random.randint(1,999)}号'},
         }}
-        fill(data1['lead'],info['lead'])
+        fill(data1['lead'],info['lead'],'lead')
         if mid:
             data1['lead']['market_activity_id']=mid
         if info['template_ids'].get('lead'): data1['lead']['custom_field_template_id']=info['template_ids']['lead']
@@ -369,7 +386,7 @@ def run(n, attachment_dir=None):
                     'detail_address':f'{random.choice(R)}{random.randint(1,999)}号'},
                 'parent_id':int(random.choice(info['cs'])) if info['cs'] else None,
             }
-            fill(customer,info['customer'])
+            fill(customer,info['customer'],'customer')
             customer['number']='CUST'+ts
             customer['beginning_payments_amount']=ga()
             customer['note']=f'CRM客户备注-{ts}'
@@ -416,7 +433,7 @@ def run(n, attachment_dir=None):
                 'province_id':random.choice([1,10,13,21]),
                 'detail_address':f'{random.choice(R)}{random.randint(1,999)}号'},
         }}
-        fill(data3['contact'],info['contact'])
+        fill(data3['contact'],info['contact'],'contact')
         process_file_fields(api_base,TOKEN,'Contact',data3['contact'],attachment_dir)
         cid_con=api('contacts',data=data3,method='POST').get('data',{}).get('id')
         print(f'  {"✅" if cid_con else "○"} 4/12 联系人 ID:{cid_con or "-"}')
@@ -424,14 +441,14 @@ def run(n, attachment_dir=None):
         # ====== 5. 商机(含产品) ======
         data4={'opportunity':{
             'title':f'商机-{ts}','customer_id':cid,
-            'source':random.choice(info['fm'].get('opportunity',{}).get('source',['2103268'])),
-            'stage':random.choice(info['fm'].get('opportunity',{}).get('stage',['2103276'])),
-            'kind':random.choice(info['fm'].get('opportunity',{}).get('kind',['2103282'])),
+            'source':random.choice(enabled_field_values('opportunity','source') or info['fm'].get('opportunity',{}).get('source',['2103268'])),
+            'stage':random.choice(enabled_field_values('opportunity','stage') or info['fm'].get('opportunity',{}).get('stage',['2103276'])),
+            'kind':random.choice(enabled_field_values('opportunity','kind') or info['fm'].get('opportunity',{}).get('kind',['2103282'])),
             'expect_amount':ga(),'expect_sign_date':gd(),'get_time':gd(),'revisit_remind_at':gdt(),
             'note':f'CRM商机备注-{ts}',
             'product_assets_attributes':prod_attrs(3),
         }}
-        fill(data4['opportunity'],info['opportunity'])
+        fill(data4['opportunity'],info['opportunity'],'opportunity')
         if info['template_ids'].get('opportunity'): data4['opportunity']['custom_field_template_id']=info['template_ids']['opportunity']
         process_file_fields(api_base,TOKEN,'Opportunity',data4['opportunity'],attachment_dir)
         opp_res=api('opportunities',data=data4,method='POST')
@@ -453,7 +470,7 @@ def run(n, attachment_dir=None):
             'revisit_remind_at':gdt(),'assist_user_ids':info['pc_users'][:2],
             'product_assets_attributes':prod_attrs(3),
         }}
-        fill(data5['quotation'],info['quotation'])
+        fill(data5['quotation'],info['quotation'],'quotation')
         if info['template_ids'].get('quotation'): data5['quotation']['custom_field_template_id']=info['template_ids']['quotation']
         process_file_fields(api_base,TOKEN,'Quotation',data5['quotation'],attachment_dir)
         quote_res=api('quotations',data=data5,method='POST',pc=True)
@@ -480,7 +497,7 @@ def run(n, attachment_dir=None):
             'special_terms':f'CRM合同备注-{ts}',
             'product_assets_attributes':prod_attrs(3),
         }}
-        fill(data6['contract'],info['contract'])
+        fill(data6['contract'],info['contract'],'contract')
         data6['contract']['special_terms']=f'CRM合同备注-{ts}'
         rel207=pick_apaas_value(info.get('apaas_207',[]))
         if rel207:
@@ -516,7 +533,7 @@ def run(n, attachment_dir=None):
             'payment_type':random.choice(info['fm'].get('payment_type',['2103290'])),
             'receive_user_id':primary_user_id,'note':f'CRM回款-{ts}',
         }}
-        fill(data8['received_payment'],info['rp'])
+        fill(data8['received_payment'],info['rp'],'rp')
         rel277=pick_apaas_value(info.get('apaas_277',[]))
         if rel277:
             data8['received_payment']['custom_relation_asset_1498b3']=rel277
@@ -531,7 +548,7 @@ def run(n, attachment_dir=None):
             'customer_id':cid,'broker_user_id':primary_user_id,
             'content':f'CRM开票-{ts}','note':f'开票-{ts}',
         },'contract_id':ctid}
-        fill(data9['invoiced_payment'],info['ip'])
+        fill(data9['invoiced_payment'],info['ip'],'ip')
         process_file_fields(api_base,TOKEN,'InvoicedPayment',data9['invoiced_payment'],attachment_dir)
         ipid=api('invoiced_payments',data=data9,method='POST',pc=True).get('data',{}).get('id')
         print(f'  {"✅" if ipid else "○"} 10/12 开票记录 ID:{ipid or "-"}')
@@ -548,7 +565,7 @@ def run(n, attachment_dir=None):
             'owned_department_id':primary_department_id,
             'related_item_type':'Contract','related_item_id':ctid,
         },'attachment_ids':expense_attachment_ids}
-        fill(data10['expense'],info['expense'])
+        fill(data10['expense'],info['expense'],'expense')
         if cid_con:
             data10['expense']['contacts_expenses_attributes']=[{'contact_id':cid_con}]
         process_file_fields(api_base,TOKEN,'Expense',data10['expense'],attachment_dir)
@@ -562,7 +579,7 @@ def run(n, attachment_dir=None):
             'sn':f'BX{ts}','amount':ga(),'note':f'CRM报销-关联费用{eid}',
             'user_id':primary_user_id,'want_department_id':primary_department_id,'department_id':primary_department_id,
         }}
-        fill(data11['expense_account'],info['ea'])
+        fill(data11['expense_account'],info['ea'],'ea')
         rel281=pick_apaas_value(info.get('apaas_281',[]))
         if rel281:
             data11['expense_account']['custom_relation_asset_293d2b']=rel281
