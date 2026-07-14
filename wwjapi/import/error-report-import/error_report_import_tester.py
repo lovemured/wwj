@@ -6,6 +6,7 @@ CRM Excel import helper for Lead/error-report import testing.
   环境配置:
      --env test 读取 config.test.json
      --env staging 读取 config.staging.json
+     --env staging --profile gray 读取 config.staging.gray.json 和 import/staging/gray/
      token 失效时可追加 --token '<新token>' 临时覆盖配置
 
   1. 下载模板
@@ -64,6 +65,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import uuid
@@ -228,13 +230,22 @@ def template_signature(path):
         return None
 
 
+def template_headers(path):
+    signature = template_signature(path)
+    return signature[0] if signature else None
+
+
 def template_search_dirs(args):
     dirs = []
+    env = str(getattr(args, "env", "test") or "test")
+    profile = getattr(args, "profile", None)
     for raw in (
         getattr(args, "template_dir", None),
         os.environ.get("WWJ_IMPORT_TEMPLATE_DIR"),
-        Path.cwd() / "import" / str(getattr(args, "env", "test") or "test"),
-        Path.cwd() / "templates" / "import" / str(getattr(args, "env", "test") or "test"),
+        Path.cwd() / "import" / env / profile if profile else None,
+        Path.cwd() / "templates" / "import" / env / profile if profile else None,
+        Path.cwd() / "import" / env,
+        Path.cwd() / "templates" / "import" / env,
         Path.cwd() / "templates" / "import",
         Path.home() / "Downloads",
         Path("/Users/mured/Downloads"),
@@ -255,11 +266,11 @@ def local_browser_template(args, api_template=None):
     name = f"CRM_{args.module_config['label']}_导入模板.xlsx"
     dirs = template_search_dirs(args)
     exact_candidates = [directory / name for directory in dirs]
-    api_signature = template_signature(api_template) if api_template else None
-    if api_signature:
+    api_headers = template_headers(api_template) if api_template else None
+    if api_headers:
         existing_exact_candidates = [item for item in exact_candidates if item.exists()]
         for item in existing_exact_candidates:
-            if template_signature(item) == api_signature:
+            if template_headers(item) == api_headers:
                 return item
 
         # A same-name template belongs to this module. If its headers differ
@@ -270,7 +281,7 @@ def local_browser_template(args, api_template=None):
         candidates = []
         for directory in dirs:
             candidates.extend(directory.glob("CRM_*_导入模板.xlsx"))
-        matched = [item for item in candidates if template_signature(item) == api_signature]
+        matched = [item for item in candidates if template_headers(item) == api_headers]
         if matched:
             return max(matched, key=lambda item: item.stat().st_mtime)
         return None
@@ -278,6 +289,49 @@ def local_browser_template(args, api_template=None):
     for item in exact_candidates:
         if item.exists():
             return item
+    return None
+
+
+def matching_local_business_template(args):
+    if args.module_key not in BUSINESS_TYPE_MODULES or business_type_value(args):
+        return None
+
+    local_templates = []
+    for directory in template_search_dirs(args):
+        local_templates.extend(directory.glob("CRM_*_导入模板.xlsx"))
+    if not local_templates:
+        return None
+
+    for item in list_business_types(args):
+        if item.get("status") != "enable":
+            continue
+        response = requests.get(
+            entity_loader_url(args, f"template/{args.loader_name}.xlsx"),
+            headers=auth_headers(args.token),
+            params={"custom_field_template_id": item["id"]},
+            timeout=60,
+        )
+        if response.status_code != 200:
+            continue
+
+        fd, remote_name = tempfile.mkstemp(suffix=".xlsx")
+        os.close(fd)
+        remote_path = Path(remote_name)
+        try:
+            remote_path.write_bytes(response.content)
+            remote_headers = template_headers(remote_path)
+        finally:
+            remote_path.unlink(missing_ok=True)
+        if not remote_headers:
+            continue
+
+        for local_template in local_templates:
+            if template_headers(local_template) != remote_headers:
+                continue
+            args.custom_field_template_id = str(item["id"])
+            args.business_type_resolved = True
+            print(f"业务类型: {args.module_config['label']} -> {item.get('name')}({item.get('id')})")
+            return local_template
     return None
 
 
@@ -1039,6 +1093,20 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
     name = clean_header(header)
     lower_name = name.lower()
     context = context or {}
+    if name.startswith("CRM_期初应收款余额"):
+        return None
+    if name == "单行成本":
+        return 10
+    if name == "A小数1默认10":
+        return 0.01
+    if name == "额外优惠金额-30~2百":
+        return 10
+    if name == "金额规范化的角色VB发送":
+        return 100
+    if name == "开票金额-50~300":
+        return 100
+    if name == "金额地方":
+        return 100
     if "上级客户" in name:
         if "ID" in name:
             return None
@@ -1646,7 +1714,7 @@ def import_flow(args):
         "POST", entity_loader_url(args, "upload"), token=args.token, json=upload_payload, timeout=60
     )
     print_json("entity_loaders/upload", {"http_status": status, "body": upload_data})
-    if status != 200 or upload_data.get("code") != 0:
+    if status != 200 or str(upload_data.get("code")) != "0":
         print_json(
             "upload_failed_reproduce",
             {
@@ -2120,7 +2188,7 @@ def resolve_config(args):
         raise SystemExit(f"未知环境: {env_name}，可选: {', '.join(ENV_CONFIGS)}")
 
     config = ENV_CONFIGS[env_name]
-    profile = load_config(env_name)
+    profile = load_config(env_name, getattr(args, "profile", None))
     args.env = env_name
     args.module_key = normalize_module(getattr(args, "module", None))
     args.module_config = MODULE_CONFIGS[args.module_key]
@@ -2188,9 +2256,10 @@ def full_flow(args):
     template = out_dir / f"{module_name}-template.xlsx"
     source = out_dir / f"{module_name}-source.xlsx"
 
+    browser_template = matching_local_business_template(args)
     args.output = str(template)
     download_template(args)
-    browser_template = local_browser_template(args, template)
+    browser_template = browser_template or local_browser_template(args, template)
     if browser_template and browser_template.exists():
         shutil.copyfile(browser_template, template)
         print(f"使用页面下载模板包: {browser_template}")
@@ -2300,16 +2369,26 @@ def download_error_report(error_file, output_path):
     return output
 
 
+def error_report_archive_info(path):
+    with ZipFile(path) as archive:
+        names = archive.namelist()
+    if "[Content_Types].xml" in names and "xl/workbook.xml" in names:
+        return {"type": "xlsx", "entries": len(names)}
+    return {"type": "zip", "entries": names}
+
+
 def repair_error_template_from_baseline(error_template, valid_source, repaired_output):
     src = Path(error_template)
     out = Path(repaired_output)
     if src != out:
         shutil.copyfile(src, out)
 
-    error_wb = load_workbook(out, read_only=True, data_only=False)
+    # 错误报告需要按“源文件位置”随机读取基准行。read_only 工作簿的
+    # cell() 会反复扫描 XML，200 行分片已足以让回填在写入前超时。
+    error_wb = load_workbook(out, read_only=False, data_only=False)
     error_ws = error_wb.active
     error_header_row, error_data_start = find_template_rows(error_ws)
-    baseline_wb = load_workbook(valid_source, read_only=True, data_only=False)
+    baseline_wb = load_workbook(valid_source, read_only=False, data_only=False)
     baseline_ws = baseline_wb.active
     baseline_header_row, baseline_data_start = find_template_rows(baseline_ws)
     baseline_columns = {
@@ -2317,10 +2396,21 @@ def repair_error_template_from_baseline(error_template, valid_source, repaired_o
         for col in range(1, baseline_ws.max_column + 1)
         if clean_header(baseline_ws.cell(baseline_header_row, col).value)
     }
+    source_row_column = next(
+        (
+            col
+            for col in range(1, error_ws.max_column + 1)
+            if clean_header(error_ws.cell(error_header_row, col).value) == "源文件位置"
+        ),
+        None,
+    )
 
     updates = {}
     for error_row in range(error_data_start, error_ws.max_row + 1):
-        baseline_row = baseline_data_start + error_row - error_data_start
+        source_value = error_ws.cell(error_row, source_row_column).value if source_row_column else None
+        source_match = re.search(r"第\s*(\d+)\s*行", str(source_value or ""))
+        source_index = int(source_match.group(1)) if source_match else error_row - error_data_start + 1
+        baseline_row = baseline_data_start + source_index - 1
         if baseline_row > baseline_ws.max_row:
             break
         row_updates = {}
@@ -2347,9 +2437,10 @@ def error_template_flow(args):
     error_template = out_dir / f"{module_name}-error-report.xlsx"
     repaired_source = out_dir / f"{module_name}-error-source-repaired.xlsx"
 
+    browser_template = matching_local_business_template(args)
     args.output = str(template)
     download_template(args)
-    browser_template = local_browser_template(args, template)
+    browser_template = browser_template or local_browser_template(args, template)
     if browser_template and browser_template.exists():
         shutil.copyfile(browser_template, template)
         print(f"使用页面下载模板包: {browser_template}")
@@ -2378,6 +2469,17 @@ def error_template_flow(args):
         raise RuntimeError(f"预期首次导入失败并产生错误模板，但结果为: {first_result}")
 
     download_error_report(first_result["error_file"], error_template)
+    if getattr(args, "verify_error_zip", False):
+        archive_info = error_report_archive_info(error_template)
+        print_json("error_report_archive", archive_info)
+        if archive_info["type"] != "zip":
+            raise RuntimeError(f"预期错误报告为 ZIP 压缩包，实际为 {archive_info['type']}")
+        return {
+            "valid_source": str(valid_source),
+            "first_import": first_result,
+            "error_template": str(error_template),
+            "error_report_archive": archive_info,
+        }
     repair_error_template_from_baseline(error_template, valid_source, repaired_source)
 
     args.file = str(repaired_source)
@@ -2434,6 +2536,7 @@ def build_parser():
     parser = argparse.ArgumentParser(description="CRM 导入完整流程测试工具")
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--env", choices=sorted(ENV_CONFIGS), default=None, help="预置环境，默认 test")
+    common.add_argument("--profile", choices=["gray", "standard"], default=None, help="同环境下的企业配置和模板目录")
     common.add_argument("--api", default=None, help="覆盖环境域名")
     common.add_argument("--token", default=None, help="user_token；也可用 WWJ_USER_TOKEN")
     common.add_argument("--module", default="lead", help="业务模块，例如 lead/lead-pool/customer/contact/opportunity")
@@ -2525,6 +2628,7 @@ def build_parser():
     p.add_argument("--validate-wait", type=int, default=45)
     p.add_argument("--import-wait", type=int, default=90)
     p.add_argument("--per-page", type=int, default=5)
+    p.add_argument("--verify-error-zip", action="store_true", help="验证首次失败后的错误报告为 ZIP 后停止")
     p.set_defaults(func=error_template_flow)
 
     p = sub.add_parser("lead-error-template-flow", parents=[common])

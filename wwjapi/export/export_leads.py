@@ -198,6 +198,7 @@ def main():
     parser.add_argument("--api")
     parser.add_argument("--token")
     parser.add_argument("--env", choices=["test", "staging", "production"])
+    parser.add_argument("--profile", choices=["gray", "standard"])
     parser.add_argument("--page", type=int, help="导出指定页")
     parser.add_argument("--all-pages", action="store_true", help="导出全部页")
     parser.add_argument("--calculate-only", action="store_true", help="只计算导出页")

@@ -1398,6 +1398,7 @@ def main():
     parser.add_argument("--api")
     parser.add_argument("--token")
     parser.add_argument("--env", choices=["test", "staging", "production"])
+    parser.add_argument("--profile", choices=["gray", "standard"])
     parser.add_argument("--cnt", type=int, default=1)
     parser.add_argument("--market-template-id", type=int, default=844)
     parser.add_argument("--lead-template-id", type=int, default=805)

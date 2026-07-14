@@ -133,6 +133,7 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument('--api'); p.add_argument('--token')
     p.add_argument('--env', choices=['test','staging','production'])
+    p.add_argument('--profile', choices=['gray','standard'])
     p.add_argument('cnt',nargs='?',type=int,default=1); p.add_argument('--delay',type=float,default=0.5)
     p.add_argument('--type',choices=['received_payment','invoiced_payment'],default='received_payment')
     p.add_argument('--attachment-dir',help='本地图片目录,上传到文件字段')

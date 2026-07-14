@@ -586,6 +586,7 @@ def main():
     p=argparse.ArgumentParser(description='完整CRM流程(含全部字段)')
     p.add_argument('--api'); p.add_argument('--token')
     p.add_argument('--env', choices=['test','staging','production'])
+    p.add_argument('--profile', choices=['gray','standard'])
     p.add_argument('cnt',nargs='?',type=int,default=1)
     p.add_argument('--attachment-dir',help='本地附件目录,随机取图片上传到文件字段')
     a=apply_config_defaults(p.parse_args(), p)

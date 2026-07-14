@@ -145,6 +145,7 @@ def main():
     p.add_argument("--api",help="API域名")
     p.add_argument("--token",help="Token")
     p.add_argument("--env", choices=["test", "staging", "production"])
+    p.add_argument("--profile", choices=["gray", "standard"])
     p.add_argument("count",nargs="?",type=int,default=1)
     p.add_argument("--delay",type=float,default=0.3)
     p.add_argument("--attachment-dir",help="本地附件目录,随机取图片上传到文件字段")

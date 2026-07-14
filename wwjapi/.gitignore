@@ -2,6 +2,7 @@ config.json
 config.test.json
 config.staging.json
 config.production.json
+config.*.*.json
 .DS_Store
 .idea/
 .codex_spreadsheets/
@@ -10,5 +11,6 @@ __pycache__/
 *.pyc
 outputs/
 import/outputs/
+import/staging/
 import/error-report-import/outputs/
 story-*-error-report-direct-import-testcases.md

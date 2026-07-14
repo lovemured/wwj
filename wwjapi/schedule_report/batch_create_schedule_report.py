@@ -231,6 +231,7 @@ def main():
     parser.add_argument("--api")
     parser.add_argument("--token")
     parser.add_argument("--env", choices=["test", "staging", "production"])
+    parser.add_argument("--profile", choices=["gray", "standard"])
     parser.add_argument("count", nargs="?", type=int, default=1)
     parser.add_argument("--cycle", choices=["daily", "weekly", "monthly"], default="daily")
     parser.add_argument("--summary")
