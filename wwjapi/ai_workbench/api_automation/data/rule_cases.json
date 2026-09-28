@@ -1,0 +1,42 @@
+{
+  "overdue_before_today": [
+    {
+      "value": "2026-09-14T23:59:59",
+      "today": "2026-09-15",
+      "expected": true
+    },
+    {
+      "value": "2026-09-15T00:00:00",
+      "today": "2026-09-15",
+      "expected": false
+    },
+    {
+      "value": "2026-09-15T23:59:59",
+      "today": "2026-09-15",
+      "expected": false
+    }
+  ],
+  "priority_cases": [
+    {
+      "values": ["常规"],
+      "expected": "常规"
+    },
+    {
+      "values": ["常规", "重要"],
+      "expected": "重要"
+    },
+    {
+      "values": ["重要", "紧急"],
+      "expected": "紧急"
+    },
+    {
+      "values": ["常规", "重要", "紧急"],
+      "expected": "紧急"
+    }
+  ],
+  "charge_case": {
+    "todo_categories": ["任务", "任务", "下次跟进"],
+    "called_cards": ["重点商机", "重点商机", "待跟进客户"],
+    "expected": 4
+  }
+}
