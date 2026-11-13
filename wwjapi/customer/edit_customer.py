@@ -2,8 +2,11 @@
 """编辑客户 - 所有字段值不能和编辑前一样
 使用: python3 /tmp/edit_customer.py --api https://xxx.com --token xxx --id 客户ID
 """
-import requests,json,random,string,argparse
+import requests,json,random,string,argparse,sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from datetime import datetime,timedelta
+from lib.config import apply_config_defaults
 
 def fetch(api,path,token,pc=False):
     base=api.rstrip("/")+("/api/pc" if pc else "/api/v2")
@@ -38,10 +41,12 @@ ROADS=["科技路","创新路","发展大道","人民路","建设路","中山路
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument("--api",required=True)
-    p.add_argument("--token",required=True)
+    p.add_argument("--api")
+    p.add_argument("--token")
+    p.add_argument("--env", choices=["test", "staging", "production"])
+    p.add_argument("--profile", choices=["standard"])
     p.add_argument("--id",required=True,type=int)
-    a=p.parse_args()
+    a=apply_config_defaults(p.parse_args(), p)
 
     api=a.api.rstrip("/")
     token=a.token

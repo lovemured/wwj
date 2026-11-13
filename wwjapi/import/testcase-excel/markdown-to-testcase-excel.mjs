@@ -118,7 +118,7 @@ function parseMarkdown(markdown, fallbackTitle) {
 
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
-    if (line.startsWith("### ")) {
+    if (line.startsWith("## ") || line.startsWith("### ")) {
       currentSection = stripSectionPrefix(line);
       continue;
     }
@@ -382,4 +382,3 @@ main().catch((error) => {
   console.error(error.message);
   process.exit(1);
 });
-

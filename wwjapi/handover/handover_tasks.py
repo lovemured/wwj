@@ -14,7 +14,7 @@
       --action detail --task-no 任务编号
 """
 import argparse
-from handover_common import api, infer_pc_api, STATUS_MAP
+from handover_common import api, apply_config_defaults, infer_pc_api, STATUS_MAP
 
 
 def list_tasks(pc_api, token, operator_uid, status=None, page=1, page_size=10):
@@ -109,8 +109,10 @@ def task_detail(pc_api, token, task_no):
 
 def main():
     p = argparse.ArgumentParser(description='查询交接任务')
-    p.add_argument('--api', required=True, help='API域名')
-    p.add_argument('--token', required=True, help='Token')
+    p.add_argument('--api', help='API域名')
+    p.add_argument('--token', help='Token')
+    p.add_argument('--env', choices=['test', 'staging', 'production'])
+    p.add_argument('--profile', choices=['standard'])
     p.add_argument('--action', required=True, choices=['list', 'detail'],
                    help='list: 任务列表 | detail: 任务详情')
     p.add_argument('--operator-uid', type=int, help='操作人UID（list模式必需）')
@@ -119,7 +121,7 @@ def main():
                    help='任务状态筛选 0待执行 1执行中 2已完成 3执行失败 4部分成功')
     p.add_argument('--page', type=int, default=1, help='页码')
     p.add_argument('--page-size', type=int, default=10, help='每页数量')
-    a = p.parse_args()
+    a = apply_config_defaults(p.parse_args(), p)
 
     pc_api = infer_pc_api(a.api)
     print(f'API: {pc_api}')

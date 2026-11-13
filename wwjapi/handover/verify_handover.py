@@ -3,7 +3,7 @@
 import sys, os, json, time, io
 
 sys.path.insert(0, os.path.dirname(__file__))
-from handover_common import api, infer_pc_api, STATUS_MAP
+from handover_common import api, apply_config_defaults, infer_pc_api, STATUS_MAP
 import create_handover
 import handover_tasks
 import resume_handover
@@ -111,12 +111,14 @@ def verify(pc_api, token, from_uid, to_uid, operator_uid):
 def main():
     import argparse
     p = argparse.ArgumentParser(description='一键验证交接模块')
-    p.add_argument('--api', required=True, help='API域名')
-    p.add_argument('--token', required=True, help='Token')
+    p.add_argument('--api', help='API域名')
+    p.add_argument('--token', help='Token')
+    p.add_argument('--env', choices=['test', 'staging', 'production'])
+    p.add_argument('--profile', choices=['standard'])
     p.add_argument('--from-user', type=int, required=True, help='源用户UID')
     p.add_argument('--to-user', type=int, required=True, help='目标用户UID')
     p.add_argument('--operator-uid', type=int, required=True, help='操作人UID')
-    a = p.parse_args()
+    a = apply_config_defaults(p.parse_args(), p)
 
     pc_api = infer_pc_api(a.api)
     print(f'API: {pc_api}')

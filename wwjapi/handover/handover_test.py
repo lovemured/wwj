@@ -42,6 +42,7 @@
       --modules lead,customer --operator-uid 操作人UID
 """
 import requests, argparse, sys, json, time
+from handover_common import apply_config_defaults
 
 PC_API = None
 TOKEN = None
@@ -360,8 +361,10 @@ def full_flow(from_user_uid, to_user_uid, assist_user_uid, modules, module_names
 
 def main():
     p = argparse.ArgumentParser(description='员工交接接口测试脚本')
-    p.add_argument('--api', required=True, help='API域名，如 https://lxcrm-staging.weiwenjia.com')
-    p.add_argument('--token', required=True, help='Token')
+    p.add_argument('--api', help='API域名，如 https://lxcrm-staging.weiwenjia.com')
+    p.add_argument('--token', help='Token')
+    p.add_argument('--env', choices=['test', 'staging', 'production'])
+    p.add_argument('--profile', choices=['standard'])
     p.add_argument('--action', required=True,
                    choices=['check_assets', 'check_capacity', 'create', 'list_tasks',
                             'task_detail', 'resume', 'full'],
@@ -381,7 +384,7 @@ def main():
     p.add_argument('--page', type=int, default=1, help='页码')
     p.add_argument('--page-size', type=int, default=10, help='每页数量')
 
-    a = p.parse_args()
+    a = apply_config_defaults(p.parse_args(), p)
 
     global PC_API, TOKEN, HEADERS
     # 推断 PC API 域名

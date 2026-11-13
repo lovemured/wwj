@@ -2,5 +2,13 @@
   "api": "https://your-api.example.com",
   "token": "replace-with-your-token",
   "member_token": "replace-with-your-member-token",
-  "attachment_dir": "/path/to/attachments"
+  "attachment_dir": "/path/to/attachments",
+  "database": {
+    "host": "your-mysql-host",
+    "port": 3306,
+    "name": "your_database",
+    "user": "your_user",
+    "password": "replace-with-your-password",
+    "charset": "utf8mb4"
+  }
 }

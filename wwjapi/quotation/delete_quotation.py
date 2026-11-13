@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """删除报价单 - 优先删除最早创建的"""
-import requests,argparse,time
+import requests,argparse,time,sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib.config import apply_config_defaults
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--api',required=True); p.add_argument('--token',required=True)
+    p=argparse.ArgumentParser(); p.add_argument('--api'); p.add_argument('--token'); p.add_argument('--env', choices=['test', 'staging', 'production']); p.add_argument('--profile', choices=['standard'])
     p.add_argument('--id',type=int,default=0); p.add_argument('--count',type=int,default=0)
-    a=p.parse_args(); api=a.api.rstrip('/'); H={'Authorization':f'Token token={a.token}'}; v2=f'{api}/api/v2'
+    a=apply_config_defaults(p.parse_args(), p); api=a.api.rstrip('/'); H={'Authorization':f'Token token={a.token}'}; v2=f'{api}/api/v2'
     if a.id:
         r=requests.delete(f'{v2}/quotations/{a.id}',headers=H)
         res=r.json()

@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """编辑报价单 - 所有字段值不能和编辑前一样"""
-import requests,json,random,string,argparse,time
+import requests,json,random,string,argparse,time,sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from datetime import datetime,timedelta
+from lib.config import apply_config_defaults
 def fetch(api,path,token,pc=False):
     base=api.rstrip('/')+('/api/pc' if pc else '/api/v2')
     return requests.get(f"{base}/{path.lstrip('/')}",headers={'Authorization':f'Token token={token}'},timeout=15).json()
@@ -15,8 +18,8 @@ def rd(): return round(random.uniform(100,99999),2)
 def rf(): return (datetime.now()+timedelta(days=random.randint(1,30))).strftime('%Y-%m-%d')
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--api',required=True); p.add_argument('--token',required=True); p.add_argument('--id',required=True,type=int)
-    a=p.parse_args(); api=a.api.rstrip('/'); token=a.token
+    p=argparse.ArgumentParser(); p.add_argument('--api'); p.add_argument('--token'); p.add_argument('--env', choices=['test', 'staging', 'production']); p.add_argument('--profile', choices=['standard']); p.add_argument('--id',required=True,type=int)
+    a=apply_config_defaults(p.parse_args(), p); api=a.api.rstrip('/'); token=a.token
     r=requests.get(f"{api}/api/v2/quotations/{a.id}",headers={'Authorization':f'Token token={token}'})
     old=r.json().get('data',{}); 
     if not old.get('id'): print('报价单不存在'); return

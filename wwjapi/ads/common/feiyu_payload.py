@@ -4,6 +4,8 @@ import time
 
 from faker import Faker
 
+from common.field_mapping import SOURCE_FIELD_PATHS
+
 
 fake = Faker("zh_CN")
 
@@ -20,53 +22,7 @@ HEADERS = {
     "x-path": "/pc/crm/feiyu/management/clue-push-rule/add-edit-config",
 }
 
-MAP_NORMAL = {
-    "telphone": "address.phone",
-    "weixin": "address.wechat",
-    "adv_id": "adv_id",
-    "site_name": "site_name",
-    "store_id": "store_id",
-    "site_id": "site_id",
-    "date": "date",
-    "create_time": "create_time",
-    "clue_convert_status": "clue_convert_status",
-    "promotion_id": "promotion_id",
-    "id": "id",
-    "app_name": "app_name",
-    "clue_source": "clue_source",
-    "ad_name": "ad_name",
-    "form_remark": "form_remark",
-    "promotion_name": "promotion_name",
-    "store_name": "store_name",
-    "location": "location",
-    "county_name": "county_name",
-    "email": "email",
-    "province_name": "province_name",
-    "adv_name": "adv_name",
-    "ad_id": "ad_id",
-    "business": "business",
-    "store_remark": "store_remark",
-    "store_address": "store_address",
-    "store_location": "store_location",
-    "store_pack_remark": "store_pack_remark",
-    "remark_dict": "remark_dict",
-    "address": "address",
-    "city_name": "city_name",
-    "module_id": "module_id",
-    "store_pack_id": "store_pack_id",
-    "qq": "qq",
-    "remark": "remark",
-    "name": "name",
-    "cid": "cid",
-    "gender": "gender",
-    "store_pack_name": "store_pack_name",
-    "clue_data_source_detail": "clue_data_source_detail",
-    "req_id": "req_id",
-    "clue_type": "clue_type",
-    "module_name": "module_name",
-    "age": "age",
-    "external_url": "external_url",
-}
+MAP_NORMAL = SOURCE_FIELD_PATHS
 
 MAP_NORMAL_TYPE_KEYS = [
     "adv_id",
@@ -142,7 +98,7 @@ def r_digit(k):
     return ''.join(random.choices(string.digits, k=k))
 
 
-def gen_data(include_source=False):
+def gen_data(include_source=False, clue_info_overrides=None):
     ts = str(int(time.time()))
     r6 = r_digit(6)
     r8 = r_digit(8)
@@ -190,6 +146,8 @@ def gen_data(include_source=False):
     }
     if include_source:
         clue_info["source"] = "搜客宝🏠"
+    if clue_info_overrides:
+        clue_info.update(clue_info_overrides)
 
     return {
         "rule": {

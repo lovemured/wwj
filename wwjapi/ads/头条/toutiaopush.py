@@ -25,8 +25,8 @@ COOKIE = {
 
 
 # 单次推送 + 打印返回值（方便排查失败）
-def send_once():
-    data = gen_data(include_source=True)
+def send_once(clue_info_overrides=None):
+    data = gen_data(include_source=True, clue_info_overrides=clue_info_overrides)
     try:
         resp = requests.post(URL, headers=HEADERS, cookies=COOKIE, json=data, verify=False, timeout=10)
         resp.raise_for_status()

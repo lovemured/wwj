@@ -33,6 +33,7 @@ API_BASE = ""
 CHECKIN_API = ""
 CUSTOM_FIELD_CACHE = {}
 CUSTOM_FIELD_DETAIL_CACHE = {}
+TODAY_CARDS = False
 
 
 def api_base(api):
@@ -139,6 +140,10 @@ def rid(prefix):
 def date_after(days, with_time=False):
     value = datetime.now() + timedelta(days=days)
     return value.strftime("%Y-%m-%d %H:%M:%S" if with_time else "%Y-%m-%d")
+
+
+def card_date(days, with_time=False):
+    return date_after(0 if TODAY_CARDS else days, with_time)
 
 
 def money():
@@ -649,7 +654,7 @@ def create_lead(user, market_activity_id, args):
             "source": None,
             "note": f"{name} 备注",
             "channel": None,
-            "revisit_remind_at": date_after(7, True)[:-3],
+            "revisit_remind_at": card_date(7, True)[:-3],
             "user_id": user["id"],
             "owned_department_id": user.get("department_id"),
             "approve_status": "approved",
@@ -740,7 +745,7 @@ def create_customer_from_lead(user, lead_id, lead_detail, args):
             "staff_size": 2103252,
             "note": f"{customer_name} 备注",
             "channel": 2103259,
-            "revisit_remind_at": lead_detail.get("revisit_remind_at") or date_after(7, True)[:-3],
+            "revisit_remind_at": lead_detail.get("revisit_remind_at") or card_date(7, True)[:-3],
             "user_field_asset_2b77c3": [user.get("department_id")],
             "user_id": user["id"],
             "owned_department_id": user.get("department_id"),
@@ -839,14 +844,14 @@ def create_opportunity(user, customer_id, contact_id, products, args):
             "contact_assetships_attributes": contact_assetships,
             "product_assets_attributes": assets,
             "expect_amount": total,
-            "expect_sign_date": date_after(60),
+            "expect_sign_date": card_date(60),
             "get_time": date_after(0),
             "note": f"{title} 备注",
             "text_asset_c1553e": str(total),
             "stage": random.choice(field_values.get("stage") or [2103276]),
             "source": random.choice(field_values.get("source") or [2103268]),
             "kind": random.choice(field_values.get("kind") or [2103282]),
-            "revisit_remind_at": date_after(7, True)[:-3],
+            "revisit_remind_at": card_date(7, True)[:-3],
             "text_asset_638666": f"{title} 单行文本",
             "text_asset_dfe927": f"{rid('oppmail').lower()}@example.com",
             "text_asset_185333": "138" + "".join(random.choices(string.digits, k=8)),
@@ -889,6 +894,8 @@ def create_quotation(user, customer_id, contact_id, opportunity_id, total, produ
     attachment_id = upload_to_oss(API, TOKEN, None)
     user_ids = get_simple_users(5)
     assist_user_ids = [uid for uid in user_ids if uid != user["id"]][:3]
+    field_values = field_map_values("Quotation")
+    quotation_contact_ids = get_pc_user_ids(5)
     relation_335 = fetch_apaas_values(335)
     data = {
         "quotation": {
@@ -904,6 +911,7 @@ def create_quotation(user, customer_id, contact_id, opportunity_id, total, produ
             "total_amount": total,
             "subsidiary_id": args.quotation_subsidiary_id,
             "address_attributes": {
+                "contact": random.choice(quotation_contact_ids) if quotation_contact_ids else user["id"],
                 "contact_phone": "138" + "".join(random.choices(string.digits, k=8)),
                 "contact_email": f"{rid('quotecontact').lower()}@example.com",
             },
@@ -914,7 +922,7 @@ def create_quotation(user, customer_id, contact_id, opportunity_id, total, produ
             "title": f"{name} 主标题",
             "sub_title": f"{name} 副标题",
             "note": f"{name} 备注",
-            "revisit_remind_at": date_after(7, True)[:-3],
+            "revisit_remind_at": card_date(7, True)[:-3],
             "text_asset_9480b6": f"{name} 单行文本",
             "text_asset_21d24d": f"{rid('quotemail').lower()}@example.com",
             "text_asset_7a8f30": "139" + "".join(random.choices(string.digits, k=8)),
@@ -938,7 +946,7 @@ def create_quotation(user, customer_id, contact_id, opportunity_id, total, produ
             "user_field_asset_94a823": [user.get("department_id")],
             "custom_relation_asset_9b5c46": relation_335[0] if relation_335 else None,
             "subform_asset_7b9c48": [],
-            "status": 2103411,
+            "status": random.choice(field_values.get("status") or [2103411]),
             "attachment_ids": [attachment_id] if attachment_id else [],
             "user_id": user["id"],
             "owned_department_id": user.get("department_id"),
@@ -1008,7 +1016,7 @@ def create_contract(user, customer_id, opportunity_id, quotation_id, contact_id,
             "payment_type": random.choice(field_values.get("payment_type") or [2103292]),
             "attachment_ids": [attachment_id] if attachment_id else [],
             "received_payment_plans_attributes": [],
-            "revisit_remind_at": date_after(7, True)[:-3],
+            "revisit_remind_at": card_date(7, True)[:-3],
             "special_terms": f"{title} 特殊条款",
             "user_id": user["id"],
             "owned_department_id": user.get("department_id"),
@@ -1159,7 +1167,7 @@ def create_checkin_plan(user, customer_id):
     name = rid("移动拜访计划-")
     relation_335 = fetch_apaas_values(335)
     start_at = date_after(0, True)[:-3]
-    end_at = date_after(3, True)[:-3]
+    end_at = card_date(3, True)[:-3]
     data = {
         "checkin_plan": {
             "name": name,
@@ -1295,8 +1303,8 @@ def create_revisit_log(user, contact_id, contract_id, args):
             "loggable_id": str(contract_id),
             "loggable_type": "Contract",
             "real_revisit_at": date_after(0, True)[:-3],
-            "revisit_remind_at": date_after(7, True)[:-3],
-            "remind_at": date_after(7, True)[:-3],
+            "revisit_remind_at": card_date(7, True)[:-3],
+            "remind_at": card_date(7, True)[:-3],
             "contentLabel": "跟进内容",
             "content": f"{title} 内容",
             "affiliatedOthers_label": "",
@@ -1553,23 +1561,32 @@ def run_once(index, args):
     contract_id = require_id("新增合同", contract_resp)
     print(f"  ✅ 8/17 合同: {contract_id} {contract_title}")
 
-    plan_resp = create_received_payment_plans(contract_id, total)
-    if plan_resp.get("code") != 0:
-        raise RuntimeError(f"新增回款计划失败: {plan_resp}")
-    plan_id = first_id(plan_resp.get("data")) or first_received_payment_plan_id(contract_id)
-    print(f"  ✅ 9/17 回款计划: {plan_id or '-'}")
+    if args.skip_repayments:
+        plan_id = None
+        received_payment_id = None
+        print("  ○ 9/17-10/17 跳过回款计划和回款记录")
+    else:
+        plan_resp = create_received_payment_plans(contract_id, total)
+        if plan_resp.get("code") != 0:
+            raise RuntimeError(f"新增回款计划失败: {plan_resp}")
+        plan_id = first_id(plan_resp.get("data")) or first_received_payment_plan_id(contract_id)
+        print(f"  ✅ 9/17 回款计划: {plan_id or '-'}")
 
-    received_payment_resp, received_payment_title = create_received_payment(
-        user, customer_id, contract_id, plan_id, round(total * 0.5, 2), args
-    )
-    received_payment_id = require_id("新增回款记录", received_payment_resp)
-    print(f"  ✅ 10/17 回款记录: {received_payment_id} {received_payment_title}")
+        received_payment_resp, received_payment_title = create_received_payment(
+            user, customer_id, contract_id, plan_id, round(total * 0.5, 2), args
+        )
+        received_payment_id = require_id("新增回款记录", received_payment_resp)
+        print(f"  ✅ 10/17 回款记录: {received_payment_id} {received_payment_title}")
 
-    invoiced_payment_resp, invoiced_payment_title = create_invoiced_payment(
-        user, customer_id, contract_id, round(total * 0.5, 2), args
-    )
-    invoiced_payment_id = require_id("新增开票记录", invoiced_payment_resp)
-    print(f"  ✅ 11/17 开票记录: {invoiced_payment_id} {invoiced_payment_title}")
+    if args.skip_accounting:
+        invoiced_payment_id = None
+        print("  ○ 11/17 跳过开票记录")
+    else:
+        invoiced_payment_resp, invoiced_payment_title = create_invoiced_payment(
+            user, customer_id, contract_id, round(total * 0.5, 2), args
+        )
+        invoiced_payment_id = require_id("新增开票记录", invoiced_payment_resp)
+        print(f"  ✅ 11/17 开票记录: {invoiced_payment_id} {invoiced_payment_title}")
 
     checkin_plan_resp, checkin_plan_name = create_checkin_plan(user, customer_id)
     checkin_plan_id = require_id("新增拜访计划", checkin_plan_resp)
@@ -1589,19 +1606,31 @@ def run_once(index, args):
     revisit_log_id = require_id("新增合同跟进记录", revisit_log_resp)
     print(f"  ✅ 14/17 合同跟进记录: {revisit_log_id} {revisit_log_title}")
 
-    expense_resp, expense_title = create_expense(
-        user, customer_id, contact_id, contract_id, revisit_log_id, checkin_visit_id, round(total * 0.1, 2), args
-    )
-    expense_id = require_id("新增费用", expense_resp)
-    print(f"  ✅ 15/17 费用: {expense_id} {expense_title}")
+    if args.skip_accounting:
+        expense_id = None
+        expense_account_id = None
+        print("  ○ 15/17-16/17 跳过费用和报销单")
+    else:
+        expense_resp, expense_title = create_expense(
+            user, customer_id, contact_id, contract_id, revisit_log_id, checkin_visit_id, round(total * 0.1, 2), args
+        )
+        expense_id = require_id("新增费用", expense_resp)
+        print(f"  ✅ 15/17 费用: {expense_id} {expense_title}")
 
-    expense_account_resp, expense_account_title = create_expense_account(user, expense_id, round(total * 0.1, 2), args)
-    expense_account_id = require_id("新增报销单", expense_account_resp)
-    print(f"  ✅ 16/17 报销单: {expense_account_id} {expense_account_title}")
+        expense_account_resp, expense_account_title = create_expense_account(user, expense_id, round(total * 0.1, 2), args)
+        expense_account_id = require_id("新增报销单", expense_account_resp)
+        print(f"  ✅ 16/17 报销单: {expense_account_id} {expense_account_title}")
 
-    schedule_report_resp, schedule_report_title = create_schedule_report(user, args)
-    schedule_report_id = require_id("新增工作报告", schedule_report_resp)
-    print(f"  ✅ 17/17 工作报告: {schedule_report_id} {schedule_report_title}")
+    if args.skip_work_report:
+        schedule_report_id = None
+        print("  ○ 17/17 跳过工作报告")
+    else:
+        schedule_report_resp, schedule_report_title = create_schedule_report(user, args)
+        schedule_report_id = extract_id(schedule_report_resp)
+        if schedule_report_id:
+            print(f"  ✅ 17/17 工作报告: {schedule_report_id} {schedule_report_title}")
+        else:
+            print(f"  ⚠ 17/17 工作报告未创建，不影响主数据: {schedule_report_resp}")
 
     return {
         "products": [item.get("id") for item in products],
@@ -1629,7 +1658,7 @@ def main():
     parser.add_argument("--api")
     parser.add_argument("--token")
     parser.add_argument("--env", choices=["test", "staging", "production"])
-    parser.add_argument("--profile", choices=["gray", "standard"])
+    parser.add_argument("--profile", choices=["standard"])
     parser.add_argument("--cnt", type=int, default=1)
     parser.add_argument("--market-template-id", type=int)
     parser.add_argument("--lead-template-id", type=int)
@@ -1642,14 +1671,35 @@ def main():
     parser.add_argument("--product-count", type=int, default=2)
     parser.add_argument("--schedule-report-cycle", choices=["daily", "weekly", "monthly"], default="daily")
     parser.add_argument("--schedule-report-cc-count", type=int, default=2)
+    parser.add_argument(
+        "--ai-workbench-data",
+        action="store_true",
+        help="将看板关键日期设置为今天，用于回归环境造数",
+    )
+    parser.add_argument(
+        "--skip-work-report",
+        action="store_true",
+        help="造数时跳过工作报告",
+    )
+    parser.add_argument(
+        "--skip-repayments",
+        action="store_true",
+        help="造数时跳过回款计划和回款记录",
+    )
+    parser.add_argument(
+        "--skip-accounting",
+        action="store_true",
+        help="造数时跳过开票、费用和报销单",
+    )
     parser.add_argument("--attachment-dir", help="本地附件目录，用于市场活动图片/文件/附件字段")
     args = apply_config_defaults(parser.parse_args(), parser)
 
-    global API, API_BASE, CHECKIN_API, TOKEN
+    global API, API_BASE, CHECKIN_API, TOKEN, TODAY_CARDS
     API = args.api.rstrip("/")
     API_BASE = api_base(API)
     CHECKIN_API = checkin_api_base(API)
     TOKEN = args.token
+    TODAY_CARDS = args.ai_workbench_data
     resolve_template_ids(args)
 
     print(f"{'=' * 60}\n移动端CRM创建全流程\nAPI: {API}\n轮数: {args.cnt}\n{'=' * 60}")

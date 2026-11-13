@@ -2,13 +2,16 @@
 """删除商机 - 优先删除创建时间最早的
 使用: python3 delete_opportunity.py --api https://xxx.com --token xxx --id 商机ID
       python3 delete_opportunity.py --api https://xxx.com --token xxx --count 5"""
-import requests,argparse,time
+import requests,argparse,time,sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib.config import apply_config_defaults
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument('--api',required=True); p.add_argument('--token',required=True)
+    p.add_argument('--api'); p.add_argument('--token'); p.add_argument('--env', choices=['test', 'staging', 'production']); p.add_argument('--profile', choices=['standard'])
     p.add_argument('--id',type=int,default=0); p.add_argument('--count',type=int,default=0)
-    a=p.parse_args()
+    a=apply_config_defaults(p.parse_args(), p)
     api=a.api.rstrip('/'); H={'Authorization':f'Token token={a.token}'}; v2=f'{api}/api/v2'
     if a.id:
         r=requests.delete(f'{v2}/opportunities/{a.id}',headers=H)

@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 """编辑回款/开票记录 - 精简版"""
-import requests,json,random,string,argparse
+import requests,json,random,string,argparse,sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from datetime import datetime,timedelta
+from lib.config import apply_config_defaults
 def rp(): return random.choice(['138','139','150','151','186','187','188','189'])+''.join(random.choices(string.digits,k=8))
 def re(): return ''.join(random.choices(string.ascii_lowercase,k=8))+'@'+random.choice(['qq.com','163.com','126.com','gmail.com'])
 def rt(): return ''.join(random.choices(string.ascii_letters+string.digits,k=random.randint(5,15)))
 def ri(): return random.randint(10000,99999); rd=lambda: round(random.uniform(100,99999),2)
 def rf(): return (datetime.now()+timedelta(days=random.randint(1,30))).strftime('%Y-%m-%d')
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--api',required=True); p.add_argument('--token',required=True)
+    p=argparse.ArgumentParser(); p.add_argument('--api'); p.add_argument('--token'); p.add_argument('--env', choices=['test', 'staging', 'production']); p.add_argument('--profile', choices=['standard'])
     p.add_argument('--type',choices=['received_payment','invoiced_payment'],default='received_payment')
     p.add_argument('--id',required=True,type=int)
-    a=p.parse_args(); api=a.api.rstrip('/'); t=a.type
+    a=apply_config_defaults(p.parse_args(), p); api=a.api.rstrip('/'); t=a.type
     H={'Authorization':f'Token token={a.token}'}
     r=requests.get(f"{api}/api/v2/{t}s/{a.id}",headers=H)
     old=r.json().get('data',{})

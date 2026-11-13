@@ -441,7 +441,7 @@ def main():
     parser = argparse.ArgumentParser(description="线索池 + 客户公海冒烟流程")
     parser.add_argument("--api")
     parser.add_argument("--env", choices=["test", "staging", "production"])
-    parser.add_argument("--profile", choices=["gray", "standard"])
+    parser.add_argument("--profile", choices=["standard"])
     parser.add_argument("--token", help="兼容参数，等价于 --admin-token")
     parser.add_argument("--admin-token", help="线索池/客户公海管理员token，用于创建、转入、查询配置")
     parser.add_argument("--member-token", help="线索池/客户公海成员token，用于抢回")

@@ -1,3 +1,4 @@
+import json
 import time
 import random
 import string
@@ -8,20 +9,28 @@ fake = Faker("zh_CN")
 
 from common.publicdata import GetRequestdata
 from common.request_util import RequestUtil
+from common.field_mapping import map_common_fields
 
 
 class CreateAdvertising:
 
-    def baidu_advertising(self, url=None):
+    def baidu_advertising(
+        self, url=None, phone=None, wechat=None, name=None, company_name=None,
+        country=None, province=None, city=None, district=None, email=None,
+        qq=None, tel=None, detail_address=None, note=None, department=None,
+        job=None
+    ):
         # ===================== 核心：所有字段自动生成（每次都不同）=====================
         timestamp = str(int(time.time()))  # 时间戳，保证唯一
         random_6 = str(random.randint(100000, 999999))  # 6位随机数
         random_8 = ''.join(random.choices(string.digits, k=8))  # 8位随机字符串
 
         # 自动生成：姓名 + 手机号 +wx号
-        auto_name = fake.name()
-        auto_phone = fake.phone_number()
-        auto_wx = fake.phone_number()
+        auto_name = name or fake.name()
+        while name is None and len(auto_name) not in (2, 3):
+            auto_name = fake.name()
+        auto_phone = phone or fake.phone_number()
+        auto_wx = wechat or auto_phone
 
         # 自动生成：广告主ID / 广告计划ID / 组件ID（全部唯一）
         auto_adv_id = f"352690{random_6}"
@@ -45,7 +54,6 @@ class CreateAdvertising:
             "clue_source": 1,
             "adv_name": auto_adv_name,
             "ad_name": f"测试计划名称_{timestamp}",
-            "name": auto_name,
             "cid": 0,
             "gender": "男",
             "source": "搜客宝22🏠",
@@ -53,14 +61,29 @@ class CreateAdvertising:
             "external_url": "https://ad.toutiao.com/tetris/page/66959075793122090F234AE4/",
             "site_name": "",
             "store_id": 0,
-            "address.phone": auto_phone,
-            "address.wechat": auto_wx,
             "create_time": "1584498183",
             "clue_convert_status": "广告预览",
             "id": auto_id,
             "ad_id": auto_ad_id,
             "req_id": f"202003181021430100140432190F{random_6}"
         }
+        body.update(map_common_fields({
+            "name": auto_name,
+            "company_name": company_name,
+            "phone": auto_phone,
+            "wechat": auto_wx,
+            "email": email,
+            "qq": qq,
+            "tel": tel,
+            "detail_address": detail_address,
+            "country": country,
+            "province": province,
+            "city": city,
+            "district": district,
+            "note": note,
+            "department": department,
+            "job": job,
+        }))
 
         # 发送请求
         response = RequestUtil().all_send_request(
@@ -69,4 +92,10 @@ class CreateAdvertising:
             json=body,
             verify=False
         )
-        print("✅ 推送成功 →", response.text)
+        result = {
+            "http_status": response.status_code,
+            "request_data": body,
+            "response": response.text,
+        }
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return result

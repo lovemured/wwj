@@ -4,7 +4,7 @@
   python3 resume_handover.py --api https://域名 --token xxx --task-no 任务编号
 """
 import argparse
-from handover_common import api, infer_pc_api, STATUS_MAP
+from handover_common import api, apply_config_defaults, infer_pc_api, STATUS_MAP
 
 
 def resume(pc_api, token, task_no):
@@ -43,10 +43,12 @@ def resume(pc_api, token, task_no):
 
 def main():
     p = argparse.ArgumentParser(description='恢复交接任务')
-    p.add_argument('--api', required=True, help='API域名')
-    p.add_argument('--token', required=True, help='Token')
+    p.add_argument('--api', help='API域名')
+    p.add_argument('--token', help='Token')
+    p.add_argument('--env', choices=['test', 'staging', 'production'])
+    p.add_argument('--profile', choices=['standard'])
     p.add_argument('--task-no', required=True, help='任务编号')
-    a = p.parse_args()
+    a = apply_config_defaults(p.parse_args(), p)
 
     pc_api = infer_pc_api(a.api)
     print(f'API: {pc_api}')

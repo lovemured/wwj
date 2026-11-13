@@ -6,7 +6,6 @@ CRM Excel import helper for Lead/error-report import testing.
   环境配置:
      --env test 读取 config.test.json
      --env staging 读取 config.staging.json
-     --env staging --profile gray 读取 config.staging.gray.json 和 import/staging/gray/
      token 失效时可追加 --token '<新token>' 临时覆盖配置
 
   1. 下载模板
@@ -163,12 +162,13 @@ ENV_CONFIGS = {
     "production": {
         "api": "https://lxcrm.weiwenjia.com",
         "faye_url": DEFAULT_FAYE_URL,
-        "entity_loader_prefix": "/api/entity_loaders",
+        "entity_loader_prefix": "/api/pc/entity_loaders",
         "entity_loader_new_prefix": "/api/pc/entity_loaders",
         "entity_loader_history_prefix": "/api/pc/entity_loaders",
         "qiniu_token_path": "/api/qiniu/auth/oss_upload_token.json",
     },
 }
+REQUEST_LX_GID = ""
 
 
 def pc_url(api):
@@ -183,6 +183,7 @@ def auth_headers(token):
         "Authorization": f'Token token="{token}",device="web"',
         "ACCESS-TOKEN": token,
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "x-lx-gid": REQUEST_LX_GID or os.environ.get("WWJ_LX_GID", ""),
     }
 
 
@@ -567,7 +568,17 @@ def generate_source_preserving_package(args):
                     args,
                 )
             else:
-                value = minimal_field_value(header, suffix, i)
+                value = minimal_field_value(
+                    wb,
+                    ws,
+                    header,
+                    col,
+                    suffix,
+                    i,
+                    getattr(args, "association_context", {}),
+                    getattr(args, "module_key", None),
+                    args,
+                )
             if args.module_key == "customer" and col == 6:
                 value = None
             values[col] = value
@@ -583,6 +594,7 @@ def generate_source_preserving_package(args):
         shared_items = []
         strings = []
         shared_strings_created = True
+    original_shared_count = int(shared_root.get("count") or len(strings))
     sheet = ET.fromstring(data["xl/worksheets/sheet1.xml"])
     convert_inline_strings_to_shared(sheet, shared_root, shared_items, strings)
     sheet_data = sheet.find(sheet_q("sheetData"))
@@ -629,7 +641,13 @@ def generate_source_preserving_package(args):
     if dimension is not None:
         dimension.set("ref", f"A1:{get_column_letter(ws.max_column)}{max_target_row}")
     if shared_root is not None:
-        shared_root.set("count", str(len(strings)))
+        generated_shared_count = sum(
+            1
+            for row_num in range(data_start, max_target_row + 1)
+            for cell in rows_by_num[row_num].findall(sheet_q("c"))
+            if cell.get("t") == "s"
+        )
+        shared_root.set("count", str(original_shared_count + generated_shared_count))
         shared_root.set("uniqueCount", str(len(strings)))
         data["xl/sharedStrings.xml"] = ET.tostring(shared_root, encoding="utf-8", xml_declaration=True)
     ensure_package_metadata(data, shared_strings_created=shared_strings_created)
@@ -1129,6 +1147,20 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
     if name.isdigit():
         options = option_values_from_validation(wb, ws, col, find_template_rows(ws)[1], limit=2)
         return options[0] if options else None
+    if name == "国家":
+        options = option_values_from_sheet(wb, header, limit=1, example=ws.cell(8, col).value)
+        return options[0] if options else None
+    if name == "省":
+        return "上海"
+    if name == "市":
+        return "上海市"
+    if name == "区":
+        return "徐汇区"
+    if name == "提成":
+        return 0.1
+    if "用户动态值" in name:
+        users = selected_user_values(wb, args=args, limit=1)
+        return users[0] if users else None
     if name.startswith("CRM_期初应收款余额"):
         return None
     if name == "单行成本":
@@ -1143,6 +1175,8 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
         return 100
     if name == "金额地方":
         return 100
+    if "开票金额" in name:
+        return 500
     if "上级客户" in name:
         if "ID" in name:
             return None
@@ -1155,12 +1189,14 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
         return f"{datetime.now().strftime('%H%M%S')}{index:03d}{random.randint(100, 999)}"
     if name == "数字（单行+多行）":
         return index
-    if name == "新增数字" or ("数字" in name and "公式" not in name and "计算" not in name and "单行+多行" not in name):
+    if name == "新增数字" or ("数字" in name and name != "百分比数字1000-2000" and "公式" not in name and "计算" not in name and "单行+多行" not in name):
         return index
     if name == "小数-0.9~-0.1":
         return -0.5
     if name == "百分比整数限制":
         return 0.01
+    if name == "百分比数字1000-2000":
+        return 10
     if name == "百分比小数限制":
         return 0.015
     if name == "百分比整数":
@@ -1218,9 +1254,9 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
         return None
     if module_key == "customer" and "客户名称" in name:
         return f"自动化客户{suffix}-{index}-{random_token(4)}"
-    if "对应客户" in name and "ID" in name:
+    if "对应" in name and "客户" in name and "ID" in name:
         return (context.get("customer") or {}).get("id")
-    if name.startswith("对应客户"):
+    if "对应" in name and "客户" in name:
         return (context.get("customer") or {}).get("name")
     if name == "客户名称":
         return (context.get("customer") or {}).get("name") or f"自动化客户{suffix}-{index}"
@@ -1368,7 +1404,8 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
     if "旺旺" in name:
         return f"ww{datetime.now().strftime('%H%M%S')}{index}{random_token(4)}"
     if name == "国家":
-        return "中国"
+        options = option_values_from_sheet(wb, header, limit=1, example=ws.cell(8, col).value)
+        return options[0] if options else None
     if name == "省":
         return "上海"
     if name == "市":
@@ -1411,6 +1448,8 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
         return related_product_total_amount(context)
     if "销售收入" in name or "销售成本" in name:
         return round(1000 + index * 10.5, 2)
+    if "实际销售额" in name:
+        return 100.5
     if "整数" in name:
         return index
     if name == "自定义小数0.1~0.9":
@@ -1447,13 +1486,16 @@ def full_field_value(wb, ws, header, col, suffix, index, context=None, module_ke
     return example if example is not None else f"自动化字段{suffix}-{index}"
 
 
-def minimal_field_value(header, suffix, index):
+def minimal_field_value(wb, ws, header, col, suffix, index, context=None, module_key=None, args=None):
+    is_required_relation_name = is_related_product_field(header) and "产品名称" in clean_header(header)
+    if "必填" not in header and not is_required_relation_name:
+        return None
     name = clean_header(header)
     if name in ("公司类型", "经营状态", "企业类型"):
         return None
     if "客户名称" in header:
         return f"自动化客户{suffix}-{index}-{random_token(4)}"
-    if "产品名称" in header:
+    if "产品名称" in header and not is_related_product_field(header):
         return f"自动化产品{suffix}-{index}-{random_token(4)}"
     if "商机标题" in header or "商机名称" in header:
         return f"自动化商机{suffix}-{index}-{random_token(4)}"
@@ -1469,7 +1511,7 @@ def minimal_field_value(header, suffix, index):
         return f"139{random.randint(10000000, 99999999)}"
     if "邮箱" in header:
         return f"lead{suffix}{index}{random_token(4)}@example.com"
-    return None
+    return full_field_value(wb, ws, header, col, suffix, index, context, module_key, args)
 
 
 def generate_source_from_template(args):
@@ -1503,7 +1545,17 @@ def generate_source_from_template(args):
                     args,
                 )
             else:
-                value = minimal_field_value(header, suffix, i)
+                value = minimal_field_value(
+                    wb,
+                    ws,
+                    header,
+                    col,
+                    suffix,
+                    i,
+                    getattr(args, "association_context", {}),
+                    getattr(args, "module_key", None),
+                    args,
+                )
             if args.module_key == "customer" and col == 6:
                 value = None
             if value not in (None, ""):
@@ -1773,6 +1825,10 @@ def import_flow(args):
     validated = listener.wait_for("validated_result", args.validate_wait) if listener else None
     if listener and not validated:
         print(f"等待 {args.validate_wait}s 后未收到 validated_result")
+    elif not listener:
+        validation_grace = max(5, args.validate_wait)
+        print(f"未监听 faye，等待 {validation_grace}s 让服务端完成上传校验")
+        time.sleep(validation_grace)
 
     import_params = {
         "loader_name": args.loader_name,
@@ -1818,9 +1874,9 @@ def import_flow(args):
     if listener:
         listener.stop()
 
-    history = query_history(args)
-    latest = (((history.get("body") or {}).get("data") or {}).get("list") or [{}])[0] if history else {}
-    if latest.get("attachment_id") == upload["attachment_id"]:
+    history = wait_for_import_history(args, upload["attachment_id"], args.import_wait)
+    latest = history or {}
+    if latest:
         import_result.update(
             {
                 "status": "success" if latest.get("fail_count") == 0 and latest.get("success_count", 0) > 0 else "failed",
@@ -1837,16 +1893,41 @@ def import_flow(args):
 
 
 def query_history(args):
+    return query_history_type(args, args.loader_name)
+
+
+def query_history_type(args, importable_type, verbose=True):
     status, data = request_json(
         "GET",
         entity_loader_url(args, "import_histories"),
         token=args.token,
-        params={"importable_type": args.loader_name, "page": 1, "per_page": args.per_page},
+        params={"importable_type": importable_type, "page": 1, "per_page": args.per_page},
         timeout=30,
     )
     result = {"http_status": status, "body": data}
-    print_json("import_histories", result)
+    if verbose:
+        print_json("import_histories", result)
     return result
+
+
+def wait_for_import_history(args, attachment_id, timeout):
+    """Wait for the async worker and match the exact uploaded attachment."""
+    deadline = time.time() + max(0, timeout)
+    types = [args.loader_name]
+    if not args.loader_name.endswith("2"):
+        types.append(f"{args.loader_name}2")
+
+    while True:
+        for importable_type in types:
+            history = query_history_type(args, importable_type, verbose=False)
+            items = (((history.get("body") or {}).get("data") or {}).get("list") or [])
+            for item in items:
+                if item.get("attachment_id") == attachment_id:
+                    print_json("import_histories", history)
+                    return item
+        if time.time() >= deadline:
+            return None
+        time.sleep(min(5, max(1, int(deadline - time.time()))))
 
 
 def query_latest_leads(args):
@@ -1932,6 +2013,12 @@ def first_item_with_value(args, module_key, field_name, pages=5):
         items = body.get(path) or body.get("list") or []
         for item in items:
             value = item.get(field_name)
+            if module_key == "product":
+                try:
+                    if float(item.get("standard_unit_price") or 0) <= 0:
+                        continue
+                except (TypeError, ValueError):
+                    continue
             if value not in (None, ""):
                 candidates.append(related_item_context(item))
     return random.choice(candidates) if candidates else {}
@@ -2225,6 +2312,13 @@ def resolve_config(args):
 
     config = ENV_CONFIGS[env_name]
     profile = load_config(env_name, getattr(args, "profile", None))
+    global REQUEST_LX_GID
+    REQUEST_LX_GID = (
+        getattr(args, "lx_gid", None)
+        or os.environ.get("WWJ_LX_GID", "")
+        or profile.get("lx_gid", "")
+        or config.get("lx_gid", "")
+    )
     args.env = env_name
     args.module_key = normalize_module(getattr(args, "module", None))
     args.module_config = MODULE_CONFIGS[args.module_key]
@@ -2312,7 +2406,7 @@ def full_flow(args):
     args.output = str(source)
     args.association_context = (
         build_association_context(args)
-        if args.fill_mode == "all" and args.module_key in ASSOCIATION_CONTEXT_MODULES
+        if args.fill_mode in ("all", "minimal") and args.module_key in ASSOCIATION_CONTEXT_MODULES
         else {}
     )
     if has_preservable_template_package(template):
@@ -2572,9 +2666,10 @@ def build_parser():
     parser = argparse.ArgumentParser(description="CRM 导入完整流程测试工具")
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--env", choices=sorted(ENV_CONFIGS), default=None, help="预置环境，默认 test")
-    common.add_argument("--profile", choices=["gray", "standard"], default=None, help="同环境下的企业配置和模板目录")
+    common.add_argument("--profile", choices=["standard"], default=None, help="同环境下的企业配置和模板目录")
     common.add_argument("--api", default=None, help="覆盖环境域名")
     common.add_argument("--token", default=None, help="user_token；也可用 WWJ_USER_TOKEN")
+    common.add_argument("--lx-gid", default=None, help="企业 gid；生产环境导入请求需要传入")
     common.add_argument("--module", default="lead", help="业务模块，例如 lead/lead-pool/customer/contact/opportunity")
     common.add_argument("--loader-name", default=None, help="覆盖模块对应的 loader_name")
     common.add_argument("--entity-loader-prefix", default=None, help="覆盖导入接口前缀")

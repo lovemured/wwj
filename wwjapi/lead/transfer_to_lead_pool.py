@@ -4,14 +4,19 @@
       python3 transfer_to_lead_pool.py --api https://域名 --token xxx --lead-id 线索ID --pool-id 线索池ID
 """
 import requests, argparse, sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib.config import apply_config_defaults
 
 def main():
     p = argparse.ArgumentParser(description='转线索池')
-    p.add_argument('--api', required=True, help='API域名')
-    p.add_argument('--token', required=True, help='Token')
+    p.add_argument('--api', help='API域名')
+    p.add_argument('--token', help='Token')
+    p.add_argument('--env', choices=['test', 'staging', 'production'])
+    p.add_argument('--profile', choices=['standard'])
     p.add_argument('--lead-id', required=True, type=int, help='线索ID')
     p.add_argument('--pool-id', type=int, default=0, help='线索池ID(默认取第一个可用)')
-    a = p.parse_args()
+    a = apply_config_defaults(p.parse_args(), p)
 
     api = a.api.rstrip('/')
     # 推断PC API域名

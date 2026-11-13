@@ -21,7 +21,7 @@
       --module-names 线索,项目跟进
 """
 import argparse, sys
-from handover_common import api, infer_pc_api
+from handover_common import api, apply_config_defaults, infer_pc_api
 
 
 def check_assets(pc_api, token, from_user_uid):
@@ -118,8 +118,10 @@ def create_handover(pc_api, token, from_user_uid, to_user_uid,
 
 def main():
     p = argparse.ArgumentParser(description='创建交接任务')
-    p.add_argument('--api', required=True, help='API域名')
-    p.add_argument('--token', required=True, help='Token')
+    p.add_argument('--api', help='API域名')
+    p.add_argument('--token', help='Token')
+    p.add_argument('--env', choices=['test', 'staging', 'production'])
+    p.add_argument('--profile', choices=['standard'])
     p.add_argument('--action', choices=['check_assets', 'check_capacity', 'create'],
                    default='create', help='操作类型（默认完整创建）')
     p.add_argument('--from-user', type=int, required=True, help='源用户UID')
@@ -128,7 +130,7 @@ def main():
     p.add_argument('--assist-user', type=int, default=0, help='目标协作人UID（默认同--to-user）')
     p.add_argument('--modules', help='模块列表，逗号分隔')
     p.add_argument('--module-names', help='模块显示名，逗号分隔')
-    a = p.parse_args()
+    a = apply_config_defaults(p.parse_args(), p)
 
     pc_api = infer_pc_api(a.api)
     modules = a.modules.split(',') if a.modules else []

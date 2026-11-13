@@ -474,11 +474,17 @@ def run(n, attachment_dir=None):
         # ====== 6. 报价单(含编号、乙方主体、产品) ======
         data5={'quotation':{
             'name':f'报价-{ts}','title':f'报价单-{ts}','customer_id':cid,
-            'contact_id':cid_con,'opportunity_id':oid,'status':'2103411',
+            'sub_title':f'报价单副标题-{ts}','note':f'CRM报价单备注-{ts}',
+            'contact_id':cid_con,'opportunity_id':oid,
+            'status':random.choice(info['fm'].get('quotation',{}).get('status',['2103411'])),
             'quotation_no':'QTE'+ts[-6:],
             'quotation_date':gd(),'effective_date_fr':gd(),'effective_date_to':gd(),
             'total_amount':ga(),'product_total_amount':ga(),
             'subsidiary_id':int(random.choice(info['subsidiaries'])) if info['subsidiaries'] else None,
+            'address_attributes':{
+                'contact':info['pc_users'][0] if info['pc_users'] else None,
+                'contact_phone':gv(),'contact_email':ge(),
+            },
             'revisit_remind_at':gdt(),'assist_user_ids':info['pc_users'][:2],
             'product_assets_attributes':prod_attrs(3),
         }}

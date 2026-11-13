@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """批量创建线索(含附件) - 支持任意CRM环境
-使用: python3 batch_create_lead.py --api https://域名 --token xxx [数量]"""
+使用:python3 lead/batch_create_lead.py --env test 20
+"""
+
+
 import requests,json,random,string,sys,argparse,time,os,tempfile
 from datetime import datetime,timedelta
 sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -120,8 +123,9 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument("--api"); p.add_argument("--token")
     p.add_argument("--env",choices=["test","staging","production"],help="读取对应的config.<env>.json")
-    p.add_argument("--profile", choices=["gray", "standard"], help="读取config.<env>.<profile>.json")
+    p.add_argument("--profile", choices=["standard"], help="读取config.<env>.<profile>.json")
     p.add_argument("count",nargs="?",type=int,default=1); p.add_argument("--delay",type=float,default=0.3)
+    p.add_argument("--revisit-at", help="覆盖下次跟进时间，例如 2026-07-30 12:00")
     p.add_argument("--attachment-dir",help="本地附件目录,随机取图片上传")
     a=apply_config_defaults(p.parse_args(), p)
     print(f"\n{'='*60}\n环境: {a.env or '默认配置'}\nAPI: {a.api}\n数量: {a.count}")
@@ -140,6 +144,8 @@ def main():
     for i in range(1,a.count+1):
         try:
             data=build(info)
+            if a.revisit_at:
+                data["revisit_remind_at"] = a.revisit_at
             data["name"]=f"批量线索-{datetime.now().strftime('%H%M%S')}-{i}"
             data["company_name"]=f"深圳{rt()}科技"
             data["note"]=f"批量第{i}条"
