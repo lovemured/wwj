@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Authorized test tenant: mobile lead labels, list and customer conversion.
+"""Selected environment: mobile lead labels, list and customer conversion.
 
-CRM_LABEL_TOKEN is required. Only this run's records and labels are deleted.
+Environment credentials are required. Only this run's records and labels are deleted.
 """
+from environment import settings
 import copy
 import json
 import os
@@ -17,25 +18,25 @@ from zoneinfo import ZoneInfo
 import requests
 
 
-BASE = 'https://lxcrm-api-test.weiwenjia.com/api'
+BASE = settings.api_root
 NOW = datetime.now(ZoneInfo('Asia/Shanghai'))
-OUT = Path(__file__).resolve().parent / 'results' / NOW.strftime('%Y%m%d-%H%M%S-mobile-edit-conversion')
+OUT = settings.result_root / NOW.strftime('%Y%m%d-%H%M%S-mobile-edit-conversion')
 PREFIX = 'M' + uuid.uuid4().hex[:6]
 
 
 def main():
     session = requests.Session()
     session.headers.update({
-        'Authorization': f'Token token="{os.environ["CRM_LABEL_TOKEN"]}",device="lxcrm_duli",version_code="4.0.1"',
+        'Authorization': f'Token token="{settings.token}",device="lxcrm_duli",version_code="4.0.1"',
         'Content-Type': 'application/json; chartset=utf-8',
-        'Origin': 'https://crmh5-test.weiwenjia.com', 'X-Requested-With': 'com.lixiaoyun.aike',
+        'Origin': settings.mobile_origin, 'X-Requested-With': 'com.lixiaoyun.aike',
     })
     records, cases, owned, mappings = [], [], [], []
     OUT.mkdir(parents=True)
 
     def save():
         (OUT / 'evidence.json').write_text(json.dumps({
-            'prefix': PREFIX, 'requests': records, 'cases': cases,
+            **settings.metadata(), 'prefix': PREFIX, 'requests': records, 'cases': cases,
             'remaining_owned': owned, 'mappings': mappings,
         }, ensure_ascii=False, indent=2))
 
@@ -81,6 +82,8 @@ def main():
         'user_id': 1000025901, 'owned_department_id': 5506212,
         'approve_status': 'approved', 'address_attributes': {}, 'product_assets_attributes': [],
     }
+
+    lead_body = settings.payload('Lead', lead_body, mobile=True)
 
     def create_lead(labels, suffix):
         body = copy.deepcopy(lead_body)
@@ -137,7 +140,7 @@ def main():
             source_id = source['id']
             before = check_lead(source_id, source_labels)
             assert not before['turned_to_customer'] and not before['turned_customer_id'], before['turned_customer_id']
-            preview = api('GET', f'/v2/leads/{source_id}/turn_to_customer?is_check=false&custom_field_template_id=1172')
+            preview = api('GET', f"/v2/leads/{source_id}/turn_to_customer?is_check=false&custom_field_template_id={settings.template('Customer', 1172)}")
             assert ids(preview['labels']) == ids(expected), (ids(expected), preview.get('labels'))
             after_preview = api('GET', f'/v2/leads/{source_id}')
             assert not after_preview['turned_to_customer'] and not after_preview['turned_customer_id']
@@ -156,6 +159,10 @@ def main():
                 'address_attributes': {}, 'assist_user_ids': [],
                 'labels': picked(preview['labels']), 'contacts_attributes': [contact],
             }
+            contact = settings.record('Contact', contact, ('name', 'labels', 'approve_status'), mobile=True)
+            customer = settings.record('Customer', customer, ('name', 'company_name', 'labels', 'address_attributes', 'assist_user_ids', 'approve_status'), mobile=True)
+            customer['custom_field_template_id'] = settings.template('Customer', 1172)
+            customer['contacts_attributes'] = [contact]
             created = api('POST', '/v2/customers?request_ticket=' + str(uuid.uuid4()),
                           {'customer': customer, 'refer_lead_id': source_id})
             customer_id = created['id']

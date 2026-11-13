@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """PC label regression for the other nine modules, using only owned fixtures."""
+from environment import settings
 import copy
 import json
 import os
@@ -23,7 +24,7 @@ MODELS = {
     'InvoicedPayment': ('invoiced_payments', 'invoiced_payment', 'sn'),
     'Product': ('products', 'product', 'name'),
 }
-PRE = Path(__file__).resolve().parent / 'data/all_modules_20261112'
+PRE = settings.data_root / 'all_modules_20261112'
 
 
 class Run:
@@ -41,7 +42,7 @@ class Run:
     def save(self):
         core.OUT.mkdir(parents=True, exist_ok=True)
         (core.OUT / 'modules-summary.json').write_text(json.dumps({
-            'prefix': core.PREFIX, 'results': self.results, 'entities': self.entities,
+            **settings.metadata(), 'prefix': core.PREFIX, 'results': self.results, 'entities': self.entities,
             'parents': self.parents, 'metadata': self.metadata,
             'remaining_group_ids': sorted(core.OWN_GROUPS),
             'remaining_label_ids': sorted(core.OWN_LABELS),
@@ -71,7 +72,11 @@ class Run:
         for model, (path, wrapper, _) in MODELS.items():
             query = {}
             templates = PRE / (model + '-templates.json')
-            if templates.exists():
+            configured = settings.templates({})
+            if model in configured:
+                if configured[model] is not None:
+                    query['custom_field_template_id'] = configured[model]
+            elif settings.env == 'test' and not settings.profile and templates.exists():
                 enabled = [x for x in json.loads(templates.read_text())['data']['list'] if x['status'] == 'enable']
                 query['custom_field_template_id'] = enabled[0]['id']
             fields = core.success(core.api('GET', '/custom_fields?' + urlencode({'model_klass': model, **query})))
@@ -128,7 +133,7 @@ class Run:
             body.update(invoiced_date=today, broker_user_id=1000025901, invoice_types=392049)
         if model == 'Product':
             body.update(product_no=name, spec='测试规格', standard_unit_price=10, unit_cost=5, sale_unit='个')
-        return body
+        return settings.record(model, body, ('name', 'title', 'sn', 'company_name', 'labels', 'custom_field_template_id', 'customer_id', 'contract_id', 'start_date', 'end_date', 'estimated_cost', 'actual_cost', 'estimated_income', 'actual_income', 'expect_sign_date', 'expect_amount', 'quotation_date', 'whole_discount', 'total_amount', 'amount', 'sign_date', 'receive_date', 'invoiced_date', 'product_no', 'spec', 'standard_unit_price', 'unit_cost', 'sale_unit', 'product_assets_attributes', 'received_payment_plans_attributes', 'contact_assetships_attributes', 'contacts_attributes', 'assist_user_ids', 'address_attributes'))
 
     def chosen(self, label):
         group = self.radio if label['label_group_id'] == self.radio['id'] else self.private if label['label_group_id'] == self.private['id'] else self.multi
@@ -277,8 +282,8 @@ class Run:
 
 
 if __name__ == '__main__':
-    token = os.environ['CRM_LABEL_TOKEN']
-    core.SESSION.headers.update({'Authorization': f'Token token="{token}",device="web"', 'Accept': 'application/json'})
+    token = settings.token
+    core.SESSION.headers.update(settings.headers())
     run = Run()
     try:
         run.prepare()

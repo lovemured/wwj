@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Owned records for Android label mapping UI verification."""
+from environment import settings
 import os,json,sys
 from pathlib import Path
 import pc_api_regression as core
 from pc_module_regression import Run,MODELS
-OUT=Path(__file__).resolve().parent/'results/20261113-mobile-mapping-ui'
+OUT=settings.result_root/'20261113-mobile-mapping-ui'
 core.OUT=OUT;core.PREFIX='MP13d9'
-core.SESSION.headers.update(Authorization=f'Token token="{os.environ["CRM_LABEL_TOKEN"]}",device="web"')
+core.SESSION.headers.update(settings.headers())
 if sys.argv[1]=='prepare':
  r=Run();old=json.loads((OUT.parent/'20261113-label-filter/filter-state.json').read_text());r.metadata={k:old['metadata'][k] for k in MODELS}
  both=['Lead','Customer','Contact','Opportunity','Contract']

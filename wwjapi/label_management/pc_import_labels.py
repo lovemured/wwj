@@ -3,6 +3,7 @@
 
 Run with CRM_LABEL_TOKEN in the environment. Never replays the user's attachment.
 """
+from environment import settings
 import importlib.util
 import json
 import os
@@ -83,11 +84,13 @@ def preserve_template(plan):
 
 
 def build(rows, stem, first=False):
-    plan = {'template': str(core.OUT / 'template.xlsx'), 'sheet': '线索XS',
+    plan = {'template': str(core.OUT / 'template.xlsx'), 'sheet': settings.value('lead_import_layout', {'sheet': '线索XS'})['sheet'],
             'rows': rows, 'artifact': str(core.OUT / (stem + '-artifact.xlsx')),
             'output': str(core.OUT / (stem + '.xlsx')),
             'beforePreview': str(core.OUT / 'before.png'),
             'afterPreview': str(core.OUT / (stem + '-after.png'))}
+    layout = settings.value('lead_import_layout', {'columns': 70, 'data_start': 14})
+    plan.update(width=layout['columns'], dataStart=layout['data_start'])
     path = core.OUT / (stem + '-plan.json')
     write(path.name, plan)
     if first:
@@ -100,8 +103,11 @@ def build(rows, stem, first=False):
 
 
 def row(name, labels):
-    values = [None] * 70
-    values[2], values[4] = labels, name
+    layout = settings.value('lead_import_layout', {'columns': 70, 'label_col': 3, 'name_col': 5})
+    values = [None] * layout['columns']
+    for column, value in layout.get('defaults', {}).items():
+        values[int(column) - 1] = value
+    values[layout['label_col'] - 1], values[layout['name_col'] - 1] = labels, name
     return values
 
 
@@ -121,16 +127,25 @@ def own_leads():
         page += 1
 
 
+def loader_api(method, path, body):
+    previous = core.BASE
+    core.BASE = settings.origin
+    try:
+        return core.api(method, settings.loader_prefix + path, body)
+    finally:
+        core.BASE = previous
+
+
 def import_file(path, model='Lead', template_id=None):
     query = {'loader_name': model}
     if template_id:
         query['custom_field_template_id'] = template_id
     new = core.success(core.api('GET', '/entity_loaders/new?' + urlencode(query)))
-    listener = helper.FayeListener(helper.DEFAULT_FAYE_URL, new['faye_channel'], new['import_client_id'])
+    listener = helper.FayeListener(settings.faye_url, new['faye_channel'], new['import_client_id'])
     listener.start()
     try:
-        helper.upload_to_oss.qiniu_token_path = '/api/pc/qiniu/auth/oss_upload_token.json'
-        uploaded = helper.upload_to_oss('https://lxcrm-test.weiwenjia.com', TOKEN, path)
+        helper.upload_to_oss.qiniu_token_path = settings.upload_token_path
+        uploaded = helper.upload_to_oss(settings.pc_origin, TOKEN, path)
         write(path.stem + '-attachment.json', uploaded)
         body = {k: new[k] for k in ('import_client_id', 'import_max_count',
                                     'import_trigger_approve_max_count', 'recognize_fields')}
@@ -138,7 +153,7 @@ def import_file(path, model='Lead', template_id=None):
                     file_attachment_id=uploaded['attachment_id'])
         if template_id:
             body['custom_field_template_id'] = template_id
-        core.success(core.api('POST', '/entity_loaders/upload', body))
+        core.success(loader_api('POST', '/upload', body))
         validated = listener.wait_for('validated_result', 45)
         write(path.stem + '-validated.json', validated)
         assert validated, 'No validation event; import was not submitted'
@@ -146,7 +161,7 @@ def import_file(path, model='Lead', template_id=None):
         submit = {k: body[k] for k in ('loader_name', 'entity_loader_file', 'file_attachment_id', 'import_client_id')}
         if template_id:
             submit['custom_field_template_id'] = template_id
-        core.success(core.api('POST', '/entity_loaders/import', submit))
+        core.success(loader_api('POST', '/import', submit))
         deadline = time.monotonic() + 90
         while time.monotonic() < deadline:
             for kind in (model, model + '2'):
@@ -171,16 +186,17 @@ def error_rows(history):
     path.write_bytes(response.content)
     wb = load_workbook(path, data_only=True)
     sheet = wb.worksheets[0]
-    headers = {c.value: c.column for c in sheet[8] if c.value}
-    errors = {sheet.cell(i, headers['姓名标题1(必填)']).value:
-              sheet.cell(i, headers['错误']).value for i in range(9, sheet.max_row + 1)}
+    layout = settings.value('lead_import_layout', {'header_row': 8, 'name_header': '姓名标题1(必填)'})
+    headers = {c.value: c.column for c in sheet[layout['header_row']] if c.value}
+    errors = {sheet.cell(i, headers[layout['name_header']]).value:
+              sheet.cell(i, headers['错误']).value for i in range(layout['header_row'] + 1, sheet.max_row + 1)}
     write('matrix-errors.json', errors)
     return errors, 'Sheet标签' in wb.sheetnames
 
 
 if __name__ == '__main__':
-    TOKEN = os.environ['CRM_LABEL_TOKEN']
-    core.SESSION.headers.update({'Authorization': f'Token token="{TOKEN}",device="web"', 'Accept': 'application/json'})
+    TOKEN = settings.token
+    core.SESSION.headers.update(settings.headers())
     core.OUT.mkdir(parents=True, exist_ok=True)
     link = ROOT / 'node_modules'
     if not link.exists():

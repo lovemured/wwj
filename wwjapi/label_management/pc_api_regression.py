@@ -2,8 +2,9 @@
 """STORY 22730 PC online integration tests; creates and removes only own tags.
 
 Run: CRM_LABEL_TOKEN=... python3 label_management/pc_api_regression.py
-Requires requests. Credentials are read from the environment and never logged.
+Requires requests. Credentials come from environment settings and are never logged.
 """
+from environment import settings
 import json
 import os
 from pathlib import Path
@@ -16,10 +17,10 @@ from datetime import datetime
 import requests
 
 
-BASE = "https://lxcrm-api-test.weiwenjia.com/api/pc"
+BASE = settings.pc_base
 MODELS = ["MarketActivity", "Lead", "Customer", "Contact", "Opportunity",
           "Quotation", "Contract", "ReceivedPayment", "InvoicedPayment", "Product"]
-OUT = Path(__file__).resolve().parent / "results" / datetime.now().strftime("%Y%m%d-%H%M%S")
+OUT = settings.result_root / datetime.now().strftime("%Y%m%d-%H%M%S")
 PREFIX = "T" + uuid.uuid4().hex[:6]
 EVIDENCE = []
 OWN_GROUPS = set()
@@ -33,7 +34,7 @@ SESSION = requests.Session()
 def save():
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "evidence.json").write_text(json.dumps({
-        "base": BASE, "prefix": PREFIX, "requests": EVIDENCE,
+        **settings.metadata(), "base": BASE, "prefix": PREFIX, "requests": EVIDENCE,
         "remaining_group_ids": sorted(OWN_GROUPS),
         "remaining_label_ids": sorted(OWN_LABELS), "cases": CASE_RESULTS,
         "remaining_lead_ids": sorted(OWN_LEADS),
@@ -476,6 +477,7 @@ class PCLeadTests(PCFixture):
                 "user_id": 1000025901, "want_department_id": 5506212,
                 "labels": labels, "product_assets_attributes": [],
                 "intl_extra_attributes": {}}
+        body = settings.record("Lead", body, ("name", "labels", "product_assets_attributes", "intl_extra_attributes"))
         return api("POST", "/leads", {"lead": body, "request_ticket": str(uuid.uuid4()),
                                        "social_record_id": ""})
 
@@ -488,7 +490,7 @@ class PCLeadTests(PCFixture):
 
     def update_lead_labels(self, lead_ids, labels, operation):
         return api("PUT", "/batch_resources/batch_update", {
-            "name": "labels", "field_id": 9673146, "field_name": "labels",
+            "name": "labels", "field_id": settings.value("lead_label_field_id", 9673146), "field_name": "labels",
             "field_label": "标签", "field_value": [
                 {"id": x["id"], "group_id": x["label_group_id"]} for x in labels],
             "operation_selection": operation, "resource_ids": lead_ids,
@@ -748,9 +750,9 @@ class PCLeadTests(PCFixture):
 
     def assert_customer_preview(self, lead_id, expected, source_ids):
         before = success(api("GET", f"/leads/{lead_id}"))
-        preview = success(api("GET", f"/leads/{lead_id}/turn_to_customer?custom_field_template_id=1172"))
+        preview = success(api("GET", f"/leads/{lead_id}/turn_to_customer?custom_field_template_id={settings.template('Customer', 1172)}"))
         self.assertEqual(preview["id"], 0)
-        self.assertEqual(preview["custom_field_template_id"], 1172)
+        self.assertEqual(preview["custom_field_template_id"], settings.template("Customer", 1172))
         self.assertEqual(sorted((x["id"], x["content"]) for x in preview["labels"]),
                          sorted((x["id"], x["content"]) for x in expected))
         for label in preview["labels"]:
@@ -789,7 +791,7 @@ class PCLeadTests(PCFixture):
         self.assert_customer_preview(lead["id"], [], [])
 
     def assert_customer_conversion(self, lead, expected):
-        preview = success(api("GET", f'/leads/{lead["id"]}/turn_to_customer?custom_field_template_id=1172'))
+        preview = success(api("GET", f'/leads/{lead["id"]}/turn_to_customer?custom_field_template_id={settings.template("Customer", 1172)}'))
         self.assertEqual(sorted(x["id"] for x in preview["labels"]), sorted(x["id"] for x in expected))
         # Preserve mapped labels from the preview rather than reconstructing them.
         customer = {"name": "映射客户" + PREFIX, "company_name": "标签映射测试企业" + PREFIX,
@@ -801,6 +803,8 @@ class PCLeadTests(PCFixture):
                     "contact_assetships_attributes": [], "opportunity_id": 0,
                     "assist_user_ids": [], "subsidiary_users_attributes": [],
                     "address_attributes": {}}
+        customer = settings.record("Customer", customer, ("name", "company_name", "labels", "lead_id", "contacts_attributes", "contact_assetships_attributes", "assist_user_ids", "address_attributes"))
+        customer["custom_field_template_id"] = settings.template("Customer", 1172)
         created = success(api("POST", "/customers", {
             "refer_lead_id": lead["id"], "data_from": "turn_to_customer",
             "request_ticket": str(uuid.uuid4()), "customer": customer}))
@@ -933,11 +937,7 @@ class EvidenceResult(unittest.TextTestResult):
 
 
 if __name__ == "__main__":
-    token = os.environ.get("CRM_LABEL_TOKEN")
-    if not token:
-        raise SystemExit("Set CRM_LABEL_TOKEN to the authorized test enterprise token")
-    SESSION.headers.update({"Authorization": f'Token token="{token}",device="web"',
-                            "Accept": "application/json"})
+    SESSION.headers.update(settings.headers())
     baseline = groups()
     suite = (unittest.defaultTestLoader.loadTestsFromNames(sys.argv[1:], module=sys.modules[__name__])
              if len(sys.argv) > 1 else unittest.TestSuite(

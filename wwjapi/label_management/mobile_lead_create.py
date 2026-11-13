@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Mobile lead label creation checks against the authorized test tenant only.
+"""Mobile lead label creation checks against the selected environment and tenant.
 
 Run with CRM_LABEL_TOKEN in the environment. Creates and deletes owned leads.
 """
+from environment import settings
 import copy
 import json
 import os
@@ -14,19 +15,19 @@ from zoneinfo import ZoneInfo
 import requests
 
 
-BASE = 'https://lxcrm-api-test.weiwenjia.com/api'
+BASE = settings.api_root
 NOW = datetime.now(ZoneInfo('Asia/Shanghai'))
-OUT = Path(__file__).resolve().parent / 'results' / NOW.strftime('%Y%m%d-%H%M%S-mobile-lead')
+OUT = settings.result_root / NOW.strftime('%Y%m%d-%H%M%S-mobile-lead')
 PREFIX = 'APP标签' + uuid.uuid4().hex[:8]
-LABELS = [2200267, 2200104, 2200265, 2200273]
+LABELS = settings.value("lead_label_ids", [2200267, 2200104, 2200265, 2200273])
 
 
 def main():
     session = requests.Session()
     session.headers.update({
-        'Authorization': f'Token token="{os.environ["CRM_LABEL_TOKEN"]}",device="lxcrm_duli",version_code="4.0.1"',
+        'Authorization': f'Token token="{settings.token}",device="lxcrm_duli",version_code="4.0.1"',
         'Accept': '*/*', 'Content-Type': 'application/json; chartset=utf-8',
-        'Origin': 'https://crmh5-test.weiwenjia.com',
+        'Origin': settings.mobile_origin,
         'X-Requested-With': 'com.lixiaoyun.aike',
     })
     evidence, cases, owned = [], [], []
@@ -34,7 +35,7 @@ def main():
 
     def save():
         (OUT / 'evidence.json').write_text(json.dumps({
-            'prefix': PREFIX, 'requests': evidence, 'cases': cases,
+            **settings.metadata(), 'prefix': PREFIX, 'requests': evidence, 'cases': cases,
             'remaining_lead_ids': owned,
         }, ensure_ascii=False, indent=2))
 
@@ -75,6 +76,7 @@ def main():
         lead[key] = ''
     for key in ('file_asset_de3667', 'file_asset_5a3171', 'file_asset_916766'):
         lead[key] = {'attachment_ids': []}
+    lead = settings.payload("Lead", lead, mobile=True)
     try:
         groups = success(api('GET', '/pc/label_groups'))['list']
         legal = {x['id'] for g in groups if 'Lead' in g['applicable_models'] for x in g['labels']}

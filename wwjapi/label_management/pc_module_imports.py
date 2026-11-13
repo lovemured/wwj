@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Remaining PC module import matrices; only synthetic records and own parents."""
+from environment import settings
 import importlib.util
 import json
 import os
@@ -46,7 +47,7 @@ def make_rows(run, model, info, wb, scenarios, names):
             elif '金额' in h:
                 row[i] = 25
             elif '收款人' in h or '经手人' in h:
-                row[i] = '徐弘'
+                row[i] = settings.value('import_user_name', '徐弘')
             elif '跟进状态' in h or '销售阶段' in h or '票据类型' in h:
                 title = next(s for s in wb.sheetnames if s.startswith('Sheet') and h.replace('(必填)', '') == s[5:])
                 row[i] = options(wb, title)[0]
@@ -164,8 +165,8 @@ def module_import(run, model, info):
 
 
 if __name__ == '__main__':
-    imp.TOKEN = os.environ['CRM_LABEL_TOKEN']
-    core.SESSION.headers.update({'Authorization': f'Token token="{imp.TOKEN}",device="web"', 'Accept': 'application/json'})
+    imp.TOKEN = settings.token
+    core.SESSION.headers.update(settings.headers())
     spec = importlib.util.spec_from_file_location('import_helper', imp.ROOT.parent / 'import/error-report-import/error_report_import_tester.py')
     imp.helper = importlib.util.module_from_spec(spec); spec.loader.exec_module(imp.helper)
     imp.helper.print_json = lambda *args: None

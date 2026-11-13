@@ -3,12 +3,13 @@
 Requires an active Appium WebView session and the local run fixture ledger.
 The functions are interactive helpers, not an unattended regression runner.
 """
+from environment import settings
 import json,pathlib,requests,os
 import appium_webview as wd
-OUT=pathlib.Path(__file__).resolve().parent/'results/20261113-mobile-quotation-ui';PREFIX='MQ13f62'
-H={'Authorization':f'Token token="{os.environ["CRM_LABEL_TOKEN"]}",device="lxcrm_duli",version_code="4.0.1"'}
+OUT=settings.result_root/'20261113-mobile-quotation-ui';PREFIX='MQ13f62'
+H=settings.headers(mobile=True)
 def api(m,p,b=None):
- r=requests.request(m,'https://lxcrm-api-test.weiwenjia.com'+p,headers=H,json=b,timeout=45);d=r.json();f=OUT/'api-evidence.json';log=json.loads(f.read_text()) if f.exists() else [];log.append({'method':m,'path':p,'body':b,'status':r.status_code,'response':d});f.write_text(json.dumps(log,ensure_ascii=False,indent=2));assert r.ok and d.get('code')==0,str(d)[:1000];return d['data']
+ r=requests.request(m,settings.origin+p,headers=H,json=b,timeout=45);d=r.json();f=OUT/'api-evidence.json';log=json.loads(f.read_text()) if f.exists() else [];log.append({'method':m,'path':p,'body':b,'status':r.status_code,'response':d});f.write_text(json.dumps(log,ensure_ascii=False,indent=2));assert r.ok and d.get('code')==0,str(d)[:1000];return d['data']
 def text(t):return wd.visible_click('//*[text()='+json.dumps(t,ensure_ascii=False)+']')
 def fill(name,value):
  e=wd.find('//input[@name='+json.dumps(name)+']');wd.call('POST','/element/'+e+'/clear',{});wd.call('POST','/element/'+e+'/value',{'text':str(value)})

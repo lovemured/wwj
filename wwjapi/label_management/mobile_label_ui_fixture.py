@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Disposable fixtures and readback for the Android full-form label regression."""
+from environment import settings
 import json, os, sys
 from pathlib import Path
 import pc_api_regression as core
 from pc_module_regression import Run, MODELS
 
-OUT = Path(__file__).resolve().parent/'results/20261113-mobile-label-ui'
+OUT = settings.result_root/'20261113-mobile-label-ui'
 core.OUT = OUT
 core.PREFIX = 'MU13b47'
-core.SESSION.headers.update(Authorization=f'Token token="{os.environ["CRM_LABEL_TOKEN"]}",device="web"')
+core.SESSION.headers.update(settings.headers())
 phase=sys.argv[1]
 if phase in ('prepare','resume'):
     if phase=='prepare':

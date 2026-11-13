@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Mobile label integration checks for the nine remaining CRM modules.
 
-Uses only the authorized test environment and owned synthetic records.
-CRM_LABEL_TOKEN is read from the environment. No import or batch editing.
+Uses the selected environment and owned synthetic records.
+Credentials come from environment settings. No import or batch editing.
 """
+from environment import settings
 import copy
 import json
 import os
@@ -20,8 +21,8 @@ import pc_api_regression as core
 from pc_module_regression import Run, MODELS
 
 
-TEMPLATES = {'Customer': 1172, 'MarketActivity': 1444, 'Opportunity': 1840,
-             'Quotation': 1968, 'Contract': 2382}
+TEMPLATES = settings.templates({'Customer': 1172, 'MarketActivity': 1444, 'Opportunity': 1840,
+             'Quotation': 1968, 'Contract': 2382})
 MAPPING_PATHS = [('Customer', 'Contact', 'customer_id'),
                  ('Customer', 'Opportunity', 'customer_id'),
                  ('Customer', 'Quotation', 'customer_id'),
@@ -95,7 +96,7 @@ class MobileRun(Run):
     def defaults(self, model):
         if model not in self.default_cache:
             path = MODELS[model][0]
-            query = {'custom_field_template_id': TEMPLATES[model]} if model in TEMPLATES else {}
+            query = {'custom_field_template_id': TEMPLATES[model]} if TEMPLATES.get(model) else {}
             # PC defaults supply tenant-specific required fields only; operations are mobile.
             if model == 'InvoicedPayment':
                 query['contract_id'] = self.parents['contract']['id']
@@ -104,7 +105,7 @@ class MobileRun(Run):
 
     def data(self, model, labels, suffix):
         body = super().data(model, labels, suffix)
-        body['owned_department_id'] = body.pop('want_department_id')
+        body['owned_department_id'] = body.pop('want_department_id', body.get('owned_department_id'))
         body['labels'] = [{'id': x['id']} for x in labels]
         body['approve_status'] = 'approved'
         if model in ('ReceivedPayment', 'InvoicedPayment'):
@@ -264,7 +265,7 @@ class MobileRun(Run):
                     self.set(source, selected)
                     path = '/' + MODELS[target][0] + '/new'
                     query = {relation: source['id']}
-                    if target in TEMPLATES: query['custom_field_template_id'] = TEMPLATES[target]
+                    if TEMPLATES.get(target): query['custom_field_template_id'] = TEMPLATES[target]
                     if target == 'ReceivedPayment':
                         path = f'/contracts/{source["id"]}/received_payments/new'
                     preview = core.success(mobile('GET', path + '?' + urlencode(query)))
@@ -286,14 +287,13 @@ class MobileRun(Run):
 
 
 if __name__ == '__main__':
-    core.OUT = Path(__file__).resolve().parent / 'results' / datetime.now(ZoneInfo('Asia/Shanghai')).strftime('%Y%m%d-%H%M%S-mobile-modules')
+    core.OUT = settings.result_root / datetime.now(ZoneInfo('Asia/Shanghai')).strftime('%Y%m%d-%H%M%S-mobile-modules')
     core.PREFIX = 'M' + uuid.uuid4().hex[:6]
     core.api = paced_api
     core.SESSION.headers.update({
-        'Authorization': f'Token token="{os.environ["CRM_LABEL_TOKEN"]}",device="lxcrm_duli",version_code="4.0.1"',
+        'Authorization': f'Token token="{settings.token}",device="lxcrm_duli",version_code="4.0.1"',
         'Accept': '*/*', 'Content-Type': 'application/json; chartset=utf-8',
-        'Origin': 'https://crmh5-test.weiwenjia.com', 'X-Requested-With': 'com.lixiaoyun.aike',
-        'X-Lx-Gid': 'wwjg8aoKBzsWlkMGCHYG',
+        'Origin': settings.mobile_origin, 'X-Requested-With': 'com.lixiaoyun.aike',
         'User-Agent': 'Mozilla/5.0 (Linux; Android 16; SM-S9280 Build/BP4A.251205.006; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/156.0.8078.47 Mobile Safari/537.36',
     })
     run = MobileRun()

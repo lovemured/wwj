@@ -1,10 +1,10 @@
-# STORY 22730 PC 标签管理接口回归
+# STORY 22730 PC / APP 标签管理回归
 
-这是测试环境的在线集成测试，不是单元测试。固定访问 `https://lxcrm-api-test.weiwenjia.com/api/pc`，不支持切换到生产环境。使用 Python 3 和 `requests`。
+在线集成测试支持测试（`test`）、回归（`staging`）、生产（`production`）环境。使用 Python 3 和 `requests`；导入脚本还需要 `openpyxl` 及文末列出的工作簿运行时。环境切换的离线测试不连接 CRM。
 
 ## 执行
 
-先通过环境变量 `CRM_LABEL_TOKEN` 注入已授权测试企业的 Token。脚本和结果不记录 Authorization 请求头。
+通过对应环境配置文件或环境变量 `CRM_LABEL_TOKEN` 注入已授权企业的 Token。脚本和结果不记录 Authorization 请求头。
 
 ```bash
 python3 label_management/pc_api_regression.py
@@ -19,7 +19,7 @@ python3 label_management/pc_api_regression.py PCLeadTests
 python3 label_management/pc_api_regression.py PCLeadTests.test_lead_create_multi_labels_readback
 ```
 
-线索测试沿用用户提供的测试企业必填字段及负责人/部门 ID，使用合成名称，不关联现有业务记录。换租户前需要更新这些字段；本脚本不读取仓库现有配置里的凭证。
+线索测试沿用用户提供的测试企业必填字段及负责人/部门 ID，使用合成名称，不关联现有业务记录。换租户前需要更新这些字段；默认读取所选环境配置文件；不读取未分环境的 `config.json`。
 
 ## 数据与证据
 
@@ -52,7 +52,7 @@ python3 label_management/pc_api_regression.py PCLeadTests.test_lead_create_multi
 
 单选多值与跨模块输入按业务约束判定：单选不保存多个值，不适用标签不保存。当前实现选择保留最后一个单选值、过滤不适用标签；是否必须向用户提示仍需确认。
 
-本脚本不代表 PC 页面交互通过。其余业务模块记录保存、客户存量记录兼容、字段映射、导入/导出、AI、权限矩阵和 APP 尚需对应接口或页面操作继续验证。单次 200 条与高级版 500 条边界需要足够额度及正确灰测配置。
+本脚本不代表 PC 页面交互通过。后续模块及 APP 脚本见文末补充清单。额度按当前环境接口实际返回值验证，不假设存在灰测配置。
 
 ## 线索标签导入补测
 
@@ -81,3 +81,48 @@ python3 label_management/pc_api_regression.py PCLeadTests.test_lead_create_multi
 `mobile_quotation_ui.py` 是本次交互测试使用的辅助函数集合，不是可直接无人值守运行的完整脚本。`text`/`fill`/`picker`/`toggle` 操作页面，`snap`/`network` 记录证据，`register`/`record` 核对保存结果。`picker` 使用当前测试标签前缀；调用前应准备当前企业的标签与 `fixture.json` 台账，并确认模板启用标签字段。复制保留原报价单有效标签；生成合同时仅映射报价单与合同共用分组的标签。
 
 只同步测试代码；`data/` 中的企业字段快照、导入文件，以及 `results/` 中的响应、截图、会话、台账和报告保留本地。部分模块脚本依赖这些运行快照或上一轮台账，首次运行应先采集当前企业配置并核对脚本中的模板/字段 ID。不可将历史台账当作其他企业的可执行测试数据。
+
+
+## 切换测试、回归和生产环境
+
+沿用仓库 `lib/config.py` 的环境和企业档案规则。所有标签测试入口都接受 `--env test|staging|production`、`--profile <企业档案>`、`--api <站点或 API 根地址>`、`--token <Token>`；原有用例名、模块名和 `--mappings` 等参数仍然可用。入口先解析环境参数，其余参数交给原脚本。
+
+| 环境 | PC 站点默认值 | API 默认值 |
+| --- | --- | --- |
+| test | `https://lxcrm-test.weiwenjia.com` | `https://lxcrm-api-test.weiwenjia.com` |
+| staging（回归） | `https://lxcrm-staging.weiwenjia.com` | `https://lxcrm-api-staging.weiwenjia.com` |
+| production | `https://lxcrm.weiwenjia.com` | `https://lxcrm-api.weiwenjia.com` |
+
+将 `environment.example.json` 的内容复制到 **wwjapi** 目录的 `config.staging.json` 或 `config.production.json`；不同企业使用 `config.staging.<企业档案>.json` 等文件。示例内的 `0`、占位域名和文案必须替换为当前企业有效配置，不是可直接执行的测试数据。配置文件由仓库 `.gitignore` 忽略。
+
+优先级：命令行参数 > 对应环境变量 > 环境配置文件 > 环境默认地址。环境变量为 `WWJ_ENV`、`WWJ_PROFILE`、`CRM_LABEL_API`、`CRM_LABEL_TOKEN`。默认环境为 `test`，不自动读取其他环境的凭证。
+
+从 `wwjapi` 目录执行：
+
+```bash
+# 只显示地址和本地目录，不发送请求、不显示 Token
+python3 label_management/environment.py --env staging
+python3 label_management/environment.py --env production
+
+# PC 标签管理
+python3 label_management/pc_api_regression.py --env staging --profile regression PCLabelTests
+
+# APP 其余模块及映射
+python3 label_management/mobile_module_regression.py --env staging --profile regression Customer --mappings
+
+# 后续在生产企业执行同一套用例时，只切换环境/档案
+python3 label_management/pc_api_regression.py --env production --profile smoke PCLabelTests
+
+# 离线环境配置测试，不操作企业数据
+python3 -m unittest discover -s label_management -p test_environment.py -v
+```
+
+`label_management.templates` 配置各模块业务模板 ID；无业务模板的模块可省略，有模板但不传模板 ID 时可配置 `null`。`lead_label_field_id` 是当前企业线索标签字段 ID；`lead_label_ids` 供独立 APP 线索新增脚本选择当前企业合法标签。
+
+`pc_payloads` 存各模块创建所需的企业字段：负责人/部门、来源/阶段/票据类型及必填自定义字段等。它会替换脚本中的测试企业字段；名称、标签、日期、金额和本轮创建的客户/合同关系仍由用例生成。APP 全模块脚本复用 PC 的基础数据配置并转换部门字段；独立 APP 线索、转客户脚本读取 `mobile_payloads` 中的 `Lead`、`Customer`、`Contact`。回归、生产或独立企业档案缺少配置时明确报错，不回退到旧测试企业的字段 ID。
+
+`pc_origin`、`mobile_origin` 可覆盖页面域名。导入还需要当前环境的 `faye_url`；回归及生产不会默认连接开发环境 Faye。`entity_loader_prefix`、`upload_token_path` 按仓库既有环境路由设置默认值，可被企业配置覆盖；模板、新建导入及历史查询仍使用 PC 入口。`lead_import_layout` 配置当前线索模板的工作表、列数、起始行、姓名/标签列和错误报告表头；`defaults` 可按 1 起始的列号填入必填值。其他模块导入前应采集当前企业的模板及 `template_inventory.json`。
+
+结果和操作台账隔离到 `results/<env>/<profile或default>/`；企业字段快照默认放在 `data/<env>/<profile或default>/`，可用 `data_dir` 指定 **相对于 wwjapi** 的目录或绝对路径。旧的 `all_modules_20261112/` 快照需移入当前企业的数据目录后使用，不能直接跨环境复用。Appium 连接到的手机企业也应与所选配置一致；命令行参数不会自动给手机切换企业。
+
+本次只完成离线配置/路由验证，没有连接回归或生产环境执行在线回归。

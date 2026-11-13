@@ -1,0 +1,91 @@
+{
+  "api": "https://lxcrm-staging.weiwenjia.com",
+  "token": "replace-with-authorized-enterprise-token",
+  "label_management": {
+    "pc_origin": "https://lxcrm-staging.weiwenjia.com",
+    "mobile_origin": "https://crmh5-staging.weiwenjia.com",
+    "templates": {
+      "Customer": 0,
+      "MarketActivity": 0,
+      "Opportunity": 0,
+      "Quotation": 0,
+      "Contract": 0
+    },
+    "lead_label_field_id": 0,
+    "lead_label_ids": [],
+    "pc_payloads": {
+      "Lead": {
+        "source": 0,
+        "status": 0,
+        "user_id": 0,
+        "want_department_id": 0
+      },
+      "Customer": {
+        "source": 0,
+        "user_id": 0,
+        "want_department_id": 0
+      },
+      "Contact": {},
+      "Opportunity": {
+        "stage": 0,
+        "user_id": 0,
+        "want_department_id": 0
+      },
+      "Quotation": {
+        "user_id": 0,
+        "want_department_id": 0
+      },
+      "Contract": {
+        "user_id": 0,
+        "want_department_id": 0
+      },
+      "MarketActivity": {
+        "user_id": 0,
+        "want_department_id": 0
+      },
+      "ReceivedPayment": {
+        "user_id": 0,
+        "receive_user_id": 0,
+        "want_department_id": 0
+      },
+      "InvoicedPayment": {
+        "user_id": 0,
+        "broker_user_id": 0,
+        "invoice_types": 0,
+        "want_department_id": 0
+      },
+      "Product": {
+        "user_id": 0,
+        "want_department_id": 0
+      }
+    },
+    "mobile_payloads": {
+      "Lead": {
+        "source": 0,
+        "status": 0,
+        "user_id": 0,
+        "owned_department_id": 0
+      },
+      "Customer": {
+        "source": 0,
+        "user_id": 0,
+        "owned_department_id": 0
+      },
+      "Contact": {}
+    },
+    "import_user_name": "replace-with-current-user-name",
+    "faye_url": "https://your-environment-faye.example.com/faye",
+    "entity_loader_prefix": "/api/entity_loaders",
+    "upload_token_path": "/api/qiniu/auth/oss_upload_token.json",
+    "lead_import_layout": {
+      "sheet": "replace-with-current-template-sheet-name",
+      "columns": 70,
+      "data_start": 14,
+      "header_row": 8,
+      "label_col": 3,
+      "name_col": 5,
+      "name_header": "replace-with-current-required-name-header",
+      "defaults": {}
+    }
+  }
+}

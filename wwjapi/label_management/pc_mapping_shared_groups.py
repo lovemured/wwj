@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Online mapping regression for shared-group filtering, using owned fixtures."""
+from environment import settings
 import json
 import os
 import traceback
@@ -60,8 +61,8 @@ def scope(group, models):
 
 
 if __name__ == '__main__':
-    token = os.environ['CRM_LABEL_TOKEN']
-    core.SESSION.headers.update({'Authorization': f'Token token="{token}",device="web"', 'Accept': 'application/json'})
+    token = settings.token
+    core.SESSION.headers.update(settings.headers())
     run = Run(); run.mapping_details = []
     try:
         run.prepare()

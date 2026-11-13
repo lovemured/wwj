@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Consolidate observed results, preserving raw evidence and review corrections."""
+from environment import settings
 import copy
 from collections import Counter
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent / 'results'
+ROOT = settings.result_root
 FIRST = '20261112-162502'
 SECOND = '20261112-163949'
 PROOF = '20261112-164622'

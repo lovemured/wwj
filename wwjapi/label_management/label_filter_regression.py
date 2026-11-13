@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Owned fixtures for PC and mobile label filters; token stays in the environment."""
+from environment import settings
 import copy
 import json
 import os
@@ -14,11 +15,10 @@ from pc_module_regression import Run, MODELS
 from mobile_module_regression import TEMPLATES
 
 MODELS['Lead'] = ('leads', 'lead', 'name')
-ROOT = 'https://lxcrm-api-test.weiwenjia.com/api'
-OUT = Path(__file__).resolve().parent / 'results/20261113-label-filter'
+ROOT = settings.api_root
+OUT = settings.result_root / '20261113-label-filter'
 MOBILE_VERSION = dict.fromkeys(MODELS, 'v3')
 MOBILE_VERSION.update(Quotation='v2', Product='v2', ReceivedPayment='v2', InvoicedPayment='v2')
-TOKEN = os.environ['CRM_LABEL_TOKEN']
 core.OUT = OUT
 core.PREFIX = 'F' + core.uuid.uuid4().hex[:5]
 _api = core.api
@@ -40,8 +40,7 @@ core.api = api
 
 def surface(name):
     core.BASE = ROOT + '/pc'
-    device = 'device="web"' if name == 'pc' else 'device="lxcrm_duli",version_code="4.0.1"'
-    core.SESSION.headers.update(Authorization=f'Token token="{TOKEN}",{device}', Accept='application/json')
+    core.SESSION.headers.update(settings.headers(mobile=name != 'pc'))
 
 
 class FilterRun(Run):
