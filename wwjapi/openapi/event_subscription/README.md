@@ -11,7 +11,7 @@
 ```bash
 export CRM_WEBHOOK_TOKEN='<当前测试账号 Token>'
 export CRM_WEBHOOK_CALLBACK='https://webhook.site/<接收器 UUID>'
-python3 event_subscription/regression.py --output /tmp/webhook-catalog catalog
+python3 openapi/event_subscription/regression.py --output /tmp/webhook-catalog catalog
 ```
 
 回调地址必须是实际接收地址，不能使用 `https://webhook.site/#!/view/...` 页面地址。结果存入 `--output`，日志中的订阅密钥会脱敏。原始回调可能包含业务数据，输出目录应保留在本地。
@@ -19,12 +19,12 @@ python3 event_subscription/regression.py --output /tmp/webhook-catalog catalog
 基础版最多 20 个事件；企业版最多 40 个。示例事件来自本次已执行的回归清单，使用前核对当前需求及 `event_types`：
 
 ```bash
-python3 event_subscription/regression.py --output /tmp/webhook-basic configure \
-  --events event_subscription/basic-20.json
+python3 openapi/event_subscription/regression.py --output /tmp/webhook-basic configure \
+  --events openapi/event_subscription/basic-20.json
 
 # 对企业版账号使用企业版清单；不要对基础版执行此配置。
-python3 event_subscription/regression.py --output /tmp/webhook-enterprise configure \
-  --events event_subscription/enterprise-40.json
+python3 openapi/event_subscription/regression.py --output /tmp/webhook-enterprise configure \
+  --events openapi/event_subscription/enterprise-40.json
 ```
 
 配置操作会替换该账号所在企业的订阅，先备份原配置，再保存并检查回读。它不会自动恢复；恢复时将原配置中的事件数组提交，并指定原接收器地址。不同企业的账号分别运行，不共享企业数据 ID。
@@ -34,8 +34,8 @@ python3 event_subscription/regression.py --output /tmp/webhook-enterprise config
 先为基础版保存至少一个有效基础事件，再执行：
 
 ```bash
-python3 event_subscription/regression.py --output /tmp/webhook-edition check-denied \
-  --events event_subscription/enterprise-only-requirements.json
+python3 openapi/event_subscription/regression.py --output /tmp/webhook-edition check-denied \
+  --events openapi/event_subscription/enterprise-only-requirements.json
 ```
 
 逐个提交“一个原基础事件 + 一个待拦截事件”，每次回读确认原配置未变。意外保存成功时会恢复原配置并回读，该案例仍记失败。请求总数不超过订阅上限，避免把“数量超限”误当作版本拦截。
@@ -49,10 +49,10 @@ python3 event_subscription/regression.py --output /tmp/webhook-edition check-den
 先保存包含目标事件的订阅，再记录基线。通过页面或仓库业务脚本触发操作后，用本次产生的数据 ID 核对：
 
 ```bash
-python3 event_subscription/regression.py --output /tmp/webhook-before snapshot
+python3 openapi/event_subscription/regression.py --output /tmp/webhook-before snapshot
 
 # 在这里执行真实业务操作，并记录其企业 ID 和本次数据 ID。
-python3 event_subscription/regression.py --output /tmp/webhook-after verify \
+python3 openapi/event_subscription/regression.py --output /tmp/webhook-after verify \
   --event customer.batch_update --organization-id 123 --ids 456 457 \
   --baseline /tmp/webhook-before/receipts.json --wait 60
 ```
@@ -66,7 +66,7 @@ Webhook.site 可能在 50 条后耗尽免费额度。清空收件列表不一定
 确保已订阅 `checkin.cold_visit_create` 和 `checkin.delete`，执行：
 
 ```bash
-python3 event_subscription/regression.py --output /tmp/webhook-checkin mobile-checkin --wait 30
+python3 openapi/event_subscription/regression.py --output /tmp/webhook-checkin mobile-checkin --wait 30
 ```
 
 走 `https://lxcrm-api-staging.weiwenjia.com/api/v3/checkin`，请求头为 `device=lxcrm_duli, version_code=4.0.1`，新增陌拜传 `checkPattern.status=陌拜`。只删除本次新建签到，并查询确认删除后再核对回调。企业若设置了额外必填字段，需按当前企业字段补齐请求。异常中断后通过 `created-checkin.json` 和请求日志核对是否有未清理数据。
@@ -75,8 +75,8 @@ python3 event_subscription/regression.py --output /tmp/webhook-checkin mobile-ch
 
 ## 已有业务和导入脚本
 
-- `../flow/crm_flow.py`、`../flow/mobile_crm_flow.py`：客户、线索、合同、回款等业务操作。
-- `../import/error-report-import/error_report_import_tester.py`：模板下载、校验、导入、异步任务与导入历史。
+- `../../flow/crm_flow.py`、`../../flow/mobile_crm_flow.py`：客户、线索、合同、回款等业务操作。
+- `../../import/error-report-import/error_report_import_tester.py`：模板下载、校验、导入、异步任务与导入历史。
 
 使用这些脚本时核对它们各自的环境参数和默认值，显式指定 staging。关联字段使用本次自建数据，操作完清理。普通用户转移数据后可能失去删除权限，转移测试需要事先安排同企业的清理权限。
 
@@ -85,7 +85,7 @@ python3 event_subscription/regression.py --output /tmp/webhook-checkin mobile-ch
 ## 本地验证
 
 ```bash
-python3 -m unittest discover -s event_subscription -p 'test_*.py'
+python3 -m unittest discover -s openapi/event_subscription -p 'test_*.py'
 ```
 
 离线测试不发业务请求。同步代码时不需要重跑在线回归。

@@ -220,7 +220,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--api', default=STAGING)
     parser.add_argument('--callback', default=os.environ.get('CRM_WEBHOOK_CALLBACK'))
-    parser.add_argument('--output', default='event_subscription/results/' + dt.datetime.now().strftime('%Y%m%d-%H%M%S'))
+    parser.add_argument('--output', default='openapi/event_subscription/results/' + dt.datetime.now().strftime('%Y%m%d-%H%M%S'))
     commands = parser.add_subparsers(dest='command', required=True)
     commands.add_parser('catalog')
     configure = commands.add_parser('configure')
