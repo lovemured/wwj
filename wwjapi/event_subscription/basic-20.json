@@ -1,0 +1,22 @@
+[
+  "lead.create",
+  "lead.update",
+  "lead.delete",
+  "lead.convert",
+  "customer.create",
+  "customer.update",
+  "contact.create",
+  "contact.update",
+  "contact.delete",
+  "opportunity.create",
+  "opportunity.update",
+  "opportunity.amount_change",
+  "quotation.create",
+  "quotation.update",
+  "contract.create",
+  "contract.amount_change",
+  "revisit_log.create",
+  "checkin.cold_visit_create",
+  "checkin.delete",
+  "product.create"
+]
